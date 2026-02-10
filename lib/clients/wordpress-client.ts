@@ -73,7 +73,7 @@ export class WordPressClient {
         "Content-Disposition": `attachment; filename="${filename}"`,
         "Content-Type": mimeType,
       },
-      body: buffer,
+      body: buffer as any,
     });
 
     if (!response.ok) {

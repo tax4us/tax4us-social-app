@@ -11,8 +11,11 @@ export class SocialPublisher {
         this.claude = new ClaudeClient();
     }
 
-    async generateSocialContent(articleContent: string, title: string) {
+    async generateSocialContent(articleHtml: string, title: string) {
         console.log(`Generating social media content for: ${title}`);
+
+        // Clean HTML to plain text for the AI prompt
+        const plainText = articleHtml.replace(/<[^>]+>/g, " ").substring(0, 5000);
 
         // LinkedIn Prompt
         const linkedinPrompt = `
@@ -25,7 +28,7 @@ export class SocialPublisher {
       - Length: 150-250 words.
       - Hashtags: 3-5 relevant hashtags (e.g., #IsraeliTax #SmallBusiness #Finance).
       - Content:
-      ${articleContent}
+      ${plainText}
     `;
 
         // Facebook Prompt
@@ -39,13 +42,18 @@ export class SocialPublisher {
       - Length: 100-150 words.
       - Hashtags: 2-3 broad tags.
       - Content:
-      ${articleContent}
+      ${plainText}
     `;
 
         const [linkedinPost, facebookPost] = await Promise.all([
             this.claude.generate(linkedinPrompt, "claude-3-5-sonnet-20241022"),
             this.claude.generate(facebookPrompt, "claude-3-5-sonnet-20241022"),
         ]);
+
+        // Validation: Ensure we didn't get empty responses
+        if (!linkedinPost || !facebookPost) {
+            throw new Error("Failed to generate social content for one or more platforms.");
+        }
 
         return {
             linkedin: linkedinPost,

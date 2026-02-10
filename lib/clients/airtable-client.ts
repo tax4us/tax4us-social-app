@@ -4,9 +4,9 @@ export class AirtableClient {
     private baseUrl: string;
 
     constructor() {
-        this.apiKey = process.env.AIRTABLE_API_KEY || "";
-        this.baseId = process.env.AIRTABLE_BASE_ID || "appkZD1ew4aKoBqDM";
-        this.baseUrl = `https://api.airtable.com/v1/${this.baseId}`;
+        this.apiKey = process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN || "";
+        this.baseId = process.env.AIRTABLE_BASE_ID || "appkZD1ew4aKoBqDM"; // Default base ID
+        this.baseUrl = `https://api.airtable.com/v0/${this.baseId}`;
 
         if (!this.apiKey) {
             throw new Error("Missing AIRTABLE_API_KEY in environment variables.");

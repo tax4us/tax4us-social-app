@@ -106,9 +106,8 @@ export class PipelineOrchestrator {
 
         // 4. Generate & Queue Social Media Posts
         console.log(`Generating social media content...`);
-        // We strip HTML tags roughly for the prompt
-        const plainTextContent = fields["Generated Content"].replace(/<[^>]+>/g, " ").substring(0, 4000);
-        const socialContent = await this.socialPublisher.generateSocialContent(plainTextContent, fields["Title EN"]);
+        // We pass the raw HTML, the SocialPublisher handles stripping.
+        const socialContent = await this.socialPublisher.generateSocialContent(fields["Generated Content"], fields["Title EN"]);
 
         await this.socialPublisher.publishToAll({
             title: fields["Title EN"],
@@ -119,7 +118,8 @@ export class PipelineOrchestrator {
 
         // 5. Produce Podcast Episode
         console.log(`Producing podcast episode...`);
-        await this.podcastProducer.produceFromArticle(plainTextContent, fields["Title EN"]);
+        // We pass the raw HTML, the PodcastProducer handles stripping and scripting.
+        await this.podcastProducer.produceFromArticle(fields["Generated Content"], fields["Title EN"]);
 
         return wpPost;
     }

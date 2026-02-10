@@ -30,8 +30,16 @@ export class MediaProcessor {
             throw new Error("Image generation timed out or failed.");
         }
 
-        // 3. Upload to WordPress
-        const media = await this.wp.uploadMedia(imageUrl, title);
+        // 3. Fetch image buffer
+        const imageRes = await fetch(imageUrl);
+        if (!imageRes.ok) throw new Error(`Failed to download image from ${imageUrl}`);
+        const arrayBuffer = await imageRes.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const mimeType = imageRes.headers.get("content-type") || "image/png";
+        const filename = `${title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.png`; // Simple sanitize
+
+        // 4. Upload to WordPress
+        const media = await this.wp.uploadMedia(buffer, filename, mimeType);
         return media.source_url;
     }
 
