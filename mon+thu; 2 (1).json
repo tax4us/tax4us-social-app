@@ -1,0 +1,692 @@
+{
+  "name": "mon+thu; 2",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Assign Categories - INCLUDES AUTO-SELECTED SUB-CATEGORIES\n// ✅ FIXED: Properly handles selectedSubCategoryIds from Auto Assign Sub-Categories\n\nconst parseData = $input.first().json;\n\nconsole.log('📂 Assign Categories - Input data keys:', Object.keys(parseData));\nconsole.log('📂 selectedSubCategoryIds:', parseData.selectedSubCategoryIds);\nconsole.log('📂 autoAssigned:', parseData.autoAssigned);\n\n// Get topic from input chain\nlet topic = '';\nif (parseData.topic) {\n  topic = parseData.topic;\n} else {\n  try {\n    const prepData = $('Prepare Sub-Category Query').first()?.json || {};\n    topic = prepData.topic || topic;\n  } catch (e) {\n    console.log('⚠️ Could not access topic from upstream node');\n  }\n}\n\nconst title = parseData.title || '';\nconst focusKeyword = parseData.focusKeyword || '';\nconst allText = `${topic} ${title} ${focusKeyword}`.toLowerCase();\n\n// Category IDs from WordPress\nconst CATEGORY_IDS = {\n  HEBREW: 20,\n  ENGLISH: 22,\n  ALL_YOU_NEED_HE: 44,\n  ALL_YOU_NEED_EN: 46,\n  GENERAL: 1\n};\n\n// Detect language - use isHebrewPost if available, otherwise detect\nlet hasHebrew = false;\nif (parseData.isHebrewPost !== undefined && parseData.isHebrewPost !== null) {\n  hasHebrew = parseData.isHebrewPost === true;\n} else {\n  hasHebrew = /[\\u0590-\\u05FF]/.test(title + topic);\n}\n\nconst languageCategory = hasHebrew ? CATEGORY_IDS.HEBREW : CATEGORY_IDS.ENGLISH;\n\nconst categoryIds = [languageCategory];\n\n// Add main content category based on language\nif (hasHebrew && CATEGORY_IDS.ALL_YOU_NEED_HE) {\n  categoryIds.push(CATEGORY_IDS.ALL_YOU_NEED_HE);\n} else if (!hasHebrew && CATEGORY_IDS.ALL_YOU_NEED_EN) {\n  categoryIds.push(CATEGORY_IDS.ALL_YOU_NEED_EN);\n}\n\n// ✅ FIXED: Add auto-selected sub-categories from Auto Assign Sub-Categories\nconst selectedSubCategoryIds = parseData.selectedSubCategoryIds || [];\nif (selectedSubCategoryIds.length > 0) {\n  console.log('📂 Adding auto-selected sub-categories:', selectedSubCategoryIds);\n  console.log('📂 Sub-category names:', parseData.selectedSubCategoryNames || []);\n  categoryIds.push(...selectedSubCategoryIds);\n} else {\n  console.log('⚠️ No sub-categories selected - check Auto Assign Sub-Categories node');\n}\n\n// Remove duplicates\nconst uniqueCategoryIds = [...new Set(categoryIds)];\n\nconsole.log('📂 Final assigned categories:', uniqueCategoryIds);\nconsole.log('📝 Topic used:', topic || 'N/A');\nconsole.log('📝 Language:', hasHebrew ? 'Hebrew' : 'English');\n\nreturn {\n  json: {\n    ...parseData,\n    categories: uniqueCategoryIds,\n    isHebrewPost: hasHebrew,\n    topic: topic || parseData.topic || '',\n    selectedSubCategoryIds: selectedSubCategoryIds,\n    selectedSubCategoryNames: parseData.selectedSubCategoryNames || []\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2624,
+        -320
+      ],
+      "id": "b7978c39-db95-488f-b58e-27f54683cbfc",
+      "name": "Assign Categories"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assign Tags - COMPLETE VERSION with English->Hebrew Fallback\n// Detects keywords in content and maps to WordPress tag IDs\n// If English tag not found, falls back to Hebrew equivalent\nconst inputItems = $input.all();\nconst postData = inputItems[0]?.json || {};\n// Build tag ID mapping from WordPress tags\nconst tagIdMapping = {};\ninputItems.forEach(item => {\n  if (item.json?.name && item.json?.id) {\n    tagIdMapping[item.json.name] = item.json.id;\n  }\n});\n// English-to-Hebrew Fallback Mapping\nconst englishToHebrewTagMap = {\n  'Form 8938': 'טופס 8938',\n  'FBAR': 'FBAR',\n  'FATCA': 'FATCA',\n  'Form 1116': 'טופס 1116',\n  'Form 1040': 'טופס 1040',\n  'Form 8833': 'טופס 8833',\n  'W-8BEN': 'W-8BEN',\n  'Form 1099': '1099',\n  'Reporting': 'דיווח',\n  'Tax Planning': 'תכנון מס',\n  'Investment Tax': 'מיסוי השקעות',\n  'Retirement': 'פנסיה',\n  'Real Estate Tax': 'מס נדל\"ן',\n  'Cryptocurrency': 'קריפטו',\n  'Estate Tax': 'מס עיזבון',\n  'Tax Treaty': 'אמנת מס',\n  'Business Tax': 'מס עסקים',\n  'Self-Employment Tax': 'מס עצמאיים',\n  'Penalties': 'עונשים',\n  'Tax Audit': 'ביקורת מס',\n  'Buying and Selling': 'רכישה ומכירה'\n};\n// Get content for keyword detection\nconst title = postData.title || '';\nconst content = postData.content || '';\nconst excerpt = postData.excerpt || '';\nconst focusKeyword = postData.focusKeyword || '';\nconst topic = postData.topic || '';\n// Detect language\nconst hasHebrew = /[\\u0590-\\u05FF]/.test(title + content);\nconst isHebrewPost = postData.isHebrewPost !== undefined ? postData.isHebrewPost : hasHebrew;\n// Combine all text for keyword matching\nconst allText = (title + ' ' + content + ' ' + excerpt + ' ' + focusKeyword + ' ' + topic).toLowerCase();\n// ═══════════════════════════════════════════════════════════════\n// KEYWORD DETECTION LOGIC\n// ═══════════════════════════════════════════════════════════════\nconst tagNames = [];\n// Form 8938\nif (allText.includes('8938') || allText.includes('form 8938') || allText.includes('טופס 8938')) {\n  tagNames.push(isHebrewPost ? 'טופס 8938' : 'Form 8938');\n}\n// FBAR\nif (allText.includes('fbar') || allText.includes('fincen 114') || allText.includes('foreign bank')) {\n  tagNames.push('FBAR');\n}\n// FATCA\nif (allText.includes('fatca') || allText.includes('foreign account tax compliance')) {\n  tagNames.push('FATCA');\n}\n// Form 1116 (Foreign Tax Credit)\nif (allText.includes('1116') || allText.includes('foreign tax credit') || allText.includes('זיכוי מס זר')) {\n  tagNames.push(isHebrewPost ? 'טופס 1116' : 'Form 1116');\n}\n// Form 1040\nif (allText.includes('1040') || allText.includes('tax return')) {\n  tagNames.push(isHebrewPost ? 'טופס 1040' : 'Form 1040');\n}\n// Form 8833 (Tax Treaty)\nif (allText.includes('8833') || allText.includes('treaty-based')) {\n  tagNames.push(isHebrewPost ? 'טופס 8833' : 'Form 8833');\n}\n// W-8BEN\nif (allText.includes('w-8ben') || allText.includes('w8ben') || allText.includes('withholding')) {\n  tagNames.push('W-8BEN');\n}\n// Form 1099\nif (allText.includes('1099') || allText.includes('1099-c') || allText.includes('חוב') || allText.includes('מחילת חוב')) {\n  tagNames.push(isHebrewPost ? '1099' : 'Form 1099');\n}\n// Reporting / דיווח\nif (allText.includes('reporting') || allText.includes('disclosure') || \n    allText.includes('דיווח') || allText.includes('גילוי')) {\n  tagNames.push(isHebrewPost ? 'דיווח' : 'Reporting');\n}\n// Tax Planning / תכנון מס\nif (allText.includes('tax planning') || allText.includes('strategy') || \n    allText.includes('תכנון מס') || allText.includes('אסטרטגי')) {\n  tagNames.push(isHebrewPost ? 'תכנון מס' : 'Tax Planning');\n}\n// Investment Tax / מיסוי השקעות\nif (allText.includes('investment') || allText.includes('dividend') || allText.includes('capital gain') ||\n    allText.includes('השקעה') || allText.includes('דיבידנד') || allText.includes('רווח הון') ||\n    allText.includes('משקיע')) {\n  tagNames.push(isHebrewPost ? 'מיסוי השקעות' : 'Investment Tax');\n}\n// Retirement / Pension / פנסיה\nif (allText.includes('פנסיה') || allText.includes('401k') || allText.includes('ira') || \n    allText.includes('קרן השתלמות') || allText.includes('retirement') || allText.includes('pension') ||\n    allText.includes('קופת גמל')) {\n  tagNames.push(isHebrewPost ? 'פנסיה' : 'Retirement');\n}\n// Real Estate / מס נדל\"ן\nif (allText.includes('נדל\"ן') || allText.includes('נדלן') || \n    allText.includes('real estate') || allText.includes('נכס') || allText.includes('נכסים') ||\n    allText.includes('מקרקעין') || allText.includes('property')) {\n  tagNames.push(isHebrewPost ? 'מס נדל\"ן' : 'Real Estate Tax');\n}\n// Cryptocurrency / קריפטו\nif (allText.includes('קריפטו') || allText.includes('crypto') || \n    allText.includes('ביטקוין') || allText.includes('bitcoin') || allText.includes('אתריום') ||\n    allText.includes('ethereum') || allText.includes('מטבע דיגיטלי')) {\n  tagNames.push(isHebrewPost ? 'קריפטו' : 'Cryptocurrency');\n}\n// IRS\nif (allText.includes('irs') || allText.includes('רשות המס האמריקאית')) {\n  tagNames.push('IRS');\n}\n// Estate Tax / מס עיזבון\nif (allText.includes('עיזבון') || allText.includes('estate tax') || \n    allText.includes('ירושה') || allText.includes('inheritance') || allText.includes('מס ירושה') ||\n    allText.includes('מס מתנות') || allText.includes('gift tax')) {\n  tagNames.push(isHebrewPost ? 'מס עיזבון' : 'Estate Tax');\n}\n// Tax Treaty / אמנת מס\nif (allText.includes('אמנת מס') || allText.includes('tax treaty') || \n    allText.includes('הסכם מס') || allText.includes('כפל מיסוי') || allText.includes('מניעת כפל') ||\n    allText.includes('double taxation')) {\n  tagNames.push(isHebrewPost ? 'אמנת מס' : 'Tax Treaty');\n}\n// Business Tax / מס עסקים\nif (allText.includes('עסק') || allText.includes('business') || allText.includes('חברה') ||\n    allText.includes('עסקי') || allText.includes('llc') || allText.includes('corporation')) {\n  tagNames.push(isHebrewPost ? 'מס עסקים' : 'Business Tax');\n}\n// Self-Employment Tax / מס עצמאיים\nif (allText.includes('עצמאי') || allText.includes('self-employment') || allText.includes('freelance') ||\n    allText.includes('עוסק') || allText.includes('independent contractor')) {\n  tagNames.push(isHebrewPost ? 'מס עצמאיים' : 'Self-Employment Tax');\n}\n// Buying and Selling / רכישה ומכירה\nif (allText.includes('רכישה') || allText.includes('מכירה') || allText.includes('buying') ||\n    allText.includes('selling') || allText.includes('transaction')) {\n  tagNames.push(isHebrewPost ? 'רכישה ומכירה' : 'Buying and Selling');\n}\n// Penalties / עונשים\nif (allText.includes('עונש') || allText.includes('penalty') || allText.includes('קנס') ||\n    allText.includes('penalties') || allText.includes('fine')) {\n  tagNames.push(isHebrewPost ? 'עונשים' : 'Penalties');\n}\n// Tax Audit / ביקורת מס\nif (allText.includes('ביקורת') || allText.includes('audit') || allText.includes('examination')) {\n  tagNames.push(isHebrewPost ? 'ביקורת מס' : 'Tax Audit');\n}\n// Amendment / תיקון\nif (allText.includes('תיקון') || allText.includes('1040x') || allText.includes('amendment') ||\n    allText.includes('amended return')) {\n  tagNames.push(isHebrewPost ? 'תיקון דוח' : 'Amendment');\n}\n// ═══════════════════════════════════════════════════════════════\n// MAP TAG NAMES TO IDs WITH ENGLISH->HEBREW FALLBACK\n// ═══════════════════════════════════════════════════════════════\nconst uniqueTagNames = [...new Set(tagNames)];\nconst tagIds = uniqueTagNames.map(name => {\n  // First try to find the tag directly\n  let id = tagIdMapping[name];\n  \n  // If not found and it's an English tag, try Hebrew equivalent\n  if (id === undefined && englishToHebrewTagMap[name]) {\n    const hebrewEquivalent = englishToHebrewTagMap[name];\n    id = tagIdMapping[hebrewEquivalent];\n    if (id !== undefined) {\n      console.log(`✅ Fallback: \"${name}\" → \"${hebrewEquivalent}\" (ID: ${id})`);\n    }\n  }\n  \n  return id;\n}).filter(id => id !== undefined);\nconsole.log('📌 Detected tag names:', uniqueTagNames);\nconsole.log('📌 Resolved tag IDs:', tagIds);\nconsole.log('📌 Is Hebrew post:', isHebrewPost);\nreturn {\n  json: {\n    ...postData,\n    tagNames: uniqueTagNames,\n    tagIds: tagIds,\n    isHebrewPost: isHebrewPost\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1952,
+        -320
+      ],
+      "id": "57c30362-3cc6-4d34-87da-14ceb35a2860",
+      "name": "Assign Tags"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -2176,
+        -320
+      ],
+      "id": "1e1add56-8e7c-4cf3-9be4-3474e357a444",
+      "name": "Merge: Categories + Tags1"
+    },
+    {
+      "parameters": {
+        "url": "https://tax4us.co.il/wp-json/wp/v2/tags?per_page=100",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2400,
+        -240
+      ],
+      "id": "56215336-1abb-4e29-97f2-7f3f90ed9254",
+      "name": "Fetch WordPress Tags",
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tax4us.co.il/wp-json/wp/v2/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"title\": $json.title || '',\n  \"content\": $json.content || '',\n  \"excerpt\": $json.excerpt || '',\n  \"status\": \"draft\",\n  \"format\": \"standard\",\n  \"template\": \"\",\n  \"comment_status\": \"open\",\n  \"ping_status\": \"open\",\n  \"categories\": $json.categories || [],\n  \"tags\": $json.tagIds || [],\n  \"lang\": \"he\",\n  \"meta\": {\n    \"rank_math_focus_keyword\": $json.focusKeyword || '',\n    \"rank_math_title\": $json.seoTitle || $json.title || '',\n    \"rank_math_description\": $json.seoDescription || $json.excerpt || ''\n  }\n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1728,
+        -320
+      ],
+      "id": "31271aca-9573-4b8c-a622-1819a18b9b52",
+      "name": "HTTP: WordPress Draft",
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check Retry Count - OPTIMIZED\n// Tracks polling attempts for video generation status\n\nconst videoData = $input.first().json;\nconst MAX_RETRIES = 10; // 10 * 1 minute = 10 minutes max\n\nconst retryCount = videoData.retryCount || 0;\nconst successFlag = videoData.data?.successFlag;\nconst code = videoData.code;\n\nconsole.log(`Video poll #${retryCount + 1}/${MAX_RETRIES} | successFlag: ${successFlag} | code: ${code}`);\n\n// Max retries exceeded\nif (retryCount >= MAX_RETRIES) {\n  return [{ json: { skipVideo: true, videoReady: false, reason: 'Timeout after 10 minutes' } }];\n}\n\n// Success (successFlag === 1)\nif (successFlag === 1) {\n  return [{ json: { ...videoData, skipVideo: false, videoReady: true, retryCount: 0 } }];\n}\n\n// Failed (successFlag === 2 or 3)\nif (successFlag === 2 || successFlag === 3) {\n  return [{ json: { ...videoData, skipVideo: true, videoReady: false, reason: 'Generation failed: ' + successFlag } }];\n}\n\n// API error\nif (code && code !== 200) {\n  return [{ json: { ...videoData, skipVideo: true, videoReady: false, reason: 'API error: ' + (videoData.msg || code) } }];\n}\n\n// Still processing - continue polling\nreturn [{ json: { ...videoData, skipVideo: false, videoReady: false, continuePolling: true, retryCount: retryCount + 1 } }];"
+      },
+      "id": "850e8a1d-a277-4f61-94d6-99424db793e8",
+      "name": "Check Retry Count1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"assignments\": [\n    {\n      \"id\": \"postId\",\n      \"name\": \"postId\",\n      \"value\": \"{{ $('HTTP: WordPress Draft').first().json.id }}\",\n      \"type\": \"number\"\n    },\n    {\n      \"id\": \"title\",\n      \"name\": \"title\",\n      \"value\": \"{{ $('Update Post with Video').first().json.title }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"updatedContent\",\n      \"name\": \"updatedContent\",\n      \"value\": \"{{ $('Update Post with Video').first().json.updatedContent }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"excerpt\",\n      \"name\": \"excerpt\",\n      \"value\": \"{{ $('Assign Tags').first().json.excerpt || '' }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"content\",\n      \"name\": \"content\",\n      \"value\": \"{{ $('Assign Tags').first().json.content || '' }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"focusKeyword\",\n      \"name\": \"focusKeyword\",\n      \"value\": \"{{ $('Assign Tags').first().json.focusKeyword || '' }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"seoTitle\",\n      \"name\": \"seoTitle\",\n      \"value\": \"{{ $('Assign Tags').first().json.seoTitle || '' }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"seoDescription\",\n      \"name\": \"seoDescription\",\n      \"value\": \"{{ $('Assign Tags').first().json.seoDescription || '' }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"categories\",\n      \"name\": \"categories\",\n      \"value\": \"{{ JSON.stringify($('Assign Tags').first().json.categories || []) }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"tagIds\",\n      \"name\": \"tagIds\",\n      \"value\": \"{{ JSON.stringify($('Assign Tags').first().json.tagIds || []) }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"videoUrl\",\n      \"name\": \"videoUrl\",\n      \"value\": \"{{ $('Update Post with Video').first().json.videoUrl || '' }}\",\n      \"type\": \"string\"\n    },\n    {\n      \"id\": \"topic\",\n      \"name\": \"topic\",\n      \"value\": \"{{ $('Assign Tags').first().json.topic || '' }}\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "6fcaeb58-1bc0-4dae-a37f-a848fbf6162a",
+      "name": "Prepare WordPress Update1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/veo/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ (() => {\n  const parseData = $('Assign Tags').first().json || {};\n  const title = parseData.title || '';\n  const topic = parseData.topic || '';\n  const focusKeyword = parseData.focusKeyword || '';\n  \n  // Construct video prompt from available data\n  const videoPrompt = `Professional tax and financial services video background for: \"${title}\". Topic: ${topic || focusKeyword}. Style: Modern corporate, clean motion graphics, subtle animations, professional blue and green tones, abstract financial elements, documents and charts in background. No text overlay. Looping background video.`;\n  \n  return {\n    \"prompt\": videoPrompt,\n    \"model\": \"veo3_fast\",\n    \"aspectRatio\": \"16:9\",\n    \"enableFallback\": false,\n    \"enableTranslation\": false,\n    \"generationType\": \"TEXT_2_VIDEO\"\n  };\n})() }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1504,
+        -320
+      ],
+      "id": "6661e80e-20db-4703-87fc-f3f2eda7ab36",
+      "name": "Create Video Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rw2YQwhMViQcDz7g",
+          "name": "kie.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/veo/record-info?taskId={{ $json.data.taskId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1056,
+        -320
+      ],
+      "id": "1dc51d2d-e76a-47d7-ab5d-cb9728ec4b72",
+      "name": "Get Videos",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rw2YQwhMViQcDz7g",
+          "name": "kie.ai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "video-ready",
+              "leftValue": "={{ $json.videoReady === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "skip-video",
+              "leftValue": "={{ $json.skipVideo === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -384,
+        -384
+      ],
+      "id": "bd3212d5-d738-420f-b6ee-c8a31d8ff89c",
+      "name": "Check Video Ready"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -224
+      ],
+      "id": "385d4d5f-d197-46da-900e-23ec105881d7",
+      "name": "Wait for Video Processing",
+      "webhookId": "4cf166f7-5bb8-4f22-8b3b-193ae5c4df05"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Update WordPress Post with Video Background Banner\nconst videoData = $input.first().json;\n\n// Get post data from WordPress draft response\nlet draftPostData = {};\ntry {\n  draftPostData = $('HTTP: WordPress Draft').first()?.json || {};\n} catch (e) {\n  console.log('Could not access HTTP: WordPress Draft node');\n}\n\n// Get content from Parse AI Response\nlet parseData = {};\ntry {\n  parseData = $('Assign Tags').first()?.json || {};\n} catch (e) {\n  console.log('Could not access Assign Tags node');\n}\n\n// Helper: Extract value\nconst extractValue = (val) => {\n  if (val == null) return '';\n  if (typeof val === 'string') return val;\n  if (typeof val === 'object') {\n    if (val.value !== undefined) return val.value;\n    if (val.rendered !== undefined) return val.rendered;\n    return JSON.stringify(val);\n  }\n  return String(val);\n};\n\n// Helper: Decode HTML entities\nconst decodeHtmlEntities = (str) => {\n  if (!str || typeof str !== 'string') return str;\n  return str\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#039;/g, \"'\")\n    .replace(/&#8217;/g, \"'\")\n    .replace(/&#8220;/g, '\"')\n    .replace(/&#8221;/g, '\"')\n    .replace(/&#160;/g, ' ')\n    .replace(/&nbsp;/g, ' ');\n};\n\n// Helper: Escape HTML\nconst escapeHtml = (str) => {\n  if (!str || typeof str !== 'string') return '';\n  let decoded = decodeHtmlEntities(str);\n  return decoded\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&#039;');\n};\n\n// Helper: Update query block to exclude current post\nconst updateQueryBlockExclude = (content, excludePostId) => {\n  if (typeof content !== 'string') return String(content || '');\n  \n  const queryBlockRegex = /<!-- wp:query (.*?) -->/s;\n  const queryMatch = content.match(queryBlockRegex);\n  if (!queryMatch) return content;\n  \n  let updatedAttrs = queryMatch[1]\n    .replace(/\"exclude\":\\[\\]/, '\"exclude\":[' + excludePostId + ']')\n    .replace(/\"inherit\":true/, '\"inherit\":false');\n  \n  return content.replace(queryBlockRegex, '<!-- wp:query ' + updatedAttrs + ' -->');\n};\n\n// Extract data\nlet content = extractValue(parseData.content || draftPostData.content);\nlet title = extractValue(draftPostData.title || parseData.title);\nconst excerpt = extractValue(draftPostData.excerpt || parseData.excerpt);\n\nif (title) {\n  title = decodeHtmlEntities(title);\n}\n\nlet postId = draftPostData.id || draftPostData.postId || 0;\nif (typeof postId === 'object') postId = postId.value || postId.id || 0;\npostId = Number(postId) || 0;\n\n// Skip video case\nif (videoData.skipVideo) {\n  console.log('Skipping video: ' + videoData.reason);\n  const updatedContent = updateQueryBlockExclude(content, postId);\n  return [{\n    json: {\n      postId: postId,\n      videoUrl: null,\n      updatedContent: updatedContent,\n      title: title,\n      excerpt: excerpt,\n      skipVideo: true,\n      wpUpdatePayload: { content: updatedContent }\n    }\n  }];\n}\n\n// Extract video URL\nlet videoUrl = null;\nif (videoData.data && videoData.data.response && videoData.data.response.resultUrls) {\n  videoUrl = videoData.data.response.resultUrls[0] || null;\n} else if (videoData.response && videoData.response.resultUrls) {\n  videoUrl = videoData.response.resultUrls[0] || null;\n}\n\nif (!videoUrl) {\n  console.log('No video URL found');\n  const updatedContent = updateQueryBlockExclude(content, postId);\n  return [{\n    json: {\n      postId: postId,\n      videoUrl: null,\n      updatedContent: updatedContent,\n      title: title,\n      excerpt: excerpt,\n      skipVideo: true,\n      wpUpdatePayload: { content: updatedContent }\n    }\n  }];\n}\n\nconsole.log('Video URL: ' + videoUrl);\n\n// Build video cover block\nconst titleEscaped = escapeHtml(title);\n\nconst videoBannerParts = [\n  '<!-- wp:cover {\"url\":\"' + videoUrl + '\",\"id\":0,\"dimRatio\":40,\"overlayColor\":\"black\",\"minHeight\":60,\"minHeightUnit\":\"vh\",\"align\":\"full\",\"className\":\"video-banner-cover\"} -->',\n  '<div class=\"wp-block-cover alignfull video-banner-cover\" style=\"min-height:60vh\">',\n  '<span aria-hidden=\"true\" class=\"wp-block-cover__background has-black-background-color has-background-dim-40 has-background-dim\"></span>',\n  '<video class=\"wp-block-cover__video-background intrinsic-ignore\" autoplay muted loop playsinline src=\"' + videoUrl + '\" data-object-fit=\"cover\"></video>',\n  '<div class=\"wp-block-cover__inner-container\">',\n  '<!-- wp:heading {\"textAlign\":\"center\",\"level\":1,\"style\":{\"typography\":{\"fontSize\":\"clamp(32px, 5vw, 64px)\",\"fontWeight\":\"800\"},\"color\":{\"text\":\"#ffffff\"}}} -->',\n  '<h1 class=\"has-text-align-center has-text-color\" style=\"color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800\">' + titleEscaped + '</h1>',\n  '<!-- /wp:heading -->',\n  '</div>',\n  '</div>',\n  '<!-- /wp:cover -->'\n];\nconst videoBanner = videoBannerParts.join('\\n');\n\n// Replace cover block\nconst coverStartMarker = '<!-- wp:cover';\nconst coverEndMarker = '<!-- /wp:cover -->';\nconst coverStartIndex = content.indexOf(coverStartMarker);\nconst coverEndIndex = content.indexOf(coverEndMarker);\n\nlet updatedContent;\nif (coverStartIndex === -1 || coverEndIndex === -1) {\n  console.log('Cover block not found, prepending video banner');\n  updatedContent = videoBanner + '\\n\\n' + content;\n} else {\n  const beforeBanner = content.slice(0, coverStartIndex);\n  const afterBanner = content.slice(coverEndIndex + coverEndMarker.length);\n  updatedContent = beforeBanner + videoBanner + afterBanner;\n}\n\n// Update query block\nupdatedContent = updateQueryBlockExclude(updatedContent, postId);\nconsole.log('Video banner inserted');\n\nreturn [{\n  json: {\n    postId: postId,\n    videoUrl: videoUrl,\n    updatedContent: updatedContent,\n    title: title,\n    excerpt: excerpt,\n    skipVideo: false,\n    wpUpdatePayload: { content: updatedContent }\n  }\n}];"
+      },
+      "id": "e5ab2ecb-4b22-461c-9f75-d787c92c6446",
+      "name": "Update Post with Video",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "code-200",
+              "leftValue": "={{ $json.data?.taskId }}",
+              "rightValue": "200",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "d8b43c38-f630-4978-893c-202e0bc9a32c",
+      "name": "Filter: Only 200 Status1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://tax4us.co.il/wp-json/wp/v2/categories",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "parent",
+              "value": "={{ $json.parentCategoryId }}"
+            },
+            {
+              "name": "per_page",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "958357b1-3c9b-43af-aa6a-934ec040f8fe",
+      "name": "Fetch Sub-Categories1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3296,
+        -384
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Auto Assign Sub-Categories Based on Content Analysis\n// ✅ FIXED: Strips HTML from content before analysis for better matching\n// Uses keyword matching and content analysis to automatically select relevant sub-categories\n\nconst inputData = $input.first().json;\nconst parseData = inputData || {};\nconst subCategories = inputData.subCategories || [];\n\nconsole.log('📂 Auto Assign Sub-Categories - Input data keys:', Object.keys(parseData));\nconsole.log('📂 Available sub-categories:', subCategories.length);\nconsole.log('📂 Sub-categories:', subCategories.map(c => c.name).slice(0, 5));\n\n// ✅ FIXED: Strip HTML from content before analysis (like Assign Tags does)\nconst cleanContent = (parseData.content || '')\n  .replace(/<!-- wp:[\\s\\S]*?-->/g, '')  // Remove Gutenberg comments\n  .replace(/<[^>]*>/g, ' ')  // Remove HTML tags\n  .replace(/\\s+/g, ' ')  // Normalize whitespace\n  .trim();\n\nconst title = (parseData.title || '').toLowerCase();\nconst content = cleanContent.toLowerCase();\nconst excerpt = (parseData.excerpt || '').toLowerCase();\nconst topic = (parseData.topic || '').toLowerCase();\nconst focusKeyword = (parseData.focusKeyword || '').toLowerCase();\n\nconsole.log('📂 Analyzing content for sub-category assignment...');\nconsole.log('📂 Title:', title.substring(0, 50));\nconsole.log('📂 Content length (cleaned):', content.length);\nconsole.log('📂 Focus keyword:', focusKeyword);\n\nlet selectedSubCategoryIds = [];\nlet selectedNames = [];\nlet matchScores = [];\n\n// For each sub-category, calculate relevance score\nfor (const category of subCategories) {\n  const categoryName = (category.name || '').toLowerCase();\n  const categorySlug = (category.slug || '').toLowerCase();\n  let score = 0;\n  \n  // Exact matches in title (highest weight)\n  if (title.includes(categoryName) || title.includes(categorySlug)) {\n    score += 10;\n    console.log(`  ✅ Title match: ${category.name} (+10)`);\n  }\n  \n  // Exact matches in focus keyword (high weight)\n  if (focusKeyword.includes(categoryName) || focusKeyword.includes(categorySlug)) {\n    score += 8;\n    console.log(`  ✅ Keyword match: ${category.name} (+8)`);\n  }\n  \n  // Exact matches in topic (high weight)\n  if (topic.includes(categoryName) || topic.includes(categorySlug)) {\n    score += 8;\n    console.log(`  ✅ Topic match: ${category.name} (+8)`);\n  }\n  \n  // Partial matches in title\n  const titleWords = title.split(/[\\s:,\\-–—]+/);\n  const categoryWords = categoryName.split(/[\\s:,\\-–—]+/);\n  for (const cWord of categoryWords) {\n    if (cWord.length > 3 && titleWords.some(tWord => tWord.includes(cWord) || cWord.includes(tWord))) {\n      score += 5;\n      console.log(`  ✅ Partial title match: ${category.name} (word: ${cWord}) (+5)`);\n    }\n  }\n  \n  // Matches in content (lower weight)\n  if (content.includes(categoryName) || content.includes(categorySlug)) {\n    score += 3;\n    console.log(`  ✅ Content match: ${category.name} (+3)`);\n  }\n  \n  // Matches in excerpt\n  if (excerpt.includes(categoryName) || excerpt.includes(categorySlug)) {\n    score += 2;\n    console.log(`  ✅ Excerpt match: ${category.name} (+2)`);\n  }\n  \n  // Store score\n  matchScores.push({ category, score });\n  if (score > 0) {\n    console.log(`  📊 ${category.name}: score = ${score}`);\n  }\n}\n\n// Sort by score (highest first)\nmatchScores.sort((a, b) => b.score - a.score);\n\nconsole.log('📂 Top 5 match scores:', matchScores.slice(0, 5).map(m => `${m.category.name}: ${m.score}`));\n\n// Select top 1-3 sub-categories (with score >= 5)\nconst threshold = 5;\nconst topMatches = matchScores.filter(m => m.score >= threshold);\n\nconsole.log('📂 Matches above threshold (>=5):', topMatches.length);\n\n// If we have good matches, use them (max 3)\nif (topMatches.length > 0) {\n  const selected = topMatches.slice(0, 3);\n  for (const match of selected) {\n    selectedSubCategoryIds.push(match.category.id);\n    selectedNames.push(match.category.name);\n    console.log(`✅ Auto-selected: ${match.category.name} (score: ${match.score})`);\n  }\n} else if (subCategories.length > 0) {\n  // Fallback: if no good matches, select the first sub-category as default\n  console.log('⚠️ No strong matches found (score >= 5), using first sub-category as default');\n  console.log('⚠️ First sub-category:', subCategories[0].name, '(ID:', subCategories[0].id, ')');\n  selectedSubCategoryIds.push(subCategories[0].id);\n  selectedNames.push(subCategories[0].name);\n} else {\n  console.log('⚠️ No sub-categories available');\n}\n\nconsole.log('📂 Auto-selected sub-categories:', selectedNames);\nconsole.log('📂 Selected IDs:', selectedSubCategoryIds);\n\n// Return data with auto-selected sub-categories\nreturn {\n  json: {\n    ...parseData,\n    selectedSubCategoryIds: selectedSubCategoryIds,\n    selectedSubCategoryNames: selectedNames,\n    autoAssigned: true,\n    subCategoryMatchScores: matchScores.map(m => ({\n      name: m.category.name,\n      score: m.score\n    }))\n  }\n};"
+      },
+      "id": "0c71c46b-ccd3-4a87-9bd8-b23c2d777b77",
+      "name": "Auto Assign Sub-Categories1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2848,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure Data Flow - ALWAYS passes data forward even if Fetch Sub-Categories fails\n// ✅ CRITICAL FIX: Handles ALL scenarios - success, failure, empty results, no input\n// ✅ IMPROVED: Better error logging when Fetch Sub-Categories fails completely\n\n// CRITICAL: Get parseData from Prepare Sub-Category Query FIRST (this is ALWAYS available)\nlet parseData = {};\ntry {\n  const prepareNode = $('Prepare Sub-Category Query');\n  if (prepareNode && prepareNode.first()) {\n    parseData = prepareNode.first().json || {};\n    console.log('✅ Got parseData from Prepare Sub-Category Query');\n    console.log('📊 ParseData keys:', Object.keys(parseData));\n  } else {\n    console.log('⚠️ Prepare Sub-Category Query node not found or empty, using empty parseData');\n  }\n} catch (e) {\n  console.error('❌ Error accessing Prepare Sub-Category Query:', e.message);\n  // Continue with empty parseData\n}\n\n// Get sub-categories from Fetch Sub-Categories output (if any)\nlet subCategories = [];\nlet inputItems = [];\nlet fetchFailed = false;\nlet fetchError = null;\n\ntry {\n  inputItems = $input.all() || [];\n  console.log('📂 Input items count from Fetch Sub-Categories:', inputItems.length);\n  \n  // Check if Fetch Sub-Categories node failed completely\n  if (inputItems.length === 0) {\n    // Try to check if the node exists and what its status is\n    try {\n      const fetchNode = $('Fetch Sub-Categories1');\n      if (fetchNode) {\n        const fetchData = fetchNode.first();\n        if (fetchData && fetchData.error) {\n          fetchFailed = true;\n          fetchError = fetchData.error.message || 'Unknown error';\n          console.error('❌ Fetch Sub-Categories failed completely:', fetchError);\n        }\n      }\n    } catch (e) {\n      // Node might not be accessible, that's okay\n      console.log('⚠️ Could not check Fetch Sub-Categories node status');\n    }\n  }\n} catch (e) {\n  console.log('⚠️ No input items from Fetch Sub-Categories (node may have failed):', e.message);\n  fetchFailed = true;\n  fetchError = e.message;\n  inputItems = [];\n}\n\nif (inputItems && inputItems.length > 0) {\n  // Filter out error items (items with error property)\n  const validItems = inputItems.filter(item => {\n    // Skip items with error property\n    if (item.error) {\n      console.log('⚠️ Skipping error item:', item.error.message || 'Unknown error');\n      fetchFailed = true;\n      fetchError = item.error.message || 'Unknown error';\n      return false;\n    }\n    // Only include items with json property\n    return item && item.json;\n  });\n  \n  console.log('📂 Valid items after filtering:', validItems.length);\n  \n  if (validItems.length > 0) {\n    // Check if first item is an array of categories\n    if (Array.isArray(validItems[0]?.json)) {\n      // Handle array response (most common case)\n      subCategories = validItems[0].json\n        .filter(cat => cat && cat.id && cat.name)\n        .map((cat, index) => ({\n          id: cat.id,\n          name: cat.name,\n          slug: cat.slug || '',\n          number: index + 1\n        }));\n      console.log('📂 Found array of categories:', subCategories.length);\n    } else if (validItems[0]?.json?.id && validItems[0]?.json?.name) {\n      // Handle single category object or array of category objects\n      const categoryItems = validItems.filter(item => \n        item.json && \n        typeof item.json.id === 'number' && \n        item.json.name\n      );\n      \n      if (categoryItems.length > 0) {\n        subCategories = categoryItems.map((item, index) => ({\n          id: item.json.id,\n          name: item.json.name,\n          slug: item.json.slug || '',\n          number: index + 1\n        }));\n        console.log('📂 Found category objects:', subCategories.length);\n      }\n    }\n  } else {\n    console.log('⚠️ All input items are errors or invalid - will use empty sub-categories');\n    fetchFailed = true;\n  }\n} else {\n  console.log('⚠️ No input items from Fetch Sub-Categories - will use empty sub-categories');\n  fetchFailed = true;\n}\n\n// ✅ IMPROVED: Log warning if Fetch Sub-Categories failed but workflow continues\nif (fetchFailed) {\n  console.warn('⚠️ WARNING: Fetch Sub-Categories failed or returned no data, but workflow continues with empty sub-categories');\n  console.warn('📝 Error details:', fetchError || 'No error details available');\n  console.warn('📝 This may result in posts without sub-categories assigned');\n}\n\nconsole.log('📂 Final sub-categories count:', subCategories.length);\nconsole.log('📂 ParseData has title:', !!parseData.title);\nconsole.log('📂 ParseData has isHebrewPost:', parseData.isHebrewPost !== undefined);\n\n// CRITICAL: ALWAYS return data - merge parseData with sub-categories\n// This ensures Auto Assign Sub-Categories ALWAYS receives data\n// Even if Fetch Sub-Categories completely fails, parseData from Prepare Sub-Category Query is always available\nconst outputData = {\n  ...parseData,\n  subCategories: subCategories,\n  subCategoryCount: subCategories.length,\n  fetchSubCategoriesFailed: fetchFailed, // ✅ NEW: Flag to indicate fetch failure\n  fetchSubCategoriesError: fetchError || null // ✅ NEW: Error message if available\n};\n\nconsole.log('✅ Ensure Data Flow outputting data with', Object.keys(outputData).length, 'keys');\n\nreturn {\n  json: outputData\n};"
+      },
+      "id": "335e4a40-af0b-4fff-a7f5-f2825bd7970d",
+      "name": "Ensure Data Flow1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3072,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"isHebrewPost\": \"{{ /[\\\\u0590-\\\\u05FF]/.test(($json.title ?? '') + ($json.content ?? '') + ($json.excerpt ?? '')) }}\",\n  \"parentCategoryId\": \"{{ /[\\\\u0590-\\\\u05FF]/.test(($json.title ?? '') + ($json.content ?? '') + ($json.excerpt ?? '')) ? 44 : 46 }}\"\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3520,
+        -320
+      ],
+      "id": "07a14a55-7160-4cfb-b001-ea80eaa5317f",
+      "name": "Prepare Sub-Category Query"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge Retry State for Video Polling - FIXED: Now runs AFTER Get Videos1\n// CRITICAL FIX: Preserves retryCount that was lost when Get Videos1 overwrote input\n// Similar to Merge Image Retry State - gets retryCount from Check Retry Count (previous iteration)\n\nconst apiResponse = $input.first().json;\n\n// CRITICAL: Get retryCount from Check Retry Count node (previous node in loop)\n// Check Retry Count preserves retryCount and increments it, so we get it from there\n// This is more reliable than trying to access Wait for Video Processing1 node\nlet retryCount = 0;\nlet taskId = null;\n\ntry {\n  // Get from Check Retry Count (most reliable - it preserves retryCount from previous iteration)\n  const checkData = $('Check Retry Count1').first()?.json || {};\n  retryCount = checkData.retryCount || 0;\n  taskId = checkData.data?.taskId || checkData.taskId || null;\n} catch (e) {\n  // Fallback: Try Wait for Video Processing1 (from previous iteration)\n  try {\n    const waitData = $('Wait for Video Processing').first()?.json || {};\n    retryCount = waitData.retryCount || 0;\n    taskId = waitData.data?.taskId || waitData.taskId || null;\n  } catch (e2) {\n    console.log('⚠️ Could not access retryCount from upstream nodes, using defaults');\n  }\n}\n\n// Extract taskId from API response if not found\nif (!taskId) {\n  taskId = apiResponse.data?.taskId || apiResponse.taskId || null;\n}\n\n// Merge API response with preserved retry state\nreturn [{\n  json: {\n    ...apiResponse,\n    retryCount: retryCount,\n    data: {\n      ...(apiResponse.data || {}),\n      taskId: taskId || apiResponse.data?.taskId || null\n    }\n  }\n}];"
+      },
+      "id": "2598c310-00c3-40b3-b107-42a9121645ce",
+      "name": "Merge Video Retry State1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3744,
+        -224
+      ],
+      "id": "dfa912c6-b036-47df-96da-ba2e5d1f7e6a",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -3744,
+        -416
+      ],
+      "id": "dd3878e9-1a91-4703-859a-e429f02941e2",
+      "name": "When chat message received",
+      "webhookId": "b2700b02-373b-40fe-9fb8-00d45bc6f818"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "stRPi8AMwqNRseAckFYp5",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/stRPi8AMwqNRseAckFYp5",
+          "cachedResultName": "mon+thu; 3"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        -432
+      ],
+      "id": "d0ced999-b13e-44de-82fc-767bc279001e",
+      "name": "Call 'mon+thu; 3'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Assign Categories": {
+      "main": [
+        [
+          {
+            "node": "Merge: Categories + Tags1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch WordPress Tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assign Tags": {
+      "main": [
+        [
+          {
+            "node": "HTTP: WordPress Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge: Categories + Tags1": {
+      "main": [
+        [
+          {
+            "node": "Assign Tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch WordPress Tags": {
+      "main": [
+        [
+          {
+            "node": "Merge: Categories + Tags1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP: WordPress Draft": {
+      "main": [
+        [
+          {
+            "node": "Create Video Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Retry Count1": {
+      "main": [
+        [
+          {
+            "node": "Check Video Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Video Request": {
+      "main": [
+        [
+          {
+            "node": "Filter: Only 200 Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Videos": {
+      "main": [
+        [
+          {
+            "node": "Merge Video Retry State1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Video Ready": {
+      "main": [
+        [
+          {
+            "node": "Update Post with Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait for Video Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Video Processing": {
+      "main": [
+        [
+          {
+            "node": "Get Videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Post with Video": {
+      "main": [
+        [
+          {
+            "node": "Prepare WordPress Update1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Only 200 Status1": {
+      "main": [
+        [
+          {
+            "node": "Get Videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Sub-Categories1": {
+      "main": [
+        [
+          {
+            "node": "Ensure Data Flow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto Assign Sub-Categories1": {
+      "main": [
+        [
+          {
+            "node": "Assign Categories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ensure Data Flow1": {
+      "main": [
+        [
+          {
+            "node": "Auto Assign Sub-Categories1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Sub-Category Query": {
+      "main": [
+        [
+          {
+            "node": "Fetch Sub-Categories1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ensure Data Flow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Video Retry State1": {
+      "main": [
+        [
+          {
+            "node": "Check Retry Count1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Prepare Sub-Category Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Prepare Sub-Category Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare WordPress Update1": {
+      "main": [
+        [
+          {
+            "node": "Call 'mon+thu; 3'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "f14d3f4d-c613-42e0-a3d3-db47a1ac4fbd",
+  "meta": {
+    "instanceId": "debc7feccc354e86e5a53344362b691cecb5d65ac2ba67b45cdccf9a516514d6"
+  },
+  "id": "vRPMIDw64Mxsdw1uF3YEG",
+  "tags": []
+}

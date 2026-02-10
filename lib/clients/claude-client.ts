@@ -7,9 +7,9 @@ export class ClaudeClient {
     private baseUrl = "https://api.anthropic.com/v1/messages";
 
     constructor() {
-        const apiKey = process.env.ANTHROPIC_API_KEY;
+        const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
         if (!apiKey) {
-            throw new Error("Missing ANTHROPIC_API_KEY in environment variables.");
+            throw new Error("Missing ANTHROPIC_API_KEY or CLAUDE_API_KEY in environment variables.");
         }
         this.apiKey = apiKey;
     }
@@ -24,7 +24,7 @@ export class ClaudeClient {
             },
             body: JSON.stringify({
                 model,
-                max_tokens: 8192,
+                max_tokens: 4096,
                 system,
                 messages: [{ role: "user", content: prompt }],
             }),

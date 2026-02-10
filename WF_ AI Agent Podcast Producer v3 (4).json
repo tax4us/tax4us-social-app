@@ -1,0 +1,1702 @@
+{
+  "name": "WF: AI Agent Podcast Producer v3",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"show_id\": \"{{ $json.show_id }}\",\n  \"season\": \"{{ $json.season }}\",\n  \"english_post_id\": \"{{ $json.english_post_id }}\",\n  \"english_post_title\": \"{{ $json.english_post_title }}\",\n  \"english_post_content\": \"{{ $json.english_post_content }}\",\n  \"english_post_url\": \"{{ $json.english_post_url }}\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3600,
+        3392
+      ],
+      "id": "829bd8be-31af-4d7d-acc0-b91c328b6f30",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Store audio binary in static data (base64) for later concatenation\n// REPLACES: GCS Upload + Collect Chunk Paths\nconst staticData = $getWorkflowStaticData('global');\nconst batchInfo = $('Split: Dialogue Segments1').item.json || {};\nconst item = $input.first();\n\n// Initialize on first run\nif (!staticData.audioChunks) {\n  staticData.audioChunks = [];\n  staticData.episodeInfo = null;\n}\n\n// Store episode info from first batch\nif (!staticData.episodeInfo && batchInfo.episode_number) {\n  staticData.episodeInfo = {\n    show_id: batchInfo.show_id,\n    season: batchInfo.season,\n    episode_number: batchInfo.episode_number,\n    title: batchInfo.title,\n    english_post_id: batchInfo.english_post_id,\n    english_post_url: batchInfo.english_post_url,\n    captivate_token: batchInfo.captivate_token,\n    script: batchInfo.script,\n    batchId: batchInfo.batchId,\n    totalBatches: batchInfo.totalBatches,\n  };\n}\n\n// Convert binary to base64 and store in static data\nif (item.binary && item.binary.data) {\n  const binaryData = await this.helpers.getBinaryDataBuffer(0, 'data');\n  staticData.audioChunks.push({\n    base64: binaryData.toString('base64'),\n    index: batchInfo.batchIndex,\n  });\n}\n\nconsole.log(`✅ Stored chunk ${staticData.audioChunks.length}/${staticData.episodeInfo?.totalBatches || '?'} in memory`);\n\nreturn [{ json: { stored: staticData.audioChunks.length, total: staticData.episodeInfo?.totalBatches || 0 } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        3760
+      ],
+      "id": "058cf197-72d7-4c38-b649-7d45cc68ceda",
+      "name": "Code: Store Chunk Binary",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "jsCode": "// Concatenate all audio chunks from static data into single MP3\n// REPLACES: Code: Prepare Concat Request + HTTP: Call Concat Function + HTTP: Download Final Audio\nconst staticData = $getWorkflowStaticData('global');\n\nif (!staticData.audioChunks || staticData.audioChunks.length === 0) {\n  staticData.audioChunks = [];\n  staticData.episodeInfo = null;\n  throw new Error('No audio chunks collected - TTS failed');\n}\n\nconst episodeInfo = staticData.episodeInfo || {};\nconst chunks = staticData.audioChunks;\n\n// Sort by batch index to ensure correct order\nchunks.sort((a, b) => a.index - b.index);\n\n// Concatenate all base64 buffers\nconst buffers = chunks.map(c => Buffer.from(c.base64, 'base64'));\nconst totalSize = buffers.reduce((sum, b) => sum + b.length, 0);\nconst concatenated = Buffer.concat(buffers, totalSize);\n\nconsole.log(`🎙️ Concatenated ${chunks.length} chunks → ${(totalSize / 1024 / 1024).toFixed(1)} MB`);\n\n// Generate output filename\nconst cleanTitle = (episodeInfo.title || 'episode')\n  .toLowerCase()\n  .replace(/[^a-z0-9\\s-]/g, '')\n  .replace(/\\s+/g, '-')\n  .substring(0, 50);\nconst outputFilename = `tax4us-ep${episodeInfo.episode_number}-${cleanTitle}.mp3`;\n\n// MEMORY CLEANUP: Clear static data\nconst result = {\n  ...episodeInfo,\n  outputFilename: outputFilename,\n  batchesProcessed: chunks.length,\n};\nstaticData.audioChunks = [];\nstaticData.episodeInfo = null;\n\n// Return as binary item (same format downstream nodes expect)\nreturn [{\n  json: result,\n  binary: {\n    data: await this.helpers.prepareBinaryData(\n      concatenated,\n      outputFilename,\n      'audio/mpeg'\n    ),\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        3488
+      ],
+      "id": "9abbd96c-1563-4244-97c9-42f1ec21c266",
+      "name": "Code: Concatenate Audio"
+    },
+    {
+      "parameters": {
+        "content": "## 🔗 AUDIO FINALIZATION (IN-MEMORY)\n\n**Triggered when all batches complete:**\n\n1. **Concatenate Audio** - Combines all base64 chunks from static data using Buffer.concat\n2. **Prepare Captivate Upload** - Format binary for podcast host\n\n**No external services needed** — GCS bucket and Cloud Run function eliminated.\n\n**Output:** Single MP3 file ready for distribution",
+        "height": 360,
+        "width": 580
+      },
+      "id": "1c04397f-33ed-471c-a337-d3bfcca21d48",
+      "name": "🔗 AUDIO FINALIZATION (IN-MEMORY)",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        4176
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🎙️ AUDIO PRODUCTION LOOP (IN-MEMORY)\n\n**Batch processing for multi-voice TTS:**\n\n1. **Parse Dialogue** - Split script into segments with voice IDs\n2. **Split in Batches** - Process 3 segments at a time\n3. **Loop Processing:**\n   - ElevenLabs Dialogue TTS (multi-voice)\n   - Store chunk binary as base64 in static data\n   - Loop back until all batches complete\n\n**No GCS needed** — binary stored in n8n execution memory\n\n**Output:** All chunks ready for in-memory concatenation",
+        "height": 360,
+        "width": 680
+      },
+      "id": "f6f5439f-8f30-411e-90b8-448af53b226d",
+      "name": "🎙️ AUDIO PRODUCTION LOOP (IN-MEMORY)",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        2768
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ 'https://api.captivate.fm/shows/' + $('Set: Configuration').first().json.show_id + '/episodes' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $('Captivate: Auth').item.json.user.token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2032,
+        3584
+      ],
+      "id": "80d05a93-f7a0-48b8-b10e-6c9b6f0ab092",
+      "name": "Captivate: Get Episodes1",
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "uzUmf5oikEOjLykC",
+          "name": "Tax4Us Captivate.fm"
+        }
+      },
+      "notes": "Get existing episodes to calculate next episode number"
+    },
+    {
+      "parameters": {
+        "jsCode": "// MEMORY OPTIMIZATION: Extract only needed fields from Captivate API response\n// Calculate next episode number - FIXED: Robust parsing for Captivate API\nconst config = $('Set: Configuration').first().json;\nconst authData = $('Captivate: Auth').first().json;\nconst episodesResponse = $input.first().json;\n\n// Extract episodes array - including .records fallback (CRITICAL FIX)\nlet episodes = [];\nif (Array.isArray(episodesResponse)) {\n  episodes = episodesResponse;\n} else if (episodesResponse.records && Array.isArray(episodesResponse.records)) {\n  episodes = episodesResponse.records;\n} else if (episodesResponse.episodes && Array.isArray(episodesResponse.episodes)) {\n  episodes = episodesResponse.episodes;\n} else if (episodesResponse.data && Array.isArray(episodesResponse.data)) {\n  episodes = episodesResponse.data;\n}\n\n// Find max episode number\nlet maxEpisodeNum = 0;\nfor (const ep of episodes) {\n  const epNum = Number(ep.episode_number) || Number(ep.number) || 0;\n  if (epNum > maxEpisodeNum) maxEpisodeNum = epNum;\n}\n\nconst nextEpisodeNum = maxEpisodeNum + 1;\n\n// Clean title and content\nlet title = (config.english_post_title || 'New Episode').replace(/<[^>]+>/g, '').trim();\nlet content = (config.english_post_content || '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n\nreturn [{\n  json: {\n    ...config,\n    episode_number: nextEpisodeNum,\n    title: title,\n    content: content,\n    captivate_token: authData.user?.token || ''\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1808,
+        3584
+      ],
+      "id": "3d6f680a-95c4-4cca-998d-ccdd8066af16",
+      "name": "Code: Calculate Episode Number1"
+    },
+    {
+      "parameters": {
+        "batchSize": 3,
+        "options": {
+          "reset": true
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        464,
+        3616
+      ],
+      "id": "6b837954-73f1-45cd-a6c5-18bd898ee181",
+      "name": "Split: Dialogue Segments1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// MEMORY OPTIMIZATION: Extract only media info, discard upload response bulk\n// Extract Captivate media info and prepare WP update\nconst uploadResponse = $input.first().json;\nconst prepData = $('Code: Prepare Captivate Upload').first().json;\n\n// Extract media URL and ID from Captivate response\nconst mediaUrl = uploadResponse.media?.media_url || uploadResponse.media_url || '';\nconst mediaId = uploadResponse.media?.id || uploadResponse.id || '';\n\nconsole.log('✅ Captivate media uploaded:', mediaId);\nconsole.log('🔗 Media URL:', mediaUrl);\n\n// Return only essential fields from Captivate response\nreturn [{\n  json: {\n    show_id: prepData.show_id,\n    season: prepData.season,\n    episode_number: prepData.episode_number,\n    title: prepData.title,\n    english_post_id: prepData.english_post_id,\n    english_post_url: prepData.english_post_url,\n    batchesProcessed: prepData.batchesProcessed,\n    captivate_media_id: mediaId,\n    captivate_media_url: mediaUrl,\n    status: 'audio_ready'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        3488
+      ],
+      "id": "9a77a11f-7a3a-45ba-b9e8-a46acf740ee4",
+      "name": "Code: Extract Media Info1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://tax4us.co.il/wp-json/wp/v2/posts/' + $json.english_post_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({meta:{podcast_status:'audio_ready',podcast_episode_number:$json.episode_number,podcast_audio_url:$json.captivate_media_url,podcast_media_id:$json.captivate_media_id,podcast_show_id:$json.show_id,podcast_season:$json.season}}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1792,
+        3488
+      ],
+      "id": "ec8bed0b-fde1-4337-b509-62708e7cf28b",
+      "name": "HTTP: Update WP Post (Audio Ready)1",
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      },
+      "notes": "Save audio URL and status to WordPress post meta"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://tax4us.co.il/wp-json/wp/v2/posts/' + $('Code: Extract Media Info1').first().json.english_post_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ meta: { podcast_status: 'published', captivate_episode_id: $json.episode?.id || $json.id || '' } }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2688,
+        3296
+      ],
+      "id": "ae0dd44c-f332-4943-a34a-75fb7130aae2",
+      "name": "HTTP: Update WP Post (Published)1",
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U09BZAFD5U7",
+          "mode": "list"
+        },
+        "text": "🎉 Episode Published on Captivate!",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2912,
+        3296
+      ],
+      "id": "d483def6-1e87-4cb2-907f-d0d03e483d02",
+      "name": "Slack: Confirm Published1",
+      "webhookId": "a941a6f8-a4bc-4188-9b5f-1631378b97cc",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "TtgEhzUDH0MsxlGp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U09BZAFD5U7",
+          "mode": "list"
+        },
+        "text": "❌ Captivate episode creation failed",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2688,
+        3488
+      ],
+      "id": "a31b870a-c491-4503-af48-1941dbde9ee2",
+      "name": "Slack: Captivate Error1",
+      "webhookId": "01303233-6cc1-4321-a3ec-5977b78d6826",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "TtgEhzUDH0MsxlGp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "podcast-pipeline-v3",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -3600,
+        3584
+      ],
+      "id": "64b5c0ed-d5a7-457f-b304-90b39df57d29",
+      "name": "Webhook",
+      "webhookId": "podcast-v3-webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "show_id",
+              "name": "show_id",
+              "value": "={{ $json.show_id || $json.body?.show_id || '45191a59-cf43-4867-83e7-cc2de0c5e780' }}",
+              "type": "string"
+            },
+            {
+              "id": "season",
+              "name": "season",
+              "value": "={{ $json.season || $json.body?.season || 1 }}",
+              "type": "number"
+            },
+            {
+              "id": "english_post_id",
+              "name": "english_post_id",
+              "value": "={{ $json.english_post_id || $json.body?.english_post_id || $json.id || null }}",
+              "type": "string"
+            },
+            {
+              "id": "english_post_title",
+              "name": "english_post_title",
+              "value": "={{ $json.english_post_title || $json.body?.english_post_title || $json.title?.rendered || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "english_post_content",
+              "name": "english_post_content",
+              "value": "={{ $json.english_post_content || $json.body?.english_post_content || $json.content?.rendered || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "english_post_url",
+              "name": "english_post_url",
+              "value": "={{ $json.english_post_url || $json.body?.english_post_url || $json.link || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3376,
+        3488
+      ],
+      "id": "54ca0562-cef5-4ad7-bcaa-d5dc5b2e69cb",
+      "name": "Set: Configuration"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.captivate.fm/authenticate/token",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "655c0354-dec7-4e77-ade1-c79898c596cb"
+            },
+            {
+              "name": "token",
+              "value": "yuliXPJYNFF3ViG9ez62Lsp1p3dO2vuLYbXF14mt"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2256,
+        3584
+      ],
+      "id": "bc95e0f7-d648-4331-a6be-860934c88c05",
+      "name": "Captivate: Auth",
+      "notes": "TODO: Create 'Captivate API' credential with captivateUserId and captivateApiKey fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format outline prompt from English post content\nconst data = $input.first().json;\n\n// MEMORY OPTIMIZATION: Truncate content to 8000 chars for prompt\nconst prompt = `You are a podcast content creator for Tax4US, a podcast for US expats living in Israel.\n\nCreate a detailed 10-15 MINUTE podcast outline for Episode ${data.episode_number}: ${data.title}\n\nARTICLE CONTENT:\n${data.content.substring(0, 8000)}\n\nFormat: Emma (host) interviews Ben (tax expert).\nInclude:\n- Engaging intro (1-2 min)\n- 3-5 main discussion segments\n- Clear transitions between topics\n- Actionable takeaways\n- Closing with call-to-action\n\nMake Ben sound knowledgeable but approachable, and Emma curious and relatable.`;\n\nreturn [{ json: { ...data, outline_prompt: prompt } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1136,
+        3616
+      ],
+      "id": "2fefd11e-0ae0-4aa1-b8f9-d9455b279856",
+      "name": "Code: Format Outline Prompt"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.outline_prompt }}",
+        "options": {
+          "systemMessage": "You are a podcast producer for Tax4US, creating outlines for a show about US taxation for Israelis living in America, Israeli-Americans, and US citizens with ties to Israel.\n\nYOUR KNOWLEDGE:\n- US tax obligations for Israeli citizens in the US (Form 1040, FBAR, FATCA, Form 8938)\n- US-Israel Tax Treaty provisions and how they benefit Israeli expats\n- Streamlined Procedures for late filers\n- Real estate taxation (FIRPTA, 1031 exchanges)\n- LLC/partnership taxation (Form 1065, K-1)\n- ITIN and EIN requirements\n- Israeli pension and Keren Hishtalmut reporting in the US\n- Self-employment tax for Israeli freelancers working in America\n\nYOUR ROLE:\n- Create detailed, actionable podcast outlines\n- Structure content as interview: Emma asks, Ben answers\n- Balance technical accuracy with accessibility\n- Front-load value - hook listeners in first 2 minutes\n\nTARGET AUDIENCE:\n- Israelis who moved to the US and need to file US taxes\n- Israeli-Americans with dual citizenship\n- US citizens who have Israeli investments or accounts\n- Israeli business owners operating in the US\n\nOUTPUT: Detailed outline with [EMMA] and [BEN] markers, specific talking points, and timing estimates.",
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -912,
+        3616
+      ],
+      "id": "f3340521-1e9c-4fc8-940b-dde7070588f8",
+      "name": "AI Agent: Generate Outline"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ 'podcast_outline_' + $('Code: Calculate Episode Number1').first().json.episode_number }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -784,
+        3840
+      ],
+      "id": "b3ae8e44-4776-4728-95cb-909539569d9e",
+      "name": "Conversation Memory: Outline"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokensToSample": 8000,
+          "temperature": 0.6
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -912,
+        3840
+      ],
+      "id": "0a329c23-ff1d-4c3d-a669-121e66dc2646",
+      "name": "Anthropic Chat Model: Outline",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "anthropicApi": {
+          "id": "j1oGG5odUyZb049h",
+          "name": "Anthropic Claude"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Script Prompt - FIXED: Correct audience + dynamic episode detection\n// MEMORY OPTIMIZATION: Pass only essential fields forward\nconst calcData = $('Code: Calculate Episode Number1').first().json;\nconst outlineOutput = $input.first().json;\n\n// Get outline from AI output\nlet outline = '';\nif (Array.isArray(outlineOutput.output)) {\n  const textItem = outlineOutput.output.find(item => item.type === 'text');\n  outline = textItem?.text || '';\n} else if (typeof outlineOutput.output === 'string') {\n  outline = outlineOutput.output;\n} else {\n  outline = outlineOutput.output || '';\n}\n\n// Dynamic episode detection - check if this is actually the first episode\nconst episodeNumber = calcData.episode_number || 1;\nconst isFirstEpisode = episodeNumber === 1;\n\nconsole.log(`📺 Episode ${episodeNumber} | First episode: ${isFirstEpisode}`);\n\nconst prompt = `Write a complete podcast script for Tax4US Podcast.\n\n═══════════════════════════════════════════════════════════\nEPISODE DETAILS\n═══════════════════════════════════════════════════════════\nEpisode Number: ${episodeNumber}\nTitle: ${calcData.title}\nFormat: Interview style - Emma (host) interviews Ben Ginati (tax expert)\n${isFirstEpisode ? '⭐ THIS IS THE FIRST EPISODE - Include show and host introductions!' : ''}\n\n═══════════════════════════════════════════════════════════\nTARGET AUDIENCE (CRITICAL - GET THIS RIGHT)\n═══════════════════════════════════════════════════════════\nTax4US serves:\n- Israelis who moved to America and need to file US taxes\n- Israeli-Americans with dual citizenship\n- US citizens who have Israeli investments, pensions, or bank accounts\n- Israeli business owners operating in the United States\n\nDO NOT say \"Americans living in Israel\" - that is WRONG.\nThe correct audience is \"Israelis living in America\" and \"Israeli-Americans\".\n\n═══════════════════════════════════════════════════════════\nOUTLINE TO FOLLOW\n═══════════════════════════════════════════════════════════\n${outline}\n\n═══════════════════════════════════════════════════════════\nCHARACTER VOICE GUIDE\n═══════════════════════════════════════════════════════════\nEMMA (Host/Interviewer):\n- Warm, conversational, curious\n- Asks the questions listeners would ask\n- Uses contractions naturally (I'm, we're, that's)\n- Reacts genuinely: \"Oh wow\", \"That's really helpful\", \"I didn't know that\"\n- Summarizes complex points: \"So basically what you're saying is...\"\n- Keeps the conversation moving and accessible\n\nBEN GINATI (Tax Expert):\n- Founder of Tax4US, IRS Enrolled Agent\n- Knowledgeable but approachable - never lectures\n- Uses analogies to explain complex concepts\n- Provides specific examples with numbers\n- Acknowledges common confusion: \"I know this sounds complicated, but...\"\n- Breaks things down: \"Let me walk you through this step by step\"\n- Draws on real experience: \"What I see with most clients...\", \"A common mistake is...\"\n\n═══════════════════════════════════════════════════════════\nDIALOGUE RULES (CRITICAL FOR TTS)\n═══════════════════════════════════════════════════════════\nFORMAT EVERY LINE AS:\nEmma: [dialogue text]\nBen: [dialogue text]\n\n- One speaker per line\n- No stage directions or parentheticals\n- No asterisks, brackets, or special formatting IN the dialogue\n- Use \"...\" for natural pauses\n- Keep individual lines 1-4 sentences max\n- Alternate speakers frequently - no monologues longer than 4-5 sentences\n\n═══════════════════════════════════════════════════════════\nSCRIPT STRUCTURE\n═══════════════════════════════════════════════════════════\nOPENING (First 90 seconds):\n${isFirstEpisode ? `\nEmma: Welcome to the very first episode of the Tax4US Podcast! I'm Emma, your host...\nBen: And I'm Ben Ginati, founder of Tax4US and an IRS Enrolled Agent...\n[Introduce what the show is about - helping Israelis in America and Israeli-Americans navigate their US tax obligations]\n[Tax disclaimer]\n[Today's topic hook]` : `\nEmma: Welcome back to the Tax4US Podcast! I'm Emma...\nBen: And I'm Ben Ginati...\n[Tax disclaimer]\n[Today's topic hook - why this matters NOW]`}\n\nMAIN CONTENT (8-11 minutes):\n- Follow the outline segments\n- Emma asks questions, Ben explains\n- Emma summarizes key points for listeners\n- Include natural conversational elements\n\nCLOSING (Final 60 seconds):\n- Ben gives 2-3 key takeaways\n- Tax disclaimer repeated\n- CTA: \"Visit tax4us.co.il to get help with your US tax filing\"\n- Emma thanks Ben and signs off\n\n═══════════════════════════════════════════════════════════\nMANDATORY TAX DISCLAIMER (Use at START and END)\n═══════════════════════════════════════════════════════════\n\"Quick reminder - this podcast is for educational purposes only and isn't tax advice. \nEvery situation is different, so please consult a qualified tax professional for your specific needs.\"\n\n═══════════════════════════════════════════════════════════\nLENGTH REQUIREMENT\n═══════════════════════════════════════════════════════════\n- Target: 9,000-13,500 characters (equals 10-15 minutes spoken)\n- This is CRITICAL - do not write less than 9,000 characters\n\n═══════════════════════════════════════════════════════════\nOUTPUT FORMAT\n═══════════════════════════════════════════════════════════\nReturn ONLY the script dialogue, formatted as:\n\nEmma: [line]\nBen: [line]\nEmma: [line]\n...\n\nNo headers, no section markers, no metadata - just the dialogue.`;\n\nreturn [{\n  json: {\n    show_id: calcData.show_id,\n    season: calcData.season,\n    episode_number: episodeNumber,\n    title: calcData.title,\n    english_post_id: calcData.english_post_id,\n    english_post_url: calcData.english_post_url,\n    captivate_token: calcData.captivate_token,\n    outline: outline,\n    script_prompt: prompt\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        3616
+      ],
+      "id": "7ebc0494-dce3-4ea5-a5a3-db4b75a4f4e2",
+      "name": "Code: Format Script Prompt"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.script_prompt }}",
+        "options": {
+          "systemMessage": "You are a podcast scriptwriter for Tax4US, writing natural dialogue between Emma (host) and Ben Ginati (tax expert).\n\nAUDIENCE (CRITICAL - GET THIS RIGHT):\nTax4US serves Israelis living in America, Israeli-Americans with dual citizenship, and US citizens with Israeli financial ties. \nDO NOT say \"Americans living in Israel\" - the audience is \"Israelis living in America\" or \"Israeli-Americans\".\n\nFORMAT RULES (CRITICAL):\n1. Every line MUST start with \"Emma:\" or \"Ben:\" - no exceptions\n2. NO stage directions, parentheticals, or action descriptions\n3. NO asterisks, brackets, or formatting within dialogue\n4. Use \"...\" for natural pauses in speech\n5. Keep exchanges natural - short lines, frequent back-and-forth\n\nVOICE GUIDELINES:\n- Emma: Curious, warm, asks clarifying questions, summarizes for listeners\n- Ben: Expert but approachable, uses examples with numbers, breaks down complex topics\n\nREQUIREMENTS:\n- Script must be 9,000-13,500 characters (10-15 minutes spoken)\n- Include tax disclaimer at beginning and end\n- End with call-to-action for tax4us.co.il\n- Remember: This is for Israelis in America, NOT Americans in Israel\n\nOUTPUT: Complete dialogue script with only \"Emma:\" and \"Ben:\" lines. No headers or metadata.",
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -336,
+        3616
+      ],
+      "id": "e35b11b6-a430-4112-a587-f58755b3b996",
+      "name": "AI Agent: Generate Script"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ 'podcast_script_' + $('Code: Calculate Episode Number1').first().json.episode_number }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -208,
+        3840
+      ],
+      "id": "70b9046c-9dcc-4376-98e9-50424197bf44",
+      "name": "Conversation Memory: Script"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list"
+        },
+        "options": {
+          "maxTokensToSample": 12000,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -336,
+        3840
+      ],
+      "id": "b9fff200-1150-4516-97a5-ea3c843f7f95",
+      "name": "Anthropic Chat Model: Script",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "anthropicApi": {
+          "id": "j1oGG5odUyZb049h",
+          "name": "Anthropic Claude"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse script into dialogue format - FIXED: Correct Voice ID for Ben\n// MEMORY OPTIMIZATION: Each batch item contains only TTS inputs + metadata, no full script duplication\nconst calcData = $('Code: Format Script Prompt').first().json;\nconst scriptOutput = $input.first().json;\n\nlet scriptContent = '';\nif (Array.isArray(scriptOutput.output)) {\n  const textItem = scriptOutput.output.find(item => item.type === 'text');\n  scriptContent = textItem?.text || '';\n} else if (typeof scriptOutput.output === 'string') {\n  scriptContent = scriptOutput.output;\n} else {\n  scriptContent = scriptOutput.output || '';\n}\n\n// VOICE SETTINGS\nconst EMMA_VOICE_ID = '3dzJXoCYueSQiptQ6euE';\nconst BEN_VOICE_ID = '9FevED7AoujYF2nBsEvC'; // FIXED: Updated to your specific ID\nconst MAX_CHARS_PER_BATCH = 4500;\n\nconst lines = scriptContent.split('\\n');\nconst allSegments = [];\nlet currentSpeaker = null;\nlet currentText = '';\n\nfunction cleanText(t) {\n  return t.replace(/\\*\\*/g, '').replace(/\\s+/g, ' ').trim();\n}\n\nfunction pushSegment() {\n  if (!currentSpeaker || !currentText.trim()) return;\n  const cleaned = cleanText(currentText);\n  if (cleaned.length > 5) {\n    allSegments.push({\n      text: cleaned,\n      voice_id: currentSpeaker === 'EMMA' ? EMMA_VOICE_ID : BEN_VOICE_ID\n    });\n  }\n}\n\nfor (const line of lines) {\n  const t = line.trim();\n  if (!t || t.startsWith('#') || t.startsWith('---')) continue;\n  \n  const emmaMatch = t.match(/^\\*{0,2}\\s*Emma\\s*\\*{0,2}:\\s*(.*)$/i);\n  const benMatch = t.match(/^\\*{0,2}\\s*Ben\\s*\\*{0,2}:\\s*(.*)$/i);\n  \n  if (emmaMatch) {\n    pushSegment();\n    currentSpeaker = 'EMMA';\n    currentText = emmaMatch[1] || '';\n  } else if (benMatch) {\n    pushSegment();\n    currentSpeaker = 'BEN';\n    currentText = benMatch[1] || '';\n  } else if (currentSpeaker) {\n    currentText += ' ' + t;\n  }\n}\npushSegment();\n\nconst batchId = `ep${calcData.episode_number}-${Date.now()}`;\nconst batches = [];\nlet currentBatch = [];\nlet currentBatchChars = 0;\n\nfor (const segment of allSegments) {\n  const segmentChars = segment.text.length;\n  if (currentBatchChars + segmentChars > MAX_CHARS_PER_BATCH && currentBatch.length > 0) {\n    batches.push([...currentBatch]);\n    currentBatch = [segment];\n    currentBatchChars = segmentChars;\n  } else {\n    currentBatch.push(segment);\n    currentBatchChars += segmentChars;\n  }\n}\nif (currentBatch.length > 0) {\n  batches.push(currentBatch);\n}\n\n// Store script once in first batch only to avoid duplication\nreturn batches.map((batch, index) => ({\n  json: {\n    inputs: batch,\n    model_id: 'eleven_v3',\n    batchIndex: index,\n    totalBatches: batches.length,\n    batchId: batchId,\n    show_id: calcData.show_id,\n    season: calcData.season,\n    episode_number: calcData.episode_number,\n    title: calcData.title,\n    english_post_id: calcData.english_post_id,\n    english_post_url: calcData.english_post_url,\n    captivate_token: calcData.captivate_token,\n    script: index === 0 ? scriptContent : undefined\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        3616
+      ],
+      "id": "bd7540c1-3eec-4655-90b2-bbddf8da9580",
+      "name": "Code: Parse Dialogue for Multi-Voice"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-dialogue",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "elevenLabsApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ inputs: $json.inputs.map(i => ({ text: i.text, voice_id: i.voice_id })).filter(i => i.text && i.text.length > 5), model_id: $json.model_id || 'eleven_v3' }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          },
+          "timeout": 300000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        896,
+        3680
+      ],
+      "id": "403607c5-fc12-49b1-805d-b290b59cfdde",
+      "name": "HTTP: ElevenLabs Dialogue TTS",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "aPN5bt5OkSAOdI8D",
+          "name": "ElevenLabs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// MEMORY OPTIMIZATION: Binary data passed through, JSON minimized\n// Prepare for Captivate upload\nconst item = $input.first();\nconst prepData = $('Code: Concatenate Audio').first().json;\n\nif (!item.binary || !item.binary.data) {\n  throw new Error('No audio binary received from concatenation');\n}\n\nconst filename = prepData.outputFilename || `episode-${Date.now()}.mp3`;\n\nconsole.log(`✅ Audio ready for Captivate: ${filename}`);\n\nreturn [{\n  json: {\n    filename: filename,\n    show_id: prepData.show_id,\n    season: prepData.season,\n    episode_number: prepData.episode_number,\n    title: prepData.title,\n    script: prepData.script,\n    english_post_id: prepData.english_post_id,\n    english_post_url: prepData.english_post_url,\n    captivate_token: prepData.captivate_token,\n    batchesProcessed: prepData.batchesProcessed,\n    mimeType: 'audio/mpeg'\n  },\n  binary: {\n    data: {\n      ...item.binary.data,\n      fileName: filename,\n      fileExtension: 'mp3',\n      mimeType: 'audio/mpeg'\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        3488
+      ],
+      "id": "dff13834-ce56-4d1c-bee2-a1ca74ee15fc",
+      "name": "Code: Prepare Captivate Upload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://api.captivate.fm/shows/' + $json.show_id + '/media' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $('Captivate: Auth').first().json.user.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 180000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1344,
+        3488
+      ],
+      "id": "41f112b7-6125-421c-a48d-89074633c918",
+      "name": "Captivate: Upload Audio File",
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U09BZAFD5U7",
+          "mode": "list"
+        },
+        "text": "={{ '✅ *Podcast Audio Ready!*\\n\\n📋 *Episode:* ' + $('Code: Extract Media Info1').first().json.title + ' (#' + $('Code: Extract Media Info1').first().json.episode_number + ')\\n🎙️ *Audio URL:* ' + $('Code: Extract Media Info1').first().json.captivate_media_url }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2016,
+        3488
+      ],
+      "id": "f09761a3-62af-44cc-b352-5c8ece9f4d95",
+      "name": "Slack: Audio Upload Success",
+      "webhookId": "ba9b5269-827b-4a38-af9b-391ea59946e2",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "TtgEhzUDH0MsxlGp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "sendAndWait",
+        "user": {
+          "__rl": true,
+          "value": "U09BZAFD5U7",
+          "mode": "list"
+        },
+        "message": "={{ '🎙️ Ready to publish Episode #' + $('Code: Extract Media Info1').first().json.episode_number + '?\\n\\n*' + $('Code: Extract Media Info1').first().json.title + '*' }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2240,
+        3392
+      ],
+      "id": "324d4654-5253-451d-9fd8-e56d9279025d",
+      "name": "Slack: Approve Episode",
+      "webhookId": "podcast-approve-v3",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "TtgEhzUDH0MsxlGp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.captivate.fm/episodes",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $('Captivate: Auth').first().json.user.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "shows_id",
+              "value": "={{ $('Code: Extract Media Info1').first().json.show_id }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $('Code: Extract Media Info1').first().json.title }}"
+            },
+            {
+              "name": "media_id",
+              "value": "={{ $('Code: Extract Media Info1').first().json.captivate_media_id }}"
+            },
+            {
+              "name": "date",
+              "value": "={{ $now.minus({minutes: 5}).toFormat('yyyy-MM-dd HH:mm:ss') }}"
+            },
+            {
+              "name": "status",
+              "value": "Published"
+            },
+            {
+              "name": "shownotes",
+              "value": "={{ $('Code: Extract Media Info1').first().json.script?.substring(0, 4000) || '' }}"
+            },
+            {
+              "name": "episode_season",
+              "value": "={{ $('Code: Extract Media Info1').first().json.season }}"
+            },
+            {
+              "name": "episode_number",
+              "value": "={{ $('Code: Extract Media Info1').first().json.episode_number }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 60000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2464,
+        3392
+      ],
+      "id": "621e53d2-8f2f-4928-bedf-caedd491863a",
+      "name": "Captivate: Create Episode",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Set: Configuration').item.json.podcast_status }}",
+              "rightValue": "published",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $('Set: Configuration').item.json.captivate_episode_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "238d34aa-a90a-4250-9ea3-168ee89d4037",
+      "name": "Check: Episode Already Exists1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1584,
+        3584
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.podcast_audio_url }}",
+              "operator": {
+                "type": "string",
+                "operation": "empty"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $json.podcast_status }}",
+              "rightValue": "audio_ready",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "id-3",
+              "leftValue": "={{ $json.podcast_status }}",
+              "rightValue": "published",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "ad2f47e0-4250-46dc-acf2-2022059d3f15",
+      "name": "Check: Audio Generation Needed1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1360,
+        3488
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Episode already published on Captivate. Skipping workflow execution to prevent duplicate."
+      },
+      "id": "6c8718d6-f6a4-4c14-9adc-49a434f06f50",
+      "name": "Stop: Episode Already Published1",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        3680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Set: Configuration').item.json.english_post_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $('Set: Configuration').item.json.english_post_title }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "id-3",
+              "leftValue": "={{ $('Set: Configuration').item.json.english_post_content }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "id": "fbb9f759-8694-43ae-979b-d29ee7691a2f",
+      "name": "Check: Valid Input Data1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2480,
+        3488
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Missing required input data: english_post_id, english_post_title, or english_post_content"
+      },
+      "id": "ff737452-fc9f-41bc-a5da-98314b762e76",
+      "name": "Stop: Missing Required Data1",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -2256,
+        3392
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "condition-1",
+              "leftValue": "={{ $json.inputs }}",
+              "rightValue": "",
+              "operator": {
+                "type": "any",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "condition-2",
+              "leftValue": "={{ $json.inputs.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "condition-3",
+              "leftValue": "={{ $json.inputs[0]?.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "id": "06c02c01-29ff-4b21-a0ad-ffeab5375e0c",
+      "name": "Filter: Valid Dialogue Segments1",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        240,
+        3616
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "captivate_media_url",
+              "value": "={{ $json.podcast_audio_url }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "captivate_media_id",
+              "value": "={{ $json.podcast_media_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "episode_number",
+              "value": "={{ $json.episode_number }}",
+              "type": "number"
+            },
+            {
+              "id": "id-4",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "show_id",
+              "value": "={{ $json.show_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "season",
+              "value": "={{ $json.season }}",
+              "type": "number"
+            },
+            {
+              "id": "id-7",
+              "name": "english_post_id",
+              "value": "={{ $json.english_post_id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-8",
+              "name": "script",
+              "value": "={{ $json.script || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a66c4843-dd2c-4659-9eb0-526f7b9e03d5",
+      "name": "Set: Skip to Publishing1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1808,
+        3296
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge WordPress post meta with configuration\nconst config = $('Set: Configuration').first().json;\nconst wpPost = $input.first().json;\n\n// Extract post meta fields\nconst meta = wpPost.meta || {};\n\nreturn [{\n  json: {\n    ...config,\n    podcast_status: meta.podcast_status || '',\n    podcast_audio_url: meta.podcast_audio_url || '',\n    podcast_media_id: meta.podcast_media_id || '',\n    captivate_episode_id: meta.captivate_episode_id || '',\n    wp_post_id: wpPost.id,\n    wp_post_status: wpPost.status\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2704,
+        3488
+      ],
+      "id": "82102c3c-22bc-4006-887b-bc5616b440e6",
+      "name": "Code: Merge Post Meta1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4c2a98f5-3157-4543-b9fc-f075f1beef2b",
+              "leftValue": "={{ $json.english_post_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -3152,
+        3488
+      ],
+      "id": "2eb24d65-180d-4c61-bf6c-65d4d434b61c",
+      "name": "Check: Has Post ID1"
+    },
+    {
+      "parameters": {
+        "url": "https://tax4us.co.il/wp-json/wp/v2/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "per_page",
+              "value": "1"
+            },
+            {
+              "name": "orderby",
+              "value": "date"
+            },
+            {
+              "name": "order",
+              "value": "desc"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2928,
+        3488
+      ],
+      "id": "b3615606-a351-4610-8320-33e59788ce7b",
+      "name": "HTTP: Fetch Existing Posts1",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5,
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📥 WORKFLOW TRIGGERS\n\nTwo entry points for the podcast pipeline:\n\n1. **Execute Workflow Trigger** - Called by other workflows\n2. **Webhook** - HTTP POST endpoint for external systems\n\nBoth converge at Configuration node to normalize input data.",
+        "height": 360,
+        "width": 480
+      },
+      "id": "389a9e31-abb2-435b-946f-c151fd4ba02a",
+      "name": "📥 WORKFLOW TRIGGERS1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3344,
+        4192
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ⚙️ INITIALIZATION & SETUP\n\n**Purpose:** Prepare workflow context and authenticate\n\n- **Set: Configuration** - Normalize input from triggers\n- **Captivate: Auth** - Get API token\n- **Captivate: Get Episodes** - Fetch existing episodes\n- **Code: Calculate Episode Number** - Determine next episode #\n\nOutputs clean configuration object for downstream nodes.",
+        "height": 360,
+        "width": 580
+      },
+      "id": "8434eed1-8783-49c0-9598-ba8d7b5bc26a",
+      "name": "⚙️ INITIALIZATION & SETUP1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2640,
+        4208
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🤖 AI CONTENT GENERATION\n\n**Two-stage AI pipeline using Claude Sonnet 4:**\n\n### Stage 1: Outline Generation\n- Format prompt from article content\n- AI Agent creates 10-15 min podcast outline\n- Uses conversation memory for context\n\n### Stage 2: Script Generation\n- Format script prompt with outline\n- AI Agent writes full dialogue (Emma + Ben)\n- Outputs 9,000-13,500 character script\n\nBoth stages use Anthropic Chat Model with retry logic.",
+        "height": 360,
+        "width": 600
+      },
+      "id": "2c4b2176-7c2c-4667-8abe-ce6ecb241e9d",
+      "name": "🤖 AI CONTENT GENERATION1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1616,
+        4096
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📤 PUBLISHING WORKFLOW\n\n**Upload and approval process:**\n\n1. **Captivate: Upload Audio** - Upload MP3 to podcast host\n2. **Extract Media Info** - Get media URL and ID\n3. **Update WP Post (Audio Ready)** - Save metadata to WordPress\n4. **Slack: Audio Upload Success** - Notify team\n5. **Slack: Approve Episode** - Wait for manual approval\n6. **Captivate: Create Episode** - Publish to podcast feed\n   - Success → Update WP Post (Published) → Confirm\n   - Error → Slack: Captivate Error\n\n**Human-in-the-loop approval before going live**",
+        "height": 360,
+        "width": 600
+      },
+      "id": "55d4391c-4fd1-4dd4-b0a3-17bf0809fdd5",
+      "name": "📤 PUBLISHING WORKFLOW1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        4176
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 💡 AI PODCAST PRODUCER v3 (OPTIMIZED — NO GCS)\n\n**Purpose:** Automated podcast production from article to published episode\n\n**Flow Summary:**\n1. Trigger → Configuration\n2. Captivate Auth & Episode Calculation\n3. AI generates Outline (Claude)\n4. AI generates Script (Claude)\n5. Parse dialogue for multi-voice\n6. Loop: TTS → Store chunk in memory (batched)\n7. Concatenate audio chunks in-memory\n8. Upload to Captivate\n9. Update WordPress\n10. Slack approval\n11. Publish episode\n\n**Key Features:**\n- Memory-optimized batch processing\n- Multi-voice TTS (Emma + Ben)\n- In-memory audio concatenation (no GCS/Cloud Run)\n- Human approval before publish\n- Error handling with Slack alerts\n\n**Removed:** GCS bucket, Cloud Run concat function",
+        "height": 520,
+        "width": 520
+      },
+      "id": "11c19538-0535-4434-88d9-e25b57bd9e1c",
+      "name": "💡 WORKFLOW OVERVIEW1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2192,
+        3920
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ⚠️ IMPORTANT NOTES\n\n**Memory Management:**\n- Audio chunks stored as base64 in static data during loop\n- Static data cleared after concatenation to prevent buildup\n- Content truncated to 8000 chars for prompts\n- Expected ~10-40 MB in memory during execution\n\n**Voice IDs:**\n- Emma: `3dzJXoCYueSQiptQ6euE`\n- Ben: `9FevED7AoujYF2nBsEvC`\n\n**Retry Logic:**\n- AI nodes: 3 retries, 5s wait\n- HTTP nodes: 3-5 retries, 5s wait\n\n**Timeouts:**\n- TTS: 300s (5 min)\n- Captivate upload: 180s (3 min)\n\n**Target Audience:** Israelis in America, NOT Americans in Israel\n\n**Cost Savings:** GCS bucket + Cloud Run function eliminated",
+        "height": 520,
+        "width": 520
+      },
+      "id": "f95f978a-1701-4d5f-8f8e-d6b395988183",
+      "name": "⚠️ IMPORTANT NOTES1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        704,
+        4016
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Set: Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Store Chunk Binary": {
+      "main": [
+        [
+          {
+            "node": "Split: Dialogue Segments1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Concatenate Audio": {
+      "main": [
+        [
+          {
+            "node": "Code: Prepare Captivate Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Captivate: Get Episodes1": {
+      "main": [
+        [
+          {
+            "node": "Code: Calculate Episode Number1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Calculate Episode Number1": {
+      "main": [
+        [
+          {
+            "node": "Check: Episode Already Exists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split: Dialogue Segments1": {
+      "main": [
+        [
+          {
+            "node": "Code: Concatenate Audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP: ElevenLabs Dialogue TTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Extract Media Info1": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Update WP Post (Audio Ready)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Update WP Post (Audio Ready)1": {
+      "main": [
+        [
+          {
+            "node": "Slack: Audio Upload Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Update WP Post (Published)1": {
+      "main": [
+        [
+          {
+            "node": "Slack: Confirm Published1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set: Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Configuration": {
+      "main": [
+        [
+          {
+            "node": "Check: Has Post ID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Captivate: Auth": {
+      "main": [
+        [
+          {
+            "node": "Captivate: Get Episodes1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Format Outline Prompt": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Generate Outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Generate Outline": {
+      "main": [
+        [
+          {
+            "node": "Code: Format Script Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory: Outline": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent: Generate Outline",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model: Outline": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Generate Outline",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Format Script Prompt": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Generate Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Generate Script": {
+      "main": [
+        [
+          {
+            "node": "Code: Parse Dialogue for Multi-Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory: Script": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent: Generate Script",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model: Script": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Generate Script",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Parse Dialogue for Multi-Voice": {
+      "main": [
+        [
+          {
+            "node": "Filter: Valid Dialogue Segments1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: ElevenLabs Dialogue TTS": {
+      "main": [
+        [
+          {
+            "node": "Code: Store Chunk Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Prepare Captivate Upload": {
+      "main": [
+        [
+          {
+            "node": "Captivate: Upload Audio File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Captivate: Upload Audio File": {
+      "main": [
+        [
+          {
+            "node": "Code: Extract Media Info1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack: Audio Upload Success": {
+      "main": [
+        [
+          {
+            "node": "Slack: Approve Episode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack: Approve Episode": {
+      "main": [
+        [
+          {
+            "node": "Captivate: Create Episode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Captivate: Create Episode": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Update WP Post (Published)1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack: Captivate Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Episode Already Exists1": {
+      "main": [
+        [
+          {
+            "node": "Stop: Episode Already Published1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check: Audio Generation Needed1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Audio Generation Needed1": {
+      "main": [
+        [
+          {
+            "node": "Code: Format Outline Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set: Skip to Publishing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Valid Input Data1": {
+      "main": [
+        [
+          {
+            "node": "Captivate: Auth",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop: Missing Required Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Valid Dialogue Segments1": {
+      "main": [
+        [
+          {
+            "node": "Split: Dialogue Segments1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Skip to Publishing1": {
+      "main": [
+        [
+          {
+            "node": "Slack: Approve Episode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Merge Post Meta1": {
+      "main": [
+        [
+          {
+            "node": "Check: Valid Input Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Has Post ID1": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Fetch Existing Posts1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Fetch Existing Posts1": {
+      "main": [
+        [
+          {
+            "node": "Code: Merge Post Meta1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true,
+    "saveExecutionProgress": true
+  },
+  "versionId": "d8d0d359-ea71-4821-8f3c-418041c582ca",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "debc7feccc354e86e5a53344362b691cecb5d65ac2ba67b45cdccf9a516514d6"
+  },
+  "id": "fe6SYUqoC5VhyMtd",
+  "tags": [
+    {
+      "updatedAt": "2026-01-15T06:52:02.379Z",
+      "createdAt": "2026-01-15T06:52:02.379Z",
+      "id": "0MjRPeUrWYXOIXfK",
+      "name": "podcast"
+    },
+    {
+      "updatedAt": "2026-01-15T06:51:55.544Z",
+      "createdAt": "2026-01-15T06:51:55.544Z",
+      "id": "eVCVZbzAwMxscDDu",
+      "name": "captivate.fm"
+    },
+    {
+      "updatedAt": "2026-01-15T06:50:47.133Z",
+      "createdAt": "2026-01-15T06:50:47.133Z",
+      "id": "mVVJ7EkNLjSih8tK",
+      "name": "approval"
+    }
+  ]
+}

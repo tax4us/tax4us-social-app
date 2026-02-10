@@ -18,7 +18,7 @@ export class Translator {
       ${content}
     `;
 
-        return await this.claude.generate(userPrompt, "claude-3-5-haiku-20241022", systemPrompt);
+        return await this.claude.generate(userPrompt, "claude-3-haiku-20240307", systemPrompt);
     }
 
     async translateEnToHe(content: string): Promise<string> {
@@ -32,6 +32,6 @@ export class Translator {
       ${content}
     `;
 
-        return await this.claude.generate(userPrompt, "claude-3-5-haiku-20241022", systemPrompt);
+        return await this.claude.generate(userPrompt, "claude-3-haiku-20240307", systemPrompt);
     }
 }

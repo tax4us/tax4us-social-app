@@ -10,19 +10,23 @@ export class MediaProcessor {
         this.wp = new WordPressClient();
     }
 
-    async generateAndUploadImage(prompt: string, title: string): Promise<string> {
+    async generateAndUploadImage(prompt: string, title: string): Promise<{ url: string; id: number }> {
         // 1. Generate image task
-        const task = await this.kie.createImage(prompt);
-        const taskId = task.data.taskId;
+        const taskId = await this.kie.generateImage(prompt);
 
         // 2. Poll for completion (simplified for now)
         let imageUrl = "";
-        for (let i = 0; i < 10; i++) {
-            await new Promise((r) => setTimeout(r, 5000)); // Wait 5s
-            const status = await this.kie.getJobStatus(taskId);
-            if (status.data.status === "completed") {
-                imageUrl = status.data.url;
+        for (let i = 0; i < 15; i++) {
+            await new Promise((r) => setTimeout(r, 10000)); // Wait 10s (standard for Kie.ai)
+            const response = await this.kie.getTask(taskId);
+            const status = response.status;
+
+            if (status === "success" && response.url) {
+                imageUrl = response.url;
                 break;
+            }
+            if (status === "failed") {
+                throw new Error(`Kie.ai generation failed.`);
             }
         }
 
@@ -40,11 +44,11 @@ export class MediaProcessor {
 
         // 4. Upload to WordPress
         const media = await this.wp.uploadMedia(buffer, filename, mimeType);
-        return media.source_url;
+        return { url: media.source_url, id: media.id };
     }
 
     async generateVideo(prompt: string): Promise<string> {
-        const task = await this.kie.createVideo(prompt);
-        return task.data.taskId; // Return taskId for later polling/webhook
+        const taskId = await this.kie.generateVideo({ title: prompt, excerpt: prompt });
+        return taskId; // Return taskId for later polling/webhook
     }
 }

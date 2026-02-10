@@ -1,0 +1,620 @@
+{
+  "name": "Main Content Pipeline: Blog + Social Media Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "wordpressUrl",
+              "value": "https://tax4us.co.il",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "slackChannel",
+              "value": "C09BZAFD5U7",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "rejectionCount",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "id-4",
+              "name": "previouslyRejectedTopics",
+              "value": "[]",
+              "type": "string"
+            },
+            {
+              "id": "883bc287-dab2-4ec8-a765-22ba6f6b4bc7",
+              "name": "recentTopicsCount",
+              "value": 5,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "3d791271-5025-4bad-b4eb-b3baed979d0b",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -13760,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://tax4us.co.il/wp-json/wp/v2/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "per_page",
+              "value": "100"
+            },
+            {
+              "name": "orderby",
+              "value": "date"
+            },
+            {
+              "name": "order",
+              "value": "desc"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -13536,
+        704
+      ],
+      "id": "2dd3e9f4-02cd-47e4-a820-3f94a820c607",
+      "name": "HTTP: Fetch Existing Posts",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5,
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract Template Info + Select Topic - REJECTION-AWARE VERSION (ROBUST)\n// Requires rejection loop to re-run \"HTTP: Fetch Existing Posts\" before this node.\n\nconst existingPosts = $input.all();\n\nif (!existingPosts || existingPosts.length === 0) {\n  throw new Error('No existing posts found to extract template info');\n}\n\nconst firstPost = existingPosts[0].json;\n\n// Prefer latest rejection-loop state if it exists in this execution path\nlet upstreamData = {};\ntry {\n  upstreamData = $('Record Topic Rejection Feedback').first()?.json || {};\n} catch (e) {\n  upstreamData = {};\n}\n\nif (!upstreamData || Object.keys(upstreamData).length === 0) {\n  upstreamData = $('Workflow Configuration').first()?.json || {};\n}\n\nconst rejectionCount = Number(upstreamData.rejectionCount || 0);\n\n// Normalize previouslyRejectedTopics to an array\nlet previouslyRejectedTopicsArr = [];\ntry {\n  if (Array.isArray(upstreamData.previouslyRejectedTopics)) {\n    previouslyRejectedTopicsArr = upstreamData.previouslyRejectedTopics;\n  } else if (typeof upstreamData.previouslyRejectedTopics === 'string') {\n    previouslyRejectedTopicsArr = JSON.parse(upstreamData.previouslyRejectedTopics || '[]');\n  } else {\n    previouslyRejectedTopicsArr = [];\n  }\n} catch (e) {\n  previouslyRejectedTopicsArr = [];\n}\n\n// Configurable recent topics count (default 5)\nconst RECENT_TOPICS_COUNT = Math.max(1, Number(upstreamData.recentTopicsCount || 5));\n\nconsole.log('🔄 Rejection count:', rejectionCount);\nconsole.log('🚫 Previously rejected topics:', previouslyRejectedTopicsArr.length);\nconsole.log('🕘 recentTopicsCount:', RECENT_TOPICS_COUNT);\n\n// Template info\nconst templateInfo = {\n  post_format: firstPost.format || 'standard',\n  template: firstPost.template || '',\n  comment_status: firstPost.comment_status || 'open',\n  ping_status: firstPost.ping_status || 'open',\n  featured_media: firstPost.featured_media || 0\n};\n\n// Existing post titles (normalized + original)\nconst existingTitles = existingPosts\n  .map(p => {\n    const title = p.json.title?.rendered || p.json.title || '';\n    return title.toString().toLowerCase().trim();\n  })\n  .filter(Boolean);\n\nconst existingPostTitles = existingPosts\n  .map(p => (p.json.title?.rendered || p.json.title || '').toString().trim())\n  .filter(Boolean);\n\n// ✅ recentTopics for Slack display (top N newest from fetched posts)\n// Assumes \"HTTP: Fetch Existing Posts\" uses orderby=date&order=desc\nconst recentTopics = existingPostTitles.slice(0, Math.min(RECENT_TOPICS_COUNT, existingPostTitles.length));\n\n// Internal links pool (real WP URLs)\nconst internalLinks = existingPosts\n  .map(p => {\n    const title = (p.json.title?.rendered || p.json.title || '').toString().trim();\n    const url = (p.json.link || p.json.guid?.rendered || '').toString().trim();\n    return { title, url };\n  })\n  .filter(x => x.title && x.url);\n\nconsole.log('📋 Extracted template info:', JSON.stringify(templateInfo, null, 2));\nconsole.log('🔍 Found', existingTitles.length, 'existing posts');\nconsole.log('🕘 Recent topics:', recentTopics.length);\nconsole.log('🔗 Internal links available:', internalLinks.length);\n\n// Topics\nconst topics = [\n  `חובת הדיווח של הישראלים ל-IRS: FBAR, FATCA ו-Form 8938`,\n  `הסכם המס בין ישראל לארה\"ב: איך לנצל את הטבות המס ומתי להגיש Form 8833`,\n  `מיסוי הכנסות השקעה: דיבידנדים, ריבית ורווחי הון`,\n  `מיסוי עסקים דו-תושבים: חברות ישראליות עם פעילות בארה\"ב`,\n  `עסקאות נדל\"ן ומס: רכישה ומכירה של נכסים בארה\"ב`,\n  `חשבונות פרישה: 401k, IRA וקרן השתלמות`,\n  `שינויים בחוקי המס 2026: מה חדש לישראלים-אמריקאים`,\n  `מסי מדינה: חובות לישראלים שאינם תושבי ארה\"ב`,\n  `מיסוי עיזבון ומס מתנות: תכנון עיזבון לישראלים-אמריקאים`,\n  `אסטרטגיות תכנון מס לאזרחים כפולים`,\n  `דיווח על חשבונות בנק זרים: FBAR - כל מה שצריך לדעת`,\n  `Form 1116: זיכוי מס זר למשקיעים ישראלים`,\n  `מיסוי עבודה מרחוק: ישראלים העובדים לחברות אמריקאיות`,\n  `תיקון מעברי מס: איך להגיש 1040X ומה הסיכונים בהעדר תיקון`,\n  `פטור מניכוי במקור: W-8BEN ו-W-8BEN-E`,\n  `מיסוי רווחים מהשקעות נדל\"ן: משקיעים ישראלים בארה\"ב`,\n  `תשלומי פנסיה ומס: ישראלים המקבלים פנסיה אמריקאית`,\n  `מיסוי הכנסות מביטוח חיים: פוליסות אמריקאיות לישראלים`,\n  `תכנון מס למשפחות דו-לאומיות: אסטרטגיות לחיסכון`,\n  `מיסוי מטבעות קריפטו: ביטקוין, מכירות, החזקות, כריה וסטייקינג`,\n  `מיסוי אופציות עובדים: RSU, ISO ו-NSO - מדריך מלא`,\n  `דיווח על קרנות פנסיה וקופות גמל ישראליות בטפסי מס אמריקאיים`,\n  `עצמאיים אמריקאים בישראל: האם חייבים במס עצמאות (Self-Employment Tax)?`,\n  `חובות הגשת דוחות מס לילדים בעלי אזרחות אמריקאית`,\n  `ויתור על אזרחות אמריקאית: השלכות מס ושיקולים משפחתיים`,\n  `מיסוי עסקים מקוונים: Amazon, Etsy, Shopify ו-eCommerce`,\n  `השלכות מס של מחילת חוב - כולל טופס 1099-C`,\n  `סגירת LLC אמריקאית: תהליך, עלויות וחובות דיווח סופיות`,\n  `כיצד לשלם את חובות המס ל-IRS: שיטות תשלום ותוכניות תשלומים`,\n  `דיווח על תוכניות פנסיה ישראליות (קרן השתלמות, קופת גמל, פנסיה תקציבית)`,\n  `מיסוי הכנסות פסיביות מחו\"ל: דיבידנדים, ריבית ודמי שכירות`\n];\n\n// Duplicate filtering\nlet availableTopics = topics.filter(topic => {\n  const topicLower = topic.toLowerCase();\n  const topicKeywords = topicLower.split(/[\\s:,-]+/).filter(w => w.length > 3);\n\n  return !existingTitles.some(existingTitle => {\n    const matchingKeywords = topicKeywords.filter(keyword => existingTitle.includes(keyword));\n    return matchingKeywords.length >= 2;\n  });\n});\n\n// Filter previously rejected topics\nif (previouslyRejectedTopicsArr.length > 0) {\n  availableTopics = availableTopics.filter(topic => !previouslyRejectedTopicsArr.includes(topic));\n  console.log('📊 After rejection filter:', availableTopics.length, 'topics remain');\n}\n\nconsole.log('📊 Available topics after all filtering:', availableTopics.length, 'out of', topics.length);\n\n// Rotation seed (stable per-day) + rejection offset\nconst executionId = $execution?.id || 'default';\nconst timestamp = Date.now();\nconst baseSeed =\n  parseInt(executionId.replace(/[^0-9]/g, '').slice(-6) || '0', 10) +\n  Math.floor(timestamp / (1000 * 60 * 60 * 24));\n\nconst rotationSeed = baseSeed + rejectionCount;\n\nlet selectedTopic;\nif (availableTopics.length > 0) {\n  const topicIndex = rotationSeed % availableTopics.length;\n  selectedTopic = availableTopics[topicIndex];\n  console.log(`🎯 Selected topic (index ${topicIndex}/${availableTopics.length}, rejection #${rejectionCount}):`, selectedTopic);\n} else {\n  const topicIndex = rotationSeed % topics.length;\n  selectedTopic = topics[topicIndex];\n  console.log(`⚠️ All topics covered/rejected, cycling full list (index ${topicIndex}):`, selectedTopic);\n}\n\nconsole.log('🎯 Final selected topic:', selectedTopic);\n\nreturn [\n  {\n    json: {\n      ...templateInfo,\n      topic: selectedTopic,\n\n      existingPostsCount: existingTitles.length,\n      existingPostTitles: existingPostTitles.slice(0, 120),\n\n      recentTopics: recentTopics,\n\n      internalLinks: internalLinks.slice(0, 80),\n\n      availableTopicsCount: availableTopics.length,\n      rotationIndex: rotationSeed % (availableTopics.length || topics.length),\n      rejectionCount,\n\n      previouslyRejectedTopics: JSON.stringify(previouslyRejectedTopicsArr),\n      recentTopicsCount: RECENT_TOPICS_COUNT\n    }\n  }\n];"
+      },
+      "id": "dac9eac9-83f5-4cf4-ae75-42ab1799274a",
+      "name": "Extract Template Info",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -13312,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Topic Selection Message - Creates Slack message for topic approval\n// FIXED: Decodes HTML entities in recent topics\n\nconst extractData = $input.first().json;\n\n// Helper: Decode HTML entities\nconst decodeHtmlEntities = (str) => {\n  if (!str || typeof str !== 'string') return str || '';\n  return str\n    .replace(/&#8221;/g, '\"')\n    .replace(/&#8220;/g, '\"')\n    .replace(/&#8217;/g, \"'\")\n    .replace(/&#8216;/g, \"'\")\n    .replace(/&#038;/g, '&')\n    .replace(/&quot;/g, '\"')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&#(\\d+);/g, (match, dec) => String.fromCharCode(dec));\n};\n\nconst selectedTopic = extractData.topic || 'No topic selected';\nconst existingPostsCount = extractData.existingPostsCount || 0;\nconst rejectionCount = extractData.rejectionCount || 0;\n\n// Decode HTML entities in recent topics\nconst recentTopics = (extractData.recentTopics || []).map(t => decodeHtmlEntities(t));\n\n// Show rejection context if this is a re-selection\nconst rejectionContext = rejectionCount > 0\n  ? `\\n\\n🔄 *This is selection attempt #${rejectionCount + 1}* (previous topic was rejected)\\n`\n  : '';\n\nconst slackMessage = `🎯 *TOPIC SELECTION FOR NEXT ARTICLE*${rejectionContext}\n\n*Selected Topic:*\n${selectedTopic}\n\n${recentTopics.length > 0 ? `*Recent Topics Published (Last ${recentTopics.length}):*\\n${recentTopics.map((t, i) => `${i + 1}. ${t}`).join('\\n')}\\n` : ''}\n\n*Instructions:*\n- Click \"✅ Approve Topic\" to proceed with this topic\n- Click \"✏️ Modify Topic\" to suggest a different topic or make changes\n\n💡 *You can add notes or insights in the text field below before clicking any button.*\nThese notes will be included in the AI prompt to guide content generation.\n\n_Automated with [this n8n workflow](https://tax4usllc.app.n8n.cloud/workflow/cHuJmIz5MVFAjP2Q)_`;\n\nreturn {\n  json: {\n    ...extractData,\n    slackMessage: slackMessage,\n    selectedTopic: selectedTopic,\n    originalTopic: selectedTopic,\n    existingPostsCount: existingPostsCount\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -13088,
+        544
+      ],
+      "id": "237b39cf-2128-4bfb-a742-f09234d3cfbe",
+      "name": "Format Topic Selection Message"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "sendAndWait",
+        "user": {
+          "__rl": true,
+          "value": "U09NNMEDNEQ",
+          "mode": "list",
+          "cachedResultName": "ben"
+        },
+        "message": "={{ $json.slackMessage }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "✅ Approve Topic",
+            "disapproveLabel": "✏️ Modify Topic"
+          }
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "0374e167-a99e-4119-b9f5-b514a0c0e6c6",
+      "name": "Send Topic Approval Request",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -12864,
+        544
+      ],
+      "webhookId": "f13f14a5-3f92-4824-b5da-0b061f721728",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "TtgEhzUDH0MsxlGp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process Topic Approval - REJECTION-AWARE + TYPE-SAFE + PASS-THROUGH (FULL VERSION)\n// Handles user response from Slack topic approval\n// ✅ Normalizes previouslyRejectedTopics (string/array) to ARRAY internally\n// ✅ Preserves existingPostTitles + internalLinks through skip/approve/modify paths\n// ✅ Enforces MAX_REJECTIONS (default 5) and increments on skip/reject\n// ✅ Outputs previouslyRejectedTopics as STRING (JSON) for safe persistence downstream\n\nconst slackResponse = $input.first().json || {};\n\n// Extract decision from Slack response\nconst approved = Boolean(slackResponse.data?.approved || false);\nconst feedback =\n  slackResponse.data?.feedback ||\n  slackResponse.data?.text ||\n  slackResponse.feedback ||\n  slackResponse.text ||\n  '';\nconst decision =\n  slackResponse.data?.decision ||\n  slackResponse.decision ||\n  (approved ? 'approve' : 'modify');\n\n// Get data from Format Topic Selection Message ONCE\nconst formatData = $('Format Topic Selection Message').first()?.json || {};\n\n// Source topic and counters\nconst originalTopic = formatData.selectedTopic || formatData.topic || 'US-Israeli tax topics';\nconst rejectionCount = Number(formatData.rejectionCount || 0);\n\n// Normalize previouslyRejectedTopics to ARRAY internally\nlet previouslyRejectedTopics = formatData.previouslyRejectedTopics ?? [];\ntry {\n  if (typeof previouslyRejectedTopics === 'string') {\n    previouslyRejectedTopics = JSON.parse(previouslyRejectedTopics || '[]');\n  }\n  if (!Array.isArray(previouslyRejectedTopics)) previouslyRejectedTopics = [];\n} catch (e) {\n  previouslyRejectedTopics = [];\n}\n\n// Max rejection limit (default 5)\nconst MAX_REJECTIONS = Number(formatData.maxRejections || 5);\nif (rejectionCount >= MAX_REJECTIONS) {\n  throw new Error(\n    `Maximum topic rejections reached (${MAX_REJECTIONS}). Please review topic selection process or approve a topic manually.`\n  );\n}\n\nconsole.log('📋 Topic Approval Decision:', decision);\nconsole.log('✅ Approved:', approved);\nconsole.log('🔄 Rejection count:', rejectionCount, '/', MAX_REJECTIONS);\n\n// Determine final topic based on decision\nlet finalTopic = originalTopic;\nlet topicModified = false;\nlet userNotes = (feedback || '').toString();\nlet topicSkipped = false;\n\n// Identify skip/reject intent\nconst feedbackLower = userNotes.toLowerCase().trim();\nconst wantsToSkip =\n  decision === 'skip' ||\n  decision === 'Skip This Topic' ||\n  feedbackLower === 'skip' ||\n  feedbackLower.startsWith('skip ') ||\n  // Disapprove with no feedback = skip\n  (!approved && userNotes.trim().length === 0);\n\nconst isRejectFlow = wantsToSkip;\n\n// --- SKIP / REJECT PATH ---\nif (isRejectFlow) {\n  topicSkipped = true;\n\n  // Add to rejected list (array) if not already present\n  if (originalTopic && !previouslyRejectedTopics.includes(originalTopic)) {\n    previouslyRejectedTopics.push(originalTopic);\n  }\n\n  const newRejectionCount = rejectionCount + 1;\n  console.log(`❌ Topic skipped/rejected by user (rejection #${newRejectionCount}/${MAX_REJECTIONS})`);\n\n  if (newRejectionCount >= MAX_REJECTIONS) {\n    throw new Error(\n      `Maximum topic rejections reached (${MAX_REJECTIONS}). Please review topic selection process or approve a topic manually.`\n    );\n  }\n\n  return [\n    {\n      json: {\n        // Control flags for router\n        topicSkipped: true,\n        topicModified: false,\n        approved: false,\n        approvalDecision: decision,\n\n        // Topic / feedback\n        originalTopic,\n        topic: originalTopic,\n        userNotes,\n        skipReason: userNotes || 'User skipped topic',\n\n        // Rejection tracking (persist stringified)\n        rejectionCount: newRejectionCount,\n        previouslyRejectedTopics: JSON.stringify(previouslyRejectedTopics),\n\n        // Pass-through template + context needed downstream\n        post_format: formatData.post_format,\n        template: formatData.template,\n        comment_status: formatData.comment_status,\n        ping_status: formatData.ping_status,\n        featured_media: formatData.featured_media,\n\n        // Anti-dup + internal links pool\n        existingPostsCount: formatData.existingPostsCount,\n        existingPostTitles: formatData.existingPostTitles || [],\n        internalLinks: formatData.internalLinks || [],\n\n        // Optional passthroughs if you use them downstream\n        availableTopicsCount: formatData.availableTopicsCount,\n        rotationIndex: formatData.rotationIndex,\n      },\n    },\n  ];\n}\n\n// --- APPROVE PATH ---\nif (decision === 'approve' || approved === true) {\n  finalTopic = originalTopic;\n  topicModified = false;\n  topicSkipped = false;\n  console.log('✅ Topic approved:', finalTopic);\n}\n\n// --- MODIFY PATH ---\nelse if (decision === 'modify' || decision === 'Modify Topic') {\n  if (userNotes && userNotes.trim().length > 10) {\n    finalTopic = userNotes.trim();\n    topicModified = true;\n    topicSkipped = false;\n    console.log('✏️ Topic modified by user:', finalTopic);\n  } else {\n    finalTopic = originalTopic;\n    topicModified = false;\n    topicSkipped = false;\n    console.log('⚠️ Modify requested but no new topic provided; using original');\n  }\n}\n\n// --- FALLBACK PATH ---\nelse {\n  finalTopic = originalTopic;\n  topicModified = false;\n  topicSkipped = false;\n}\n\n// Return data with final topic + user notes for AI Agent\nreturn [\n  {\n    json: {\n      ...formatData,\n\n      // Output topic fields\n      topic: finalTopic,\n      originalTopic,\n      topicModified,\n      topicSkipped,\n\n      // Notes for writer\n      userNotes,\n\n      // Decision metadata\n      approvalDecision: decision,\n      approved,\n\n      // Rejection tracking (persist stringified)\n      rejectionCount,\n      previouslyRejectedTopics: JSON.stringify(previouslyRejectedTopics),\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -12640,
+        544
+      ],
+      "id": "7f406537-10a6-46b4-b431-6f289e217b9a",
+      "name": "Process Topic Approval"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "be617164-1250-4e53-bba4-53986da078bf",
+              "leftValue": "={{ !$json.topicSkipped }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -12416,
+        544
+      ],
+      "id": "c78a151c-2bce-4975-97a7-8e0e86539c45",
+      "name": "Check Topic Approval Status"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "rejectionFeedback",
+              "value": "={{ $json.userNotes || $json.skipReason || $json.feedback || 'No specific feedback provided' }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "rejectionCount",
+              "value": "={{ $json.rejectionCount || 1 }}",
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "previousTopic",
+              "value": "={{ $json.originalTopic || $json.topic || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "previouslyRejectedTopics",
+              "value": "={{ typeof $json.previouslyRejectedTopics === 'string' ? $json.previouslyRejectedTopics : JSON.stringify($json.previouslyRejectedTopics || []) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "c7d22e48-2f6a-467c-9b35-be64b3453fed",
+      "name": "Record Topic Rejection Feedback",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -12016,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "==content_pipeline_{{ $execution.id }}_{{ $now.toUnix() }}",
+        "contextWindowLength": 10
+      },
+      "id": "de495a1d-a62b-446d-9d73-7137b6e47854",
+      "name": "Conversation Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -12128,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse AI Response - FIXED: Robust multi-item input selection + root-level structured support\n// Handles agent outputs, structured parser outputs, and raw JSON text.\n\nconst all = $input.all().map(i => i.json);\n\n// Pick the first item that actually contains something we can parse.\nconst inputData =\n  all.find(d =>\n    (d?.title && d?.content) ||\n    (d?.output && (typeof d.output === 'string' || typeof d.output === 'object' || Array.isArray(d.output))) ||\n    (d?.text && typeof d.text === 'string') ||\n    d?.response ||\n    (d?.message && typeof d.message === 'string') ||\n    (d?.content && typeof d.content === 'string')\n  ) || all[0] || {};\n\nconsole.log('🔍 Selected input keys:', Object.keys(inputData));\n\n// Get topic from input chain (best-effort)\nlet topic = inputData.topic || '';\nif (!topic) {\n  try {\n    const processTopicData = $('Process Topic Approval').first()?.json || {};\n    topic = processTopicData.topic || processTopicData.selectedTopic || topic;\n  } catch (e) {\n    console.log('⚠️ Could not access Process Topic Approval node');\n  }\n}\n\n// Helper: Escape HTML for safe insertion\nconst escapeHtml = (str) =>\n  String(str || '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;');\n\n// Helper: Convert markdown links to HTML anchors\nconst convertMarkdownLinks = (escapedText) =>\n  escapedText.replace(\n    /\\[([^\\]]+)\\]\\((https?:\\/\\/[^)\\s]+)\\)/g,\n    '<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer dofollow\">$1</a>'\n  );\n\n// Helper: Build Gutenberg block from paragraph\nconst buildBlock = (para) => {\n  const trimmed = para.trim();\n\n  if (trimmed.startsWith('### ')) {\n    const headingText = trimmed.substring(4).trim();\n    return `<!-- wp:heading {\"level\":3,\"style\":{\"color\":{\"text\":\"#666666\"}}} -->\\n<h3 class=\"has-text-color\" style=\"color:#666666\">${escapeHtml(headingText)}</h3>\\n<!-- /wp:heading -->`;\n  }\n\n  if (trimmed.startsWith('## ')) {\n    const headingText = trimmed.substring(3).trim();\n    return `<!-- wp:heading {\"level\":2,\"style\":{\"color\":{\"text\":\"#8fb634\"}}} -->\\n<h2 class=\"has-text-color\" style=\"color:#8fb634\">${escapeHtml(headingText)}</h2>\\n<!-- /wp:heading -->`;\n  }\n\n  const escaped = escapeHtml(para);\n  const withLinks = convertMarkdownLinks(escaped);\n  return `<!-- wp:paragraph -->\\n<p>${withLinks}</p>\\n<!-- /wp:paragraph -->`;\n};\n\n// Helper: Wrap content with template\nconst wrapWithTemplate = (titleEscaped, innerBlocks) => {\n  return `<!-- wp:cover {\"url\":\"https://tax4us.co.il/wp-content/uploads/2023/11/Converted-11.webp\",\"id\":1129,\"dimRatio\":50,\"overlayColor\":\"black\",\"minHeight\":60,\"minHeightUnit\":\"vh\",\"align\":\"full\"} -->\n<div class=\"wp-block-cover alignfull\" style=\"min-height:60vh\"><span aria-hidden=\"true\" class=\"wp-block-cover__background has-black-background-color has-background-dim-50 has-background-dim\"></span><img class=\"wp-block-cover__image-background wp-image-1129\" alt=\"\" src=\"https://tax4us.co.il/wp-content/uploads/2023/11/Converted-11.webp\" data-object-fit=\"cover\"/><div class=\"wp-block-cover__inner-container\"><!-- wp:heading {\"textAlign\":\"center\",\"level\":1,\"style\":{\"typography\":{\"fontSize\":\"clamp(32px, 5vw, 64px)\",\"fontWeight\":\"800\"},\"color\":{\"text\":\"#ffffff\"}}} -->\n<h1 class=\"has-text-align-center has-text-color\" style=\"color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800\">${titleEscaped}</h1>\n<!-- /wp:heading --></div></div>\n<!-- /wp:cover -->\n\n<!-- wp:columns {\"style\":{\"spacing\":{\"margin\":{\"top\":\"32px\"}}}} -->\n<div class=\"wp-block-columns\" style=\"margin-top:32px\">\n\n<!-- wp:column {\"width\":\"25%\"} -->\n<div class=\"wp-block-column\" style=\"flex-basis:25%\">\n<!-- wp:group {\"style\":{\"border\":{\"width\":\"4px\",\"color\":\"#a1cd3a\",\"radius\":\"12px\"},\"backgroundColor\":\"white\"}} -->\n<div class=\"wp-block-group has-white-background-color has-background\" style=\"border-color:#a1cd3a;border-width:4px;border-radius:12px\">\n<!-- wp:heading {\"level\":2,\"style\":{\"color\":{\"text\":\"#ffffff\"},\"spacing\":{\"padding\":{\"top\":\"12px\",\"right\":\"12px\",\"bottom\":\"12px\",\"left\":\"12px\"}},\"backgroundColor\":\"#a1cd3a\"}} -->\n<h2 class=\"has-text-color has-background\" style=\"background-color:#a1cd3a;color:#ffffff;padding:12px\">מאמרים דומים</h2>\n<!-- /wp:heading -->\n<!-- wp:query {\"queryId\":1,\"query\":{\"perPage\":5,\"postType\":\"post\",\"order\":\"desc\",\"orderBy\":\"date\"}} -->\n<div class=\"wp-block-query\"><!-- wp:post-template -->\n<!-- wp:group {\"style\":{\"spacing\":{\"padding\":{\"left\":\"16px\",\"right\":\"16px\"}}}} -->\n<div class=\"wp-block-group\" style=\"padding-left:16px;padding-right:16px\">\n<!-- wp:post-featured-image {\"isLink\":true,\"width\":\"100%\",\"height\":\"120px\",\"style\":{\"border\":{\"radius\":\"8px\"}}} /-->\n<!-- wp:post-title {\"isLink\":true,\"fontSize\":\"medium\"} /-->\n<!-- wp:post-date {\"fontSize\":\"small\"} /-->\n</div><!-- /wp:group --><!-- /wp:post-template --></div><!-- /wp:query -->\n</div><!-- /wp:group --></div><!-- /wp:column -->\n\n<!-- wp:column {\"width\":\"75%\"} -->\n<div class=\"wp-block-column\" style=\"flex-basis:75%\">\n<!-- wp:heading {\"level\":2,\"style\":{\"color\":{\"text\":\"#8fb634\"}}} -->\n<h2 class=\"has-text-color\" style=\"color:#8fb634\">${titleEscaped}</h2>\n<!-- /wp:heading -->\n\n${innerBlocks}\n\n</div><!-- /wp:column --></div><!-- /wp:columns -->`;\n};\n\n// Helper: Build Gutenberg output from structured object\nconst buildGutenbergOutput = (obj) => {\n  const title = (obj.title || '').trim();\n  let content = (obj.content || '').trim();\n  const excerpt = (obj.excerpt || '').trim();\n  let focusKeyword = (obj.focusKeyword || '').trim();\n  const seoTitle = (obj.seoTitle || obj.title || '').trim();\n  const seoDescription = (obj.seoDescription || obj.excerpt || '').trim();\n\n  if (!title) throw new Error('AI response missing title');\n  if (!content) throw new Error('AI response missing content');\n\n  if (!focusKeyword) {\n    const words = title.split(/[\\s:,\\-–—]+/).filter(w => w.length > 2);\n    focusKeyword = words.slice(0, 4).join(' ').substring(0, 50);\n  }\n\n  // Remove image placement markers\n  content = content\n    .replace(/\\[IMAGE\\s+PLACEMENT[^\\]]*\\]/gi, '')\n    .replace(/\\[תמונת\\s+מיקום[^\\]]*\\]/gi, '')\n    .trim();\n\n  const titleEscaped = escapeHtml(title);\n\n  // If content already Gutenberg blocks, use as-is\n  if (/<!--\\s*wp:/.test(content)) {\n    const wordpressContent = wrapWithTemplate(titleEscaped, content);\n    return {\n      json: {\n        title,\n        excerpt: excerpt || '',\n        content: wordpressContent,\n        focusKeyword,\n        seoTitle,\n        seoDescription,\n        topic,\n        rawContentLength: content.length\n      }\n    };\n  }\n\n  // Split into paragraphs\n  let paragraphs = content.replace(/\\r\\n/g, '\\n').split(/\\n\\n+/).map(p => p.trim()).filter(Boolean);\n  if (paragraphs.length === 1) {\n    paragraphs = content.split(/\\n+/).map(p => p.trim()).filter(Boolean);\n  }\n\n  const contentBlocks = paragraphs.map(buildBlock).join('\\n\\n');\n  const wordpressContent = wrapWithTemplate(titleEscaped, contentBlocks);\n\n  return {\n    json: {\n      title,\n      excerpt: excerpt || content.substring(0, 200) + '...',\n      content: wordpressContent,\n      focusKeyword,\n      seoTitle,\n      seoDescription,\n      topic,\n      rawContentLength: content.length,\n      paragraphCount: paragraphs.length\n    }\n  };\n};\n\n// =====================================================\n// MAIN PARSING LOGIC\n// =====================================================\n\n// 1) ROOT-LEVEL structured output\nif (inputData?.title && inputData?.content) {\n  console.log('✅ Using root-level structured output');\n  return buildGutenbergOutput(inputData);\n}\n\n// 2) output OBJECT structured output\nif (inputData?.output && typeof inputData.output === 'object' && !Array.isArray(inputData.output)) {\n  if (inputData.output.title && inputData.output.content) {\n    console.log('✅ Using structured output object');\n    return buildGutenbergOutput(inputData.output);\n  }\n}\n\n// === Extract JSON text from AI output ===\nlet jsonText = null;\n\nif (Array.isArray(inputData.output)) {\n  console.log('📦 output is array with', inputData.output.length, 'items');\n\n  const textItem = inputData.output.find(item => item && typeof item === 'object' && typeof item.text === 'string' && item.text.trim().length);\n  if (textItem) jsonText = textItem.text;\n\n  if (!jsonText) {\n    const strItem = inputData.output.find(item => typeof item === 'string' && item.trim().length);\n    if (strItem) jsonText = strItem;\n  }\n\n  if (!jsonText) {\n    const contentItem = inputData.output.find(item => item && typeof item === 'object' && typeof item.content === 'string' && item.content.trim().length);\n    if (contentItem) jsonText = contentItem.content;\n  }\n} else if (typeof inputData.output === 'string') {\n  jsonText = inputData.output;\n} else if (typeof inputData.text === 'string') {\n  jsonText = inputData.text;\n} else if (inputData.response) {\n  jsonText = typeof inputData.response === 'string'\n    ? inputData.response\n    : (inputData.response.text || inputData.response.content || '');\n} else if (typeof inputData.message === 'string') {\n  jsonText = inputData.message;\n} else if (typeof inputData.content === 'string') {\n  jsonText = inputData.content;\n}\n\nif (!jsonText || typeof jsonText !== 'string' || jsonText.trim().length === 0) {\n  console.error('❌ No output found. Selected item keys:', Object.keys(inputData));\n  console.error('❌ Sample:', JSON.stringify(inputData).substring(0, 800));\n  throw new Error('No output from AI Agent. Check AI Agent error handling and output structure.');\n}\n\njsonText = jsonText.trim();\nconsole.log('📝 jsonText length:', jsonText.length);\nconsole.log('📝 jsonText preview:', jsonText.substring(0, 400));\n\n// If AI returned Gutenberg blocks directly (not JSON), accept as content\nif (/<!--\\s*wp:/.test(jsonText)) {\n  console.log('✅ Detected Gutenberg blocks in raw text. Using as content directly.');\n  return buildGutenbergOutput({\n    title: (topic || 'Untitled'),\n    content: jsonText,\n    excerpt: '',\n    focusKeyword: '',\n    seoTitle: '',\n    seoDescription: ''\n  });\n}\n\n// === Parse JSON (brace matching to avoid truncation) ===\nlet parsed = null;\nlet parseMethod = 'unknown';\n\ntry {\n  let cleaned = jsonText\n    .replace(/```json\\s*/gi, '')\n    .replace(/```javascript\\s*/gi, '')\n    .replace(/```\\s*/g, '')\n    .trim();\n\n  const firstBrace = cleaned.indexOf('{');\n  if (firstBrace === -1) throw new Error('No JSON object found');\n\n  let braceCount = 0;\n  let jsonEnd = -1;\n\n  for (let i = firstBrace; i < cleaned.length; i++) {\n    const ch = cleaned[i];\n    if (ch === '{') braceCount++;\n    if (ch === '}') {\n      braceCount--;\n      if (braceCount === 0) {\n        jsonEnd = i + 1;\n        break;\n      }\n    }\n  }\n\n  if (jsonEnd > firstBrace) {\n    let jsonStr = cleaned.substring(firstBrace, jsonEnd);\n    jsonStr = jsonStr\n      .replace(/,\\s*}/g, '}')\n      .replace(/,\\s*]/g, ']')\n      .replace(/[\\u0000-\\u001F]/g, ' ');\n    parsed = JSON.parse(jsonStr);\n    parseMethod = 'brace-matching';\n  } else {\n    const m = cleaned.match(/\\{[\\s\\S]*\\}/);\n    if (!m) throw new Error('Could not locate JSON block');\n    let jsonStr = m[0]\n      .replace(/,\\s*}/g, '}')\n      .replace(/,\\s*]/g, ']')\n      .replace(/[\\u0000-\\u001F]/g, ' ');\n    parsed = JSON.parse(jsonStr);\n    parseMethod = 'regex-fallback';\n  }\n\n  console.log(`✅ Parsed JSON (${parseMethod}). content length:`, (parsed.content || '').length);\n} catch (e) {\n  console.error('❌ JSON parse failed:', e.message);\n  console.error('📝 Parse method:', parseMethod);\n\n  // Fallback extraction (only if JSON is malformed)\n  const extractField = (fieldName) => {\n    const rx = new RegExp(`\"${fieldName}\"\\\\s*:\\\\s*\"((?:[^\"\\\\\\\\]|\\\\\\\\[\\\\s\\\\S])*?)\"`, 's');\n    const match = jsonText.match(rx);\n    if (!match || !match[1]) return '';\n    return match[1]\n      .replace(/\\\\n/g, '\\n')\n      .replace(/\\\\r/g, '\\r')\n      .replace(/\\\\t/g, '\\t')\n      .replace(/\\\\\"/g, '\"')\n      .replace(/\\\\'/g, \"'\")\n      .replace(/\\\\\\\\/g, '\\\\');\n  };\n\n  parsed = {\n    title: extractField('title'),\n    content: extractField('content'),\n    excerpt: extractField('excerpt'),\n    focusKeyword: extractField('focusKeyword'),\n    seoTitle: extractField('seoTitle'),\n    seoDescription: extractField('seoDescription')\n  };\n\n  if (!parsed.title || !parsed.content) {\n    throw new Error(`Failed to parse AI response - missing title or content. Preview: ${jsonText.substring(0, 200)}`);\n  }\n}\n\n// === Build Gutenberg output ===\nreturn buildGutenbergOutput(parsed);"
+      },
+      "id": "63c83f8a-6b37-475a-b1f9-1d7cade10e40",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -11632,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a NEW, non-duplicative blog post in professional Hebrew for tax4us.co.il.\n\nSPECIFIC TOPIC FOR THIS ARTICLE (MUST FOLLOW EXACTLY):\n{{ $json.topic || 'US-Israeli tax topics (choose a different topic than previous articles)' }}\n\nCURRENT YEAR: {{ new Date().getFullYear() }}\nTAX YEAR RULE:\n- When referencing the tax year being filed, use: \"שנת המס {{ new Date().getFullYear() - 1 }}\" and filing in {{ new Date().getFullYear() }}.\n- Deadlines must use {{ new Date().getFullYear() }} (e.g., 15 באפריל {{ new Date().getFullYear() }}).\n\nEXISTING POST TITLES TO AVOID DUPLICATING ({{ $json.existingPostTitles?.length || $json.existingPostsCount || 0 }}):\n{{ $json.existingPostTitles && $json.existingPostTitles.length ? $json.existingPostTitles.slice(0, 80).map((t,i)=>`${i+1}. ${t}`).join('\\n') : 'No existing posts provided' }}\n\nCRITICAL ANTI-DUPLICATION (NON-NEGOTIABLE):\n- Your title, outline, subheadings, and angle MUST be clearly different from ALL titles above.\n- Choose ONE unique angle/sub-problem within the topic (not a generic overview).\n- Use fresh examples and fresh structure; do NOT reuse the same \"framework wording\" from previous articles.\n\nUSER NOTES (if any):\n{{ $json.userNotes || '' }}\n\nUSER FEEDBACK FROM PREVIOUS REJECTION (if any):\n{{ $json.rejectionFeedback || '' }}\n\nINTERNAL LINKS (use exactly these URLs; choose 3-5 relevant ones):\n{{ $json.internalLinks && $json.internalLinks.length ? $json.internalLinks.slice(0, 30).map((x,i)=>`${i+1}. ${x.title} — ${x.url}`).join('\\n') : 'No internal links provided' }}\n\nAUTHORITATIVE EXTERNAL SOURCES (MANDATORY - use 2-3 as dofollow links with specific page references):\n- https://www.irs.gov/forms-pubs (link to specific forms/publications)\n- https://www.irs.gov/individuals/international-taxpayers (for expat-specific content)\n- https://home.treasury.gov (for treaty information)\n- https://www.fincen.gov/report-foreign-bank-and-financial-accounts (for FBAR)\n- https://bsaefiling.fincen.treas.gov (for FinCEN filing)\n\nIRS FACT-CHECKING REQUIREMENT:\nEvery threshold, deadline, penalty amount, and tax rate you mention MUST be accurate per current IRS publications. When citing:\n- Form numbers → Verify against IRS.gov/forms-pubs\n- Thresholds → Include the IRC section or regulation (e.g., \"31 CFR 1010.350\")\n- Penalties → Use exact current amounts from IRS penalty guidelines\n- DO NOT guess or use outdated numbers\n\nTITLE RULES (ABSOLUTELY CRITICAL):\n- 🚫 Numbers in titles are COMPLETELY BANNED (no \"7 דרכים\", \"5 טיפים\", \"10 טעויות\", etc.)\n- 🚫 BANNED FORMATS: \"מדריך ל...\", \"כל מה שצריך לדעת על...\", \"איך ל...\", \"X דברים ש...\"\n- ✅ REQUIRED: Use ONE of these ARTICLE formats (not guide formats):\n  1) PROVOCATIVE QUESTION: \"האם באמת כדאי לדווח על...?\", \"למה כולם טועים בנוגע ל...?\"\n  2) INSIGHT/REVELATION: \"מה שלא מספרים לך על...\", \"הסוד שרשויות המס לא רוצות שתדע\"\n  3) OPINION/ANALYSIS: \"דעתי המקצועית על...\", \"למה השינוי החדש הוא טעות\"\n  4) TIMELY COMMENTARY: \"מה המשמעות של השינויים החדשים ב...\", \"הרפורמה שתשנה את הכל\"\n  5) PROBLEM-FOCUSED: \"הטעות היקרה ביותר שאני רואה שוב ושוב\", \"למה כל כך הרבה אמריקאים נכשלים ב...\"\n  6) STORY-BASED: \"מה למדתי מלקוח שניסה להסתיר...\", \"הסיפור מאחורי...\"\n- Title should spark curiosity and promise insight, not instruction\n\nTAX4US WRITING STYLE (MATCH THIS EXACTLY):\nYour writing must match the style of tax4us.co.il's best articles. Study these characteristics:\n\n1. DIRECT OPENING - Start with a fact or context, not a generic intro:\n   ✅ \"החובה להגיש דוחות מס לארה\"ב קיימת כבר מאז שנת 1916.\"\n   ❌ \"בעולם המס האמריקאי, יש דברים רבים שחשוב לדעת...\"\n\n2. SPECIFIC NUMBERS ALWAYS:\n   ✅ \"סף הדיווח ל-FBAR עומד על $10,000 יתרה מצטברת מקסימלית\"\n   ❌ \"סף הדיווח ל-FBAR הוא סכום מסוים שצריך לבדוק\"\n\n3. IRS CODE REFERENCES:\n   ✅ \"סעיף 911 לחוק ה-IRC מאפשר החרגת הכנסות אקטיביות\"\n   ❌ \"החוק האמריקאי מאפשר החרגות מסוימות\"\n\n4. HISTORICAL CONTEXT:\n   ✅ \"כבר משנת 1970, כלל האזרחים האמריקאים מחויבים בדיווח על חשבונות פיננסים זרים\"\n   ❌ \"כבר שנים רבות יש חובת דיווח\"\n\n5. TECHNICAL TERMS EXPLAINED:\n   ✅ \"FBAR (Foreign Bank Account Report) הוא דיווח שנתי הנדרש מאזרחים אמריקאים\"\n   ❌ \"דו\"ח ה-FBAR הוא טופס חשוב\"\n\n6. SHORT PARAGRAPHS (3-5 sentences max)\n\n7. TABLES for thresholds, brackets, deadlines\n\nCONTENT REQUIREMENTS:\n1) LENGTH: 2500–3000 Hebrew words.\n2) PARAGRAPHS: max ~120 words each (split aggressively).\n3) STRUCTURE: Use 6-10 H2 sections with narrative flow. Structure like an article/essay, not a manual:\n   - Opening hook (scenario, question, or surprising fact with SPECIFIC numbers)\n   - Context/background (historical context, when law was enacted, why it matters now)\n   - Core analysis (your insights, specific IRS code references, penalty amounts)\n   - Real-world implications (what this means in practice with dollar examples)\n   - Nuances/exceptions (the \"but\" and \"however\" with specific conditions)\n   - Professional opinion/conclusion (your take, with recommendation to consult professional)\n4) CLOSING THOUGHTS: End with a \"שורה תחתונה\" or \"מה זה אומר בפועל\" section.\n5) FOCUS KEYWORD: 2–3 Hebrew words, max 50 chars. Use it 10–15 times naturally. It must appear in:\n   - title\n   - first paragraph\n   - at least one heading\n   - seoDescription\n6) LINKS:\n   - Internal: 3–5 links using EXACT URLs from the INTERNAL LINKS list\n   - External: 2–3 dofollow links to IRS.gov (specific pages), FinCEN.gov, or Treasury.gov\n7) IMAGES: include 4+ natural image placement references inline\n\nOUTPUT FORMAT (RETURN ONLY VALID JSON, NO MARKDOWN, NO BACKTICKS, NO COMMENTARY):\nReturn ONLY a valid JSON object with EXACTLY these fields:\n{\n  \"title\": \"...\",\n  \"content\": \"...\",\n  \"excerpt\": \"...\",\n  \"focusKeyword\": \"...\",\n  \"seoTitle\": \"...\",\n  \"seoDescription\": \"...\"\n}\n\nFIELD SPECS:\n- title: 50–70 chars, Hebrew, follows TITLE RULES. NO CLICHÉS.\n- content: WordPress Gutenberg HTML blocks (include <!-- wp:... --> comments). Must include specific IRS references and the links.\n- excerpt: 150–160 Hebrew characters.\n- focusKeyword: 2–3 Hebrew words (max 50 chars).\n- seoTitle: 50–60 chars; must start with focusKeyword; include one power word; no numbers.\n- seoDescription: 150–160 chars; include focusKeyword + compelling CTA; no numbers unless essential.\n\nCOMPLIANCE:\n- JSON must start with { and end with } and be parseable by JSON.parse().\n- Do not change the topic.\n- Do not output markdown fences or code blocks.\n- All IRS-related facts must be verifiable.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert U.S.–Israel cross-border tax writer for tax4us.co.il.\n\nWRITING STYLE (MATCH EXACTLY):\nYour writing must match the authoritative, factual style of tax4us.co.il's cornerstone content.\n\n✅ DO:\n- Be DIRECT and FACTUAL - every sentence delivers information\n- Use SPECIFIC NUMBERS (exact thresholds: $10,000, $14,600; exact dates: April 15, October 15)\n- Reference actual IRS CODE SECTIONS (e.g., \"סעיף 911 לחוק ה-IRC\", \"סעיף 6038D\")\n- Provide HISTORICAL CONTEXT (\"החובה קיימת מאז שנת 1970...\", \"החל משנת 2008...\")\n- Explain TECHNICAL TERMS on first use: \"FBAR (Foreign Bank Account Report)\"\n- Use SHORT PARAGRAPHS (3-5 sentences maximum)\n- Include TABLES for numerical data (thresholds, brackets, deadlines)\n- Link to OFFICIAL SOURCES (IRS.gov, FinCEN.gov, משרד האוצר)\n- Use bold section headers (## in markdown) for scanability\n\n❌ BANNED CLICHÉS - NEVER USE THESE PHRASES:\n- \"כל מה שצריך לדעת\" / \"המדריך המלא\"\n- \"חשוב מאוד להבין\" / \"חשוב לציין ש...\"\n- \"בעולם של היום\" / \"בעידן המודרני\"\n- \"לא מעט אנשים\" / \"רבים לא יודעים\"\n- \"השורה התחתונה היא ש...\"\n- \"זה לא סוד ש...\" / \"כידוע לכל\"\n- \"פשוט וקל\" / \"בקלות רבה\"\n- \"מומלץ בחום\" / \"ללא ספק\"\n- \"משנה את כללי המשחק\" / \"פורץ דרך\"\n- \"בסופו של דבר\" / \"לסיכום\"\n- Generic superlatives without supporting facts\n\nAUTHORITATIVE SOURCING (MANDATORY):\nALL factual claims must be verifiable against IRS.gov publications. When stating:\n- Thresholds → Cite the exact IRS form or publication number\n- Deadlines → Reference the specific IRC section\n- Penalties → Include the exact dollar amounts from current IRS guidelines\n- Tax rates → Reference the current tax year's official IRS brackets\n\nExample of correct style:\n\"סף הדיווח ל-FBAR עומד על $10,000 (יתרה מצטברת מקסימלית במהלך השנה) בהתאם ל-31 CFR 1010.350. הקנס על אי-דיווח לא-רצוני יכול להגיע עד $10,000 לכל הפרה.\"\n\nAVOID:\n- Step-by-step \"how to\" guides - write analysis and implications instead\n- Numbered lists as main structure (X tips, X ways, X things)\n- Generic overviews without specific details\n- Promotional or sales language\n- Opinions stated as facts without IRS backing\n\nBe strictly factual. If a detail depends on specifics, state what must be verified with a tax professional.\n\nVOICE & TONE PROFILE:\n- Formality: Professional but warm/friendly — authoritative without being cold\n- Emotional tone: Warm and approachable while maintaining expert credibility\n- Sentence length: Medium — avoid both choppy fragments and run-on sentences\n- Complexity: Moderately complex — don't oversimplify, but keep it accessible\n- Vocabulary: Professional terminology with rich/varied word choice — no repetitive phrasing\n- Contractions: Rarely use contractions (write \"do not\" instead of \"don't\", \"cannot\" instead of \"can't\")\n- Pronouns: Use first person (אני/אנחנו) frequently to establish expertise, and second person (אתם/אתה) to engage the reader directly\n- Humor: Light touches of humor and occasional sarcasm/irony are welcome — never forced\n- Formatting: Paragraphs only as primary structure (no numbered lists as main organization). Use bold for key points, italics for emphasis, occasional CAPS for critical warnings\n- Openings: Vary between direct statements, hooks/stories, and context-setting — never start the same way twice\n- Closings: Always end with a summary/takeaway section (\"שורה תחתונה\")"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -12192,
+        288
+      ],
+      "id": "118cb64e-ada8-44b1-bb29-90fbb3f18ca5",
+      "name": "Content Strategy AI Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"title\", \"content\", \"excerpt\", \"focusKeyword\", \"seoTitle\", \"seoDescription\"],\n  \"properties\": {\n    \"title\": { \"type\": \"string\", \"minLength\": 10 },\n    \"content\": { \"type\": \"string\", \"minLength\": 8000 },\n    \"excerpt\": { \"type\": \"string\", \"minLength\": 80, \"maxLength\": 180 },\n    \"focusKeyword\": { \"type\": \"string\", \"minLength\": 2, \"maxLength\": 50 },\n    \"seoTitle\": { \"type\": \"string\", \"minLength\": 45, \"maxLength\": 70 },\n    \"seoDescription\": { \"type\": \"string\", \"minLength\": 120, \"maxLength\": 180 }\n  }\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -12000,
+        512
+      ],
+      "id": "bc8b820a-65e4-43c8-953f-2ef76aa1dd06",
+      "name": "Structured Output Parser",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4"
+        },
+        "options": {
+          "maxTokensToSample": 16000,
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -12064,
+        720
+      ],
+      "id": "5f2874b7-c070-4ff3-9e29-3ce6060d87d9",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "j1oGG5odUyZb049h",
+          "name": "Anthropic Claude"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                4
+              ],
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "bac63f58-b18e-4808-8ae5-013f6ccf6cae",
+      "name": "Mon & Thu 8:00am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -13984,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "vRPMIDw64Mxsdw1uF3YEG",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/vRPMIDw64Mxsdw1uF3YEG",
+          "cachedResultName": "mon+thu; 2"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -11408,
+        496
+      ],
+      "id": "236a983a-b9f9-45d6-9a8b-08170d2b65f7",
+      "name": "Call 'mon+thu; 2'"
+    }
+  ],
+  "pinData": {
+    "Mon&Thu 830am": [
+      {
+        "json": {
+          "timestamp": "2025-12-03T13:15:34.530-06:00",
+          "Readable date": "December 3rd 2025, 1:15:34 pm",
+          "Readable time": "1:15:34 pm",
+          "Day of week": "Wednesday",
+          "Year": "2025",
+          "Month": "December",
+          "Day of month": "03",
+          "Hour": "13",
+          "Minute": "15",
+          "Second": "34",
+          "Timezone": "America/Chicago (UTC-06:00)"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Fetch Existing Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Fetch Existing Posts": {
+      "main": [
+        [
+          {
+            "node": "Extract Template Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Template Info": {
+      "main": [
+        [
+          {
+            "node": "Format Topic Selection Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Topic Selection Message": {
+      "main": [
+        [
+          {
+            "node": "Send Topic Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Topic Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Process Topic Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Topic Approval": {
+      "main": [
+        [
+          {
+            "node": "Check Topic Approval Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Topic Approval Status": {
+      "main": [
+        [
+          {
+            "node": "Content Strategy AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record Topic Rejection Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record Topic Rejection Feedback": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Fetch Existing Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Content Strategy AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "Call 'mon+thu; 2'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Strategy AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Content Strategy AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Strategy AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mon & Thu 8:00am": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true,
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "binaryMode": "separate"
+  },
+  "versionId": "65b816fb-e5f9-4c1a-a225-fe9b156dce78",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "debc7feccc354e86e5a53344362b691cecb5d65ac2ba67b45cdccf9a516514d6"
+  },
+  "id": "cHuJmIz5MVFAjP2Q",
+  "tags": [
+    {
+      "updatedAt": "2026-01-15T06:51:11.693Z",
+      "createdAt": "2026-01-15T06:51:11.693Z",
+      "id": "9GHXxWp6cR4uduY6",
+      "name": "blog"
+    },
+    {
+      "updatedAt": "2025-10-16T21:55:13.553Z",
+      "createdAt": "2025-10-16T21:55:13.553Z",
+      "id": "LkXk2R1JbFgPIGlF",
+      "name": "posts"
+    },
+    {
+      "updatedAt": "2026-01-15T06:50:34.281Z",
+      "createdAt": "2026-01-15T06:50:34.281Z",
+      "id": "Tq5JEblC9nELmMk3",
+      "name": "seo"
+    }
+  ]
+}

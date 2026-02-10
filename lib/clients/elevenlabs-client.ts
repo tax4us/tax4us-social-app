@@ -35,4 +35,25 @@ export class ElevenLabsClient {
 
         return await response.arrayBuffer();
     }
+
+    async generateDialogue(segments: { text: string; voice_id: string }[]): Promise<ArrayBuffer> {
+        const response = await fetch(`${this.baseUrl}/text-to-dialogue`, {
+            method: "POST",
+            headers: {
+                "xi-api-key": this.apiKey,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                inputs: segments,
+                model_id: "eleven_v3"
+            }),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(`ElevenLabs Dialogue Error: ${JSON.stringify(error)}`);
+        }
+
+        return await response.arrayBuffer();
+    }
 }

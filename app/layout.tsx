@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Assistant, Secular_One } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const assistant = Assistant({
+  subsets: ["latin", "hebrew"],
+  variable: "--font-assistant",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const secularOne = Secular_One({
+  subsets: ["latin", "hebrew"],
+  weight: "400",
+  variable: "--font-secular-one",
 });
 
 export const metadata: Metadata = {
@@ -23,11 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${assistant.variable} ${secularOne.variable} antialiased font-sans`}
+        suppressHydrationWarning
       >
-        {children}
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );

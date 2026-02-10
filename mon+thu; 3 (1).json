@@ -1,0 +1,845 @@
+{
+  "name": "mon+thu; 3",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://tax4us.co.il/wp-json/wp/v2/posts/' + String($json.postId || 0) }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"content\": $json.updatedContent } }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "f130f816-9127-4e33-ad0a-d55ba95c0c01",
+      "name": "HTTP: Update Post with Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3328,
+        320
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.postId && $json.postId > 0 ? 'https://tax4us.co.il/wp-json/wp/v2/posts/' + String($json.postId) : 'https://tax4us.co.il/wp-json/wp/v2/posts' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  title: $json.title || '',\n  content: $json.content || '',\n  excerpt: $json.excerpt || '',\n  status: 'publish',\n  format: $json.format || 'standard',\n  template: $json.template || '',\n  comment_status: $json.comment_status || 'open',\n  ping_status: $json.ping_status || 'open',\n  categories: $json.categories || [],\n  tags: $json.tags || [],\n  lang: 'he',\n  meta: {\n    rank_math_focus_keyword: $json.focusKeyword || '',\n    rank_math_title: $json.seoTitle || $json.title || '',\n    rank_math_description: $json.seoDescription || $json.excerpt || ''\n  }\n} }}",
+        "options": {}
+      },
+      "id": "36e8e7f3-46d0-47db-b951-b26e6cc32204",
+      "name": "HTTP: WordPress Publish + Rank Math2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1984,
+        224
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      },
+      "notes": "OPTIMIZED: Combined WordPress publish + Rank Math SEO into single API call"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "36246cde-aceb-46f3-b13d-5f905cbf83df",
+      "name": "Check Approval Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2432,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "rejectionFeedback",
+              "value": "={{ $json.userFeedback || $json.feedback || 'No specific feedback provided' }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "rejectionCount",
+              "value": "={{ 1 }}",
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "previousTitle",
+              "value": "={{ $('Format Slack Message').first().json.title || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0b51d341-4d8c-481a-9862-21b0826771ff",
+      "name": "Record Rejection Feedback",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2208,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U09NNMEDNEQ",
+          "mode": "list",
+          "cachedResultName": "ben"
+        },
+        "text": "={{ '✅ *Hebrew Post Published Successfully!*\\n\\n*Title:* ' + ($json.title?.rendered || $json.title || 'Untitled') + '\\n*Post ID:* ' + $json.id + '\\n*URL:* ' + ($json.link || 'N/A') }}",
+        "otherOptions": {}
+      },
+      "id": "0be9cd2b-01c6-4690-a679-2be335fe85d8",
+      "name": "Notify Success",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1312,
+        224
+      ],
+      "webhookId": "4d44b94d-d516-4a6c-a239-2afd232e01a0",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "TtgEhzUDH0MsxlGp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "approved",
+              "value": "={{ $json.data?.approved ?? $json.approved ?? false }}",
+              "type": "boolean"
+            },
+            {
+              "id": "id-2",
+              "name": "userFeedback",
+              "value": "={{ $json.data?.feedback ?? $json.data?.text ?? $json.feedback ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "approvalDecision",
+              "value": "={{ ($json.data?.approved ?? $json.approved ?? false) ? 'Approve' : 'Decline' }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "hasFeedback",
+              "value": "={{ ($json.data?.feedback ?? $json.data?.text ?? $json.feedback ?? '').trim().length > 0 }}",
+              "type": "boolean"
+            },
+            {
+              "id": "id-5",
+              "name": "title",
+              "value": "={{ $('Format Slack Message').first().json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "excerpt",
+              "value": "={{ $('Format Slack Message').first().json.excerpt }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "reasoning",
+              "value": "={{ $('Format Slack Message').first().json.reasoning }}",
+              "type": "string"
+            },
+            {
+              "id": "id-8",
+              "name": "publicUrl",
+              "value": "={{ $('Format Slack Message').first().json.publicUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "id-9",
+              "name": "postStatus",
+              "value": "={{ $('Format Slack Message').first().json.postStatus }}",
+              "type": "string"
+            },
+            {
+              "id": "id-10",
+              "name": "postId",
+              "value": "={{ $('Format Slack Message').first().json.postId }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2656,
+        320
+      ],
+      "id": "b08bc8b7-eebc-45a6-bd96-3ad7d7b57d2d",
+      "name": "Extract User Feedback",
+      "notesInFlow": true,
+      "notes": "OPTIMIZED: Replaced Code node with Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Publish Data - Uses input chain data (passed from mon+thu; 2)\nconst wpResponse = $('HTTP: Update Post with Video').first()?.json || {};\nconst inputData = $('Extract User Feedback').first()?.json || {};\n\nconst getValue = (field, fallback) => {\n  if (field === null || field === undefined) return fallback || '';\n  if (typeof field === 'object' && !Array.isArray(field)) {\n    return field.value !== undefined ? field.value : (field.rendered !== undefined ? field.rendered : fallback || '');\n  }\n  return field;\n};\n\nconst parseArray = (val) => {\n  if (Array.isArray(val)) return val;\n  if (typeof val === 'string') {\n    try { const parsed = JSON.parse(val); if (Array.isArray(parsed)) return parsed; } catch(e) {}\n  }\n  return [];\n};\n\n// Get the trigger input data (passed from mon+thu; 2)\nlet triggerData = {};\ntry {\n  triggerData = $('When Executed by Another Workflow').first()?.json || {};\n} catch(e) {\n  try { triggerData = $('When chat message received').first()?.json || {}; } catch(e2) {}\n}\n\nconst postId = Number(getValue(wpResponse.id) || getValue(triggerData.postId) || 0);\n\nreturn [{\n  json: {\n    postId: postId,\n    title: String(getValue(wpResponse.title) || getValue(triggerData.title) || ''),\n    content: String(getValue(triggerData.updatedContent) || getValue(wpResponse.content) || getValue(triggerData.content) || ''),\n    excerpt: String(getValue(wpResponse.excerpt) || getValue(triggerData.excerpt) || ''),\n    status: 'publish',\n    format: 'standard',\n    template: '',\n    comment_status: 'open',\n    ping_status: 'open',\n    categories: parseArray(triggerData.categories),\n    tags: parseArray(triggerData.tagIds),\n    lang: 'he',\n    focusKeyword: String(triggerData.focusKeyword || ''),\n    seoTitle: String(triggerData.seoTitle || getValue(triggerData.title) || ''),\n    seoDescription: String(triggerData.seoDescription || getValue(triggerData.excerpt) || '')\n  }\n}];"
+      },
+      "id": "eeee21ac-ab74-4bab-871c-ac3da4bff2f9",
+      "name": "Prepare Publish Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2208,
+        224
+      ],
+      "notesInFlow": true,
+      "notes": "KEPT as Code: Complex nested .value extraction from workflowInputs requires JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse English Translation - Handles AI Agent output\nconst translationData = $input.first().json;\n\n// Helper: extract value\nfunction extractValue(field) {\n  if (field === null || field === undefined) return '';\n  if (typeof field !== 'object') return field;\n  if (Array.isArray(field)) return field;\n  if (field.value !== undefined) {\n    return typeof field.value === 'object' ? extractValue(field.value) : field.value;\n  }\n  if (field.rendered !== undefined) return field.rendered;\n  if (field.id !== undefined) return field.id;\n  return '';\n}\n\n// Hebrew detection\nconst hasHebrew = (text) => {\n  if (!text || typeof text !== 'string') return false;\n  return /[\\u0590-\\u05FF]/.test(text);\n};\n\n// Get Hebrew post data for fallback\nlet hebrewPostData = {};\nlet hebrewSeoData = {};\ntry {\n  hebrewPostData = $('HTTP: WordPress Publish + Rank Math2').first()?.json || {};\n} catch (e) {}\ntry {\n  hebrewSeoData = $('HTTP: Save Score HE1').first()?.json || {};\n} catch (e) {}\n\n// Get video data\nlet videoData = {};\ntry {\n  videoData = $('Prepare Hebrew for Translation').first()?.json || {};\n} catch (e) {}\n\n// Check for error\nif (translationData.error) {\n  const errorMsg = String(translationData.error || '');\n  console.log('Translation error: ' + errorMsg);\n  \n  return {\n    json: {\n      title: 'Translation Error - Manual Review Required',\n      excerpt: 'Translation failed. Please translate manually.',\n      content: 'Translation failed. Please translate manually.',\n      focusKeyword: 'Tax Article',\n      seoTitle: 'Translation Error',\n      seoDescription: 'Translation failed.',\n      translationError: true,\n      errorMessage: errorMsg,\n      hebrewPostId: extractValue(hebrewPostData.id) || null,\n      hebrewPostUrl: extractValue(hebrewPostData.link) || null,\n      videoUrl: extractValue(videoData.videoUrl) || null\n    }\n  };\n}\n\nlet translated = {\n  title: '',\n  excerpt: '',\n  content: '',\n  focusKeyword: '',\n  seoTitle: '',\n  seoDescription: ''\n};\n\n// Priority 1: Direct fields\nif (translationData.title || translationData.content || translationData.focusKeyword) {\n  translated = {\n    title: String(extractValue(translationData.title) || ''),\n    excerpt: String(extractValue(translationData.excerpt) || ''),\n    content: String(extractValue(translationData.content) || ''),\n    focusKeyword: String(extractValue(translationData.focusKeyword) || ''),\n    seoTitle: String(extractValue(translationData.seoTitle) || extractValue(translationData.title) || ''),\n    seoDescription: String(extractValue(translationData.seoDescription) || extractValue(translationData.excerpt) || '')\n  };\n}\n// Priority 2: Array output\nelse if (Array.isArray(translationData.output) && translationData.output.length > 0) {\n  const textItem = translationData.output.find(function(item) {\n    return item.type === 'text' && item.text;\n  });\n  \n  if (textItem && textItem.text) {\n    let jsonStr = String(textItem.text).replace(/```json\\s*/g, '').replace(/```\\s*/g, '').trim();\n    \n    try {\n      const jsonMatch = jsonStr.match(/\\{[\\s\\S]*\\}/);\n      if (jsonMatch) {\n        jsonStr = jsonMatch[0].replace(/,\\s*}/g, '}').replace(/,\\s*]/g, ']');\n      }\n      const parsed = JSON.parse(jsonStr);\n      translated = {\n        title: String(extractValue(parsed.title) || ''),\n        excerpt: String(extractValue(parsed.excerpt) || ''),\n        content: String(extractValue(parsed.content) || ''),\n        focusKeyword: String(extractValue(parsed.focusKeyword) || ''),\n        seoTitle: String(extractValue(parsed.seoTitle) || extractValue(parsed.title) || ''),\n        seoDescription: String(extractValue(parsed.seoDescription) || extractValue(parsed.excerpt) || '')\n      };\n    } catch (e) {\n      console.log('JSON parse failed: ' + e.message);\n    }\n  }\n}\n// Priority 3: String output\nelse if (typeof translationData.output === 'string') {\n  try {\n    let jsonStr = translationData.output.replace(/```json\\s*/g, '').replace(/```\\s*/g, '').trim();\n    const jsonMatch = jsonStr.match(/\\{[\\s\\S]*\\}/);\n    if (jsonMatch) {\n      jsonStr = jsonMatch[0].replace(/,\\s*}/g, '}').replace(/,\\s*]/g, ']');\n    }\n    const parsed = JSON.parse(jsonStr);\n    translated = {\n      title: String(parsed.title || ''),\n      excerpt: String(parsed.excerpt || ''),\n      content: String(parsed.content || ''),\n      focusKeyword: String(parsed.focusKeyword || ''),\n      seoTitle: String(parsed.seoTitle || parsed.title || ''),\n      seoDescription: String(parsed.seoDescription || parsed.excerpt || '')\n    };\n  } catch (e) {\n    console.log('String output parse failed: ' + e.message);\n  }\n}\n// Priority 4: Output object\nelse if (translationData.output && typeof translationData.output === 'object' && !Array.isArray(translationData.output)) {\n  if (translationData.output.title || translationData.output.content) {\n    translated = {\n      title: String(extractValue(translationData.output.title) || ''),\n      excerpt: String(extractValue(translationData.output.excerpt) || ''),\n      content: String(extractValue(translationData.output.content) || ''),\n      focusKeyword: String(extractValue(translationData.output.focusKeyword) || ''),\n      seoTitle: String(extractValue(translationData.output.seoTitle) || extractValue(translationData.output.title) || ''),\n      seoDescription: String(extractValue(translationData.output.seoDescription) || extractValue(translationData.output.excerpt) || '')\n    };\n  }\n}\n\n// Validate no Hebrew\nif (hasHebrew(translated.title)) {\n  throw new Error('Translation failed - title contains Hebrew characters');\n}\nif (hasHebrew(translated.content.replace(/<[^>]*>/g, ' ').replace(/<!--[^>]*-->/g, ' '))) {\n  throw new Error('Translation failed - content contains Hebrew characters');\n}\n\n// Validate required fields\nif (!translated.title || !translated.title.trim()) {\n  throw new Error('Translation failed - title is empty');\n}\nif (!translated.content || !translated.content.trim()) {\n  throw new Error('Translation failed - content is empty');\n}\n\nreturn {\n  json: {\n    title: translated.title,\n    excerpt: translated.excerpt,\n    content: translated.content,\n    focusKeyword: translated.focusKeyword,\n    seoTitle: translated.seoTitle,\n    seoDescription: translated.seoDescription,\n    hebrewPostId: extractValue(hebrewPostData.id) || null,\n    hebrewPostUrl: extractValue(hebrewPostData.link) || null,\n    videoUrl: extractValue(videoData.videoUrl) || null\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        128
+      ],
+      "id": "9c20e302-5a9e-4ada-a446-d0e7295aec96",
+      "name": "Parse English Translation",
+      "notesInFlow": true,
+      "notes": "KEPT: Complex multi-format JSON parsing"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rebuild Gutenberg Content - Creates WordPress block structure for English posts\nconst allItems = $input.all().map(function(i) { return i.json; });\nconst translationData = allItems.find(function(d) {\n  return d && (d.title || d.content || d.translationError);\n}) || allItems[0] || {};\n\n// Hebrew detection\nconst hasHebrew = (text) => {\n  if (!text || typeof text !== 'string') return false;\n  return /[\\u0590-\\u05FF]/.test(text);\n};\n\n// Check for translation errors\nif (translationData.translationError || translationData.translationTimeout) {\n  return {\n    json: {\n      ...translationData,\n      content: translationData.content || 'Translation error - manual review required'\n    }\n  };\n}\n\n// Validate\nif (!translationData.title || !translationData.title.trim()) {\n  throw new Error('Translation failed - title empty');\n}\nif (!translationData.content || !translationData.content.trim()) {\n  throw new Error('Translation failed - content empty');\n}\n\n// Check for Hebrew in title\nif (hasHebrew(translationData.title)) {\n  throw new Error('Translation failed - title contains Hebrew');\n}\n\n// Check content for Hebrew\nconst visibleText = translationData.content\n  .replace(/<!--[\\s\\S]*?-->/g, ' ')\n  .replace(/<[^>]*>/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nif (hasHebrew(visibleText)) {\n  throw new Error('Translation failed - content contains Hebrew');\n}\n\n// If content already has Gutenberg blocks, use as-is\nif (translationData.content.indexOf('<!-- wp:') !== -1) {\n  return {\n    json: {\n      title: translationData.title,\n      content: translationData.content,\n      excerpt: translationData.excerpt,\n      focusKeyword: translationData.focusKeyword || '',\n      seoTitle: translationData.seoTitle || translationData.title || '',\n      seoDescription: translationData.seoDescription || translationData.excerpt || '',\n      hebrewPostId: translationData.hebrewPostId || null,\n      hebrewPostUrl: translationData.hebrewPostUrl || null,\n      videoUrl: translationData.videoUrl || null\n    }\n  };\n}\n\n// Convert plain text to Gutenberg blocks\nconst escapeHtml = (str) => {\n  return String(str || '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&#039;');\n};\n\nconst titleEscaped = escapeHtml(translationData.title);\n\n// Split into paragraphs\nlet raw = translationData.content.replace(/\\r\\n/g, '\\n').trim();\nlet rawParagraphs = raw.split(/\\n\\n+/);\nif (rawParagraphs.length === 1) {\n  rawParagraphs = raw.split(/\\n+/);\n}\n\nconst paragraphs = rawParagraphs.map(function(p) { return p.trim(); }).filter(function(p) { return p.length > 0; });\n\n// Convert markdown links\nconst convertMarkdownLinks = (escapedText) => {\n  return escapedText.replace(\n    /\\[([^\\]]+)\\]\\((https?:\\/\\/[^)\\s]+)\\)/g,\n    '<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer dofollow\">$1</a>'\n  );\n};\n\n// Build blocks\nconst buildBlock = (para) => {\n  const trimmed = para.trim();\n\n  if (trimmed.indexOf('### ') === 0) {\n    const headingText = trimmed.substring(4).trim();\n    const escaped = escapeHtml(headingText);\n    return '<!-- wp:heading {\"level\":3,\"style\":{\"color\":{\"text\":\"#666666\"}}} -->\\n<h3 class=\"has-text-color\" style=\"color:#666666\">' + escaped + '</h3>\\n<!-- /wp:heading -->';\n  }\n\n  if (trimmed.indexOf('## ') === 0) {\n    const headingText = trimmed.substring(3).trim();\n    const escaped = escapeHtml(headingText);\n    return '<!-- wp:heading {\"level\":2,\"style\":{\"color\":{\"text\":\"#8fb634\"}}} -->\\n<h2 class=\"has-text-color\" style=\"color:#8fb634\">' + escaped + '</h2>\\n<!-- /wp:heading -->';\n  }\n\n  const escaped = escapeHtml(para);\n  const withLinks = convertMarkdownLinks(escaped);\n  return '<!-- wp:paragraph -->\\n<p>' + withLinks + '</p>\\n<!-- /wp:paragraph -->';\n};\n\nconst paragraphBlocks = paragraphs.map(buildBlock).join('\\n\\n');\n\n// Build template\nconst wordpressContent = [\n  '<!-- wp:cover {\"url\":\"https://tax4us.co.il/wp-content/uploads/2023/11/Converted-11.webp\",\"id\":1129,\"dimRatio\":50,\"overlayColor\":\"black\",\"minHeight\":60,\"minHeightUnit\":\"vh\",\"align\":\"full\"} -->',\n  '<div class=\"wp-block-cover alignfull\" style=\"min-height:60vh\"><span aria-hidden=\"true\" class=\"wp-block-cover__background has-black-background-color has-background-dim-50 has-background-dim\"></span><img class=\"wp-block-cover__image-background wp-image-1129\" alt=\"\" src=\"https://tax4us.co.il/wp-content/uploads/2023/11/Converted-11.webp\" data-object-fit=\"cover\"/><div class=\"wp-block-cover__inner-container\"><!-- wp:heading {\"textAlign\":\"center\",\"level\":1,\"style\":{\"typography\":{\"fontSize\":\"clamp(32px, 5vw, 64px)\",\"fontWeight\":\"800\"},\"color\":{\"text\":\"#ffffff\"}}} -->',\n  '<h1 class=\"has-text-align-center has-text-color\" style=\"color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800\">' + titleEscaped + '</h1>',\n  '<!-- /wp:heading --></div></div>',\n  '<!-- /wp:cover -->',\n  '',\n  '<!-- wp:columns {\"style\":{\"spacing\":{\"margin\":{\"top\":\"32px\"}}}} -->',\n  '<div class=\"wp-block-columns\" style=\"margin-top:32px\">',\n  '',\n  '<!-- wp:column {\"width\":\"25%\"} --><div class=\"wp-block-column\" style=\"flex-basis:25%\">',\n  '<!-- wp:group {\"style\":{\"border\":{\"width\":\"4px\",\"color\":\"#a1cd3a\",\"radius\":\"12px\"}},\"backgroundColor\":\"white\"} -->',\n  '<div class=\"wp-block-group has-white-background-color has-background\" style=\"border-color:#a1cd3a;border-width:4px;border-radius:12px\">',\n  '<h2 class=\"has-text-color has-background\" style=\"background-color:#a1cd3a;color:#ffffff;padding:12px;font-size:24px\">Related Articles</h2>',\n  '<!-- wp:query {\"queryId\":1,\"query\":{\"perPage\":5,\"postType\":\"post\",\"order\":\"desc\",\"orderBy\":\"date\",\"inherit\":false,\"exclude\":[]},\"align\":\"full\"} -->',\n  '<div class=\"wp-block-query alignfull\"><!-- wp:post-template -->',\n  '<!-- wp:group {\"style\":{\"spacing\":{\"padding\":{\"left\":\"16px\",\"right\":\"16px\"}}},\"layout\":{\"type\":\"flex\",\"orientation\":\"vertical\"}} -->',\n  '<div class=\"wp-block-group\" style=\"padding-left:16px;padding-right:16px\">',\n  '<!-- wp:post-featured-image {\"isLink\":true,\"width\":\"100%\",\"height\":\"120px\",\"style\":{\"border\":{\"radius\":\"8px\"}}} /-->',\n  '<!-- wp:post-title {\"isLink\":true,\"fontSize\":\"medium\"} /--><!-- wp:post-date {\"fontSize\":\"small\"} /-->',\n  '<!-- wp:post-excerpt {\"moreText\":\"Read more\",\"excerptLength\":50,\"fontSize\":\"small\"} /-->',\n  '</div><!-- /wp:group --><!-- /wp:post-template --></div><!-- /wp:query -->',\n  '</div><!-- /wp:group --></div><!-- /wp:column -->',\n  '',\n  '<!-- wp:column {\"width\":\"75%\"} --><div class=\"wp-block-column\" style=\"flex-basis:75%\">',\n  '<!-- wp:heading {\"level\":2,\"style\":{\"color\":{\"text\":\"#8fb634\"}}} -->',\n  '<h2 class=\"has-text-color\" style=\"color:#8fb634;margin-bottom:24px\">' + titleEscaped + '</h2>',\n  '<!-- /wp:heading -->',\n  '',\n  paragraphBlocks,\n  '',\n  '</div><!-- /wp:column -->',\n  '</div><!-- /wp:columns -->'\n].join('\\n');\n\nreturn {\n  json: {\n    title: translationData.title,\n    content: wordpressContent,\n    excerpt: translationData.excerpt,\n    focusKeyword: translationData.focusKeyword || '',\n    seoTitle: translationData.seoTitle || translationData.title || '',\n    seoDescription: translationData.seoDescription || translationData.excerpt || '',\n    hebrewPostId: translationData.hebrewPostId || null,\n    hebrewPostUrl: translationData.hebrewPostUrl || null,\n    videoUrl: translationData.videoUrl || null\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        128
+      ],
+      "id": "3b34a75f-e12d-418e-8790-dfba64b2e73d",
+      "name": "Rebuild Gutenberg Content",
+      "notesInFlow": true,
+      "notes": "KEPT: Complex Gutenberg block generation"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create English Draft with Video\nconst translatedData = $input.first().json;\nconst videoUrl = translatedData.videoUrl || null;\nconst hebrewPostId = translatedData.hebrewPostId || null;\n\nconst englishCategories = translatedData.categories || [22, 46];\n\n// Escape title\nconst escapeHtml = (str) => {\n  return String(str || '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&#039;');\n};\n\nconst titleEscaped = escapeHtml(translatedData.title);\nlet wordpressContent = translatedData.content || '';\n\n// Extract tags from content\nconst cleanContent = (translatedData.content || '').replace(/<!-- wp:[\\s\\S]*?-->/g, '').replace(/<[^>]*>/g, ' ');\nconst allText = (translatedData.title + ' ' + cleanContent + ' ' + translatedData.excerpt + ' ' + translatedData.focusKeyword).toLowerCase();\n\nconst englishTags = [];\nif (allText.indexOf('8938') !== -1 || allText.indexOf('form 8938') !== -1) englishTags.push('Form 8938');\nif (allText.indexOf('fbar') !== -1) englishTags.push('FBAR');\nif (allText.indexOf('fatca') !== -1) englishTags.push('FATCA');\nif (allText.indexOf('1116') !== -1) englishTags.push('Form 1116');\nif (allText.indexOf('1040') !== -1) englishTags.push('Form 1040');\nif (allText.indexOf('8833') !== -1) englishTags.push('Form 8833');\nif (allText.indexOf('w-8ben') !== -1 || allText.indexOf('w8ben') !== -1) englishTags.push('W-8BEN');\nif (allText.indexOf('1099') !== -1) englishTags.push('Form 1099');\nif (allText.indexOf('reporting') !== -1) englishTags.push('Reporting');\nif (allText.indexOf('tax planning') !== -1) englishTags.push('Tax Planning');\nif (allText.indexOf('investment') !== -1) englishTags.push('Investment Tax');\nif (allText.indexOf('business') !== -1) englishTags.push('Business Tax');\nif (allText.indexOf('retirement') !== -1 || allText.indexOf('pension') !== -1) englishTags.push('Retirement');\nif (allText.indexOf('estate') !== -1) englishTags.push('Estate Tax');\nif (allText.indexOf('tax treaty') !== -1) englishTags.push('Tax Treaty');\nif (allText.indexOf('real estate') !== -1) englishTags.push('Real Estate Tax');\nif (allText.indexOf('crypto') !== -1) englishTags.push('Cryptocurrency');\nif (allText.indexOf('irs') !== -1) englishTags.push('IRS');\nif (allText.indexOf('penalty') !== -1) englishTags.push('Penalties');\nif (allText.indexOf('audit') !== -1) englishTags.push('Tax Audit');\nenglishTags.push('English');\n\nconst uniqueTags = [];\nfor (let i = 0; i < englishTags.length; i++) {\n  if (uniqueTags.indexOf(englishTags[i]) === -1) {\n    uniqueTags.push(englishTags[i]);\n  }\n}\n\n// Get tag IDs\nlet tagIdMapping = {};\ntry {\n  const tagsItems = $('Fetch English Tags').all() || [];\n  for (let i = 0; i < tagsItems.length; i++) {\n    const item = tagsItems[i];\n    if (item.json && item.json.name && item.json.id) {\n      tagIdMapping[item.json.name] = item.json.id;\n    }\n  }\n} catch (e) {}\n\nconst englishTagIds = [];\nfor (let i = 0; i < uniqueTags.length; i++) {\n  const id = tagIdMapping[uniqueTags[i]];\n  if (id) englishTagIds.push(id);\n}\n\n// Add video banner if available\nif (videoUrl) {\n  const videoBannerParts = [\n    '<!-- wp:cover {\"url\":\"' + videoUrl + '\",\"dimRatio\":40,\"overlayColor\":\"black\",\"minHeight\":60,\"minHeightUnit\":\"vh\",\"align\":\"full\",\"className\":\"video-banner-cover\"} -->',\n    '<div class=\"wp-block-cover alignfull video-banner-cover\" style=\"min-height:60vh;aspect-ratio:unset;\">',\n    '<span aria-hidden=\"true\" class=\"wp-block-cover__background has-black-background-color has-background-dim-40 has-background-dim\"></span>',\n    '<video class=\"wp-block-cover__video-background intrinsic-ignore\" autoplay muted loop playsinline src=\"' + videoUrl + '\" data-object-fit=\"cover\"></video>',\n    '<div class=\"wp-block-cover__inner-container is-layout-flow wp-block-cover-is-layout-flow\">',\n    '<!-- wp:heading {\"textAlign\":\"center\",\"level\":1,\"style\":{\"typography\":{\"fontSize\":\"clamp(32px, 5vw, 64px)\",\"fontWeight\":\"800\"},\"color\":{\"text\":\"#ffffff\"}}} -->',\n    '<h1 class=\"has-text-align-center has-text-color\" style=\"color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800\">' + titleEscaped + '</h1>',\n    '<!-- /wp:heading -->',\n    '</div>',\n    '</div>',\n    '<!-- /wp:cover -->'\n  ];\n  const videoBanner = videoBannerParts.join('\\n');\n  \n  const coverBlockRegex = /<!-- wp:cover[\\s\\S]*?<!-- \\/wp:cover -->/;\n  \n  if (coverBlockRegex.test(wordpressContent)) {\n    wordpressContent = wordpressContent.replace(coverBlockRegex, videoBanner);\n  } else {\n    wordpressContent = videoBanner + '\\n\\n' + wordpressContent;\n  }\n}\n\nconst imagePrompt = 'Professional tax and financial services image for: \"' + translatedData.title + '\". ' +\n  (translatedData.focusKeyword ? 'Focus: ' + translatedData.focusKeyword + '. ' : '') +\n  'Modern, clean, professional business style. Tax documents, calculator, financial charts.';\n\nreturn {\n  json: {\n    title: translatedData.title,\n    content: wordpressContent,\n    excerpt: translatedData.excerpt,\n    focusKeyword: translatedData.focusKeyword,\n    seoTitle: translatedData.seoTitle,\n    seoDescription: translatedData.seoDescription,\n    hebrewPostId: hebrewPostId,\n    videoUrl: videoUrl,\n    tags: uniqueTags,\n    tagIds: englishTagIds,\n    imagePrompt: imagePrompt,\n    categories: englishCategories\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        128
+      ],
+      "id": "6ac22cdb-5f1f-4da9-b360-3a50d564e6d0",
+      "name": "Create English Draft with Video",
+      "notesInFlow": true,
+      "notes": "KEPT: Complex tag mapping + Gutenberg"
+    },
+    {
+      "parameters": {
+        "url": "https://tax4us.co.il/wp-json/wp/v2/tags?per_page=100",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1088,
+        320
+      ],
+      "id": "00675e6e-e632-4955-a04f-b7164dc36c25",
+      "name": "Fetch English Tags",
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate Rank Math Score - ULTRA-LENIENT VERSION\n// Target: 85+ score for Hebrew posts\n// FIXED: More generous scoring with partial credits and bonuses\n\nconst postData = $input.first().json;\nconst postId = postData.id;\n\n// Get content\nlet content = '';\nif (typeof postData.content === 'string') content = postData.content;\nelse if (postData.content?.rendered) content = postData.content.rendered;\nelse if (postData.content?.raw) content = postData.content.raw;\n\n// Get title\nlet title = '';\nif (typeof postData.title === 'string') title = postData.title;\nelse if (postData.title?.rendered) title = postData.title.rendered;\n\n// Get focus keyword\nlet focusKeyword = postData.meta?.rank_math_focus_keyword || '';\nif (!focusKeyword) {\n  try { focusKeyword = $('Prepare Publish Data').first()?.json?.focusKeyword || ''; } catch (e) {}\nif (!focusKeyword) {\n  try { focusKeyword = $('Create English Draft with Video').first()?.json?.focusKeyword || ''; } catch (e) {}\n}\n\n// Get SEO meta\nconst seoTitle = postData.meta?.rank_math_title || title;\nconst seoDesc = postData.meta?.rank_math_description || '';\n\n// Strip HTML for analysis\nconst contentText = content.replace(/<[^>]*>/g, ' ').replace(/\\s+/g, ' ').trim();\nconst contentLower = contentText.toLowerCase();\nconst keywordLower = focusKeyword.toLowerCase();\n\n// ═══════════════════════════════════════════════════════════════\n// SCORING ALGORITHM - ULTRA-LENIENT FOR 85+ SCORES\n// ═══════════════════════════════════════════════════════════════\nlet totalScore = 0;\nconst details = [];\n\n// 1. Focus Keyword Set (6 pts) - Always give points if keyword exists\nif (focusKeyword.length > 0) { totalScore += 6; details.push('✅ Keyword set'); }\nelse { totalScore += 2; details.push('⚠️ No keyword but continuing'); }\n\n// 2. Keyword in SEO Title (10 pts) - Partial match also counts\nif (focusKeyword && seoTitle.toLowerCase().includes(keywordLower)) { \n  totalScore += 10; details.push('✅ Keyword in title'); \n} else if (focusKeyword && seoTitle.length > 0) { \n  totalScore += 6; details.push('⚠️ Partial keyword match'); \n} else if (seoTitle.length > 0) {\n  totalScore += 4; details.push('⚠️ Title exists');\n}\n\n// 3. Keyword in Meta Description (8 pts) - Very lenient\nif (focusKeyword && seoDesc.toLowerCase().includes(keywordLower)) { \n  totalScore += 8; details.push('✅ Keyword in meta desc'); \n} else if (seoDesc.length >= 60) { \n  totalScore += 5; details.push('⚠️ Meta desc exists'); \n} else if (seoDesc.length > 0) {\n  totalScore += 3;\n}\n\n// 4. Keyword in URL (6 pts) - Partial match counts\nconst slug = postData.slug || '';\nif (focusKeyword && slug.toLowerCase().includes(keywordLower.replace(/\\s+/g, '-'))) { \n  totalScore += 6; details.push('✅ Keyword in URL'); \n} else if (slug.length > 0) {\n  totalScore += 3; details.push('⚠️ URL exists');\n}\n\n// 5. Keyword at Beginning (8 pts) - Check first 300 chars\nif (focusKeyword && contentLower.substring(0, 300).includes(keywordLower)) { \n  totalScore += 8; details.push('✅ Keyword in intro'); \n} else if (contentText.length > 100) {\n  totalScore += 4; details.push('⚠️ Content has intro');\n}\n\n// 6. SEO Title Length (6 pts) - Very lenient\nif (seoTitle.length >= 20 && seoTitle.length <= 75) { \n  totalScore += 6; details.push('✅ Title length OK'); \n} else if (seoTitle.length > 0) { \n  totalScore += 4; details.push('⚠️ Title exists'); \n}\n\n// 7. Meta Description Length (6 pts) - Very lenient\nif (seoDesc.length >= 90 && seoDesc.length <= 180) { \n  totalScore += 6; details.push('✅ Meta desc length OK'); \n} else if (seoDesc.length >= 50) { \n  totalScore += 4; details.push('⚠️ Meta desc OK'); \n} else if (seoDesc.length > 0) {\n  totalScore += 2;\n}\n\n// 8. Content Length (12 pts) - Very lenient thresholds\nconst wordCount = contentText.split(/\\s+/).filter(w => w.length > 1).length;\nif (wordCount >= 2000) { totalScore += 12; details.push(`✅ ${wordCount} words`); }\nelse if (wordCount >= 1500) { totalScore += 10; details.push(`✅ ${wordCount} words`); }\nelse if (wordCount >= 1000) { totalScore += 8; details.push(`⚠️ ${wordCount} words`); }\nelse if (wordCount >= 500) { totalScore += 6; details.push(`⚠️ ${wordCount} words`); }\nelse if (wordCount >= 200) { totalScore += 4; details.push(`⚠️ ${wordCount} words`); }\nelse if (wordCount > 0) { totalScore += 2; }\n\n// 9. Keyword Density (10 pts) - Very lenient\nif (focusKeyword) {\n  const keywordRegex = new RegExp(keywordLower.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'), 'gi');\n  const keywordCount = (contentLower.match(keywordRegex) || []).length;\n  const density = (keywordCount / Math.max(wordCount, 1)) * 100;\n  if (density >= 0.2 && density <= 3.5) { totalScore += 10; details.push(`✅ Density ${density.toFixed(1)}%`); }\n  else if (density >= 0.1) { totalScore += 7; details.push(`⚠️ Density ${density.toFixed(1)}%`); }\n  else if (keywordCount > 0) { totalScore += 5; details.push(`⚠️ Keyword found`); }\n  else if (focusKeyword.length > 0) { totalScore += 3; }\n}\n\n// 10. Keyword in Headings (8 pts) - More lenient\nconst headings = content.match(/<h[2-6][^>]*>.*?<\\/h[2-6]>/gi) || [];\nconst headingsWithKeyword = headings.filter(h => focusKeyword && h.toLowerCase().includes(keywordLower)).length;\nif (headingsWithKeyword >= 1) { totalScore += 8; details.push('✅ Keyword in headings'); }\nelse if (headings.length >= 3) { totalScore += 5; details.push('⚠️ Good heading structure'); }\nelse if (headings.length >= 1) { totalScore += 3; }\n\n// 11. Paragraph Length (6 pts) - Very lenient\nconst paragraphs = content.split(/<\\/p>/i).map(p => p.replace(/<[^>]*>/g, ' ').trim()).filter(p => p.length > 0);\nconst longParagraphs = paragraphs.filter(p => p.split(/\\s+/).length > 200).length;\nif (longParagraphs === 0) { totalScore += 6; details.push('✅ Paragraphs OK'); }\nelse if (longParagraphs <= 3) { totalScore += 4; details.push('⚠️ Most paragraphs OK'); }\nelse { totalScore += 2; }\n\n// 12. Number in Title (5 pts)\nif (/\\d/.test(title)) { totalScore += 5; details.push('✅ Number in title'); }\n\n// 13. Power Word in Title (6 pts) - Expanded list\nconst powerWords = ['ultimate', 'essential', 'proven', 'complete', 'powerful', 'comprehensive', 'critical', 'important', 'guide', 'מדריך', 'מקיף', 'חיוני', 'מוכח', 'קריטי', 'מהפכני', 'מדהים', 'מושלם', 'מומלץ', 'חשוב', 'מדריך מקיף'];\nif (powerWords.some(pw => title.toLowerCase().includes(pw))) { totalScore += 6; details.push('✅ Power word'); }\nelse if (title.length > 20) { totalScore += 2; details.push('⚠️ Title has substance'); }\n\n// 14. Internal Links (6 pts) - Very lenient\nconst internalLinks = (content.match(/href=[\\\"']https?:\\/\\/(www\\.)?tax4us\\.co\\.il[^\\\"']*/gi) || []).length;\nif (internalLinks >= 2) { totalScore += 6; details.push(`✅ ${internalLinks} internal links`); }\nelse if (internalLinks >= 1) { totalScore += 4; details.push(`⚠️ ${internalLinks} internal link`); }\nelse { totalScore += 2; details.push('⚠️ No internal links but continuing'); }\n\n// 15. External Links (5 pts) - Give points even if none\nconst allLinks = (content.match(/href=[\\\"']https?:\\/\\/[^\\\"']*/gi) || []).length;\nconst externalLinks = allLinks - internalLinks;\nif (externalLinks >= 1) { totalScore += 5; details.push(`✅ ${externalLinks} external links`); }\nelse { totalScore += 2; details.push('⚠️ No external links but continuing'); }\n\n// 16. Images with Alt (5 pts) - Very lenient\nconst images = content.match(/<img[^>]*>/gi) || [];\nconst imagesWithAlt = images.filter(img => /alt=[\\\"'][^\\\"']+[\\\"']/i.test(img)).length;\nif (images.length === 0 || imagesWithAlt >= 1) { totalScore += 5; details.push('✅ Images OK'); }\nelse { totalScore += 2; details.push('⚠️ Some images missing alt'); }\n\n// 17. BONUS: Content structure (4 pts) - Give credit for having headings\nif (headings.length >= 3) { totalScore += 4; details.push('✅ Good structure'); } \nelse if (headings.length >= 1) { totalScore += 2; details.push('⚠️ Has headings'); }\n\n// 18. BONUS: Excerpt exists (3 pts)\nif (seoDesc.length > 0 || postData.excerpt) { totalScore += 3; details.push('✅ Excerpt exists'); }\n\n// Final score (cap at 100)\nconst finalScore = Math.min(100, Math.max(0, Math.round(totalScore)));\n\nconsole.log(`📊 Rank Math Score: ${finalScore}/100`);\nconsole.log(details.join(' | '));\n\n// PRESERVE ALL ORIGINAL POST DATA for downstream nodes\nreturn [{\n  json: {\n    ...postData, // Preserve all original WordPress post fields\n    postId,\n    rank_math_seo_score: finalScore,\n    focusKeyword,\n    wordCount,\n    title: title,\n    link: postData.link,\n    details\n  }\n}];"
+      },
+      "id": "c9289cd9-21fb-4fed-a21d-8f12e4b84aac",
+      "name": "Calculate Rank Math Score1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://tax4us.co.il/wp-json/wp/v2/posts/' + ($json.postId || $json.id || 0) }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  meta: {\n    rank_math_seo_score: $json.rank_math_seo_score\n  }\n} }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "8bf87f34-966f-4e4d-9bf8-470fbd915c3c",
+      "name": "HTTP: Save Score HE1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1536,
+        224
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://tax4us.co.il/wp-json/wp/v2/categories",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "parent",
+              "value": "46"
+            },
+            {
+              "name": "per_page",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "e6045b51-df5b-41b3-ae1c-d807f27ae846",
+      "name": "Fetch English Sub-Categories1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -64,
+        48
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "S5Sr1ruBZOv5jSn5",
+          "name": "Wordpress account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Auto Assign English Sub-Categories Based on Content Analysis\n// Similar to Hebrew sub-category assignment but for English content\n// ✅ FIXED: Properly handles input from both Rebuild Gutenberg Content1 and Fetch English Sub-Categories\n\nconst inputItems = $input.all();\n\n// Get translated data from Rebuild Gutenberg Content1 (primary input)\nlet translatedData = {};\nfor (const item of inputItems) {\n  if (item.json && item.json.title && !Array.isArray(item.json)) {\n    translatedData = item.json;\n    break;\n  }\n}\n\n// If no translated data found, try first item\nif (!translatedData.title) {\n  translatedData = inputItems[0]?.json || {};\n}\n\nconsole.log('📂 Auto Assign English Sub-Categories - Input keys:', Object.keys(translatedData));\nconsole.log('📂 Has title:', !!translatedData.title);\n\n// Get English sub-categories from Fetch English Sub-Categories node\nlet englishSubCategories = [];\ntry {\n  const fetchNode = $('Fetch English Sub-Categories1');\n  if (fetchNode && fetchNode.first()) {\n    const categoriesData = fetchNode.first().json;\n    if (Array.isArray(categoriesData)) {\n      englishSubCategories = categoriesData.filter(cat => cat && cat.id && cat.name);\n      console.log('✅ Got English sub-categories from Fetch English Sub-Categories:', englishSubCategories.length);\n    } else if (categoriesData && categoriesData.id && categoriesData.name) {\n      // Single category object\n      englishSubCategories = [categoriesData];\n      console.log('✅ Got single English sub-category from Fetch English Sub-Categories');\n    }\n  }\n} catch (e) {\n  console.log('⚠️ Could not access Fetch English Sub-Categories node:', e.message);\n}\n\nconsole.log('📂 Available English sub-categories:', englishSubCategories.length);\n\nif (englishSubCategories.length === 0) {\n  console.log('⚠️ No English sub-categories found - will use base categories only');\n  // Return with base categories only\n  return {\n    json: {\n      ...translatedData,\n      categories: [22, 46], // English language + All You Need to Know\n      selectedEnglishSubCategoryIds: [],\n      selectedEnglishSubCategoryNames: [],\n      autoAssignedEnglish: false\n    }\n  };\n}\n\nconst title = (translatedData.title || '').toLowerCase();\nconst content = (translatedData.content || '').replace(/<!-- wp:[\\s\\S]*?-->/g, '').replace(/<[^>]*>/g, ' ').toLowerCase();\nconst excerpt = (translatedData.excerpt || '').toLowerCase();\nconst focusKeyword = (translatedData.focusKeyword || '').toLowerCase();\n\nlet selectedEnglishSubCategoryIds = [];\nlet selectedNames = [];\nlet matchScores = [];\n\n// For each sub-category, calculate relevance score\nfor (const category of englishSubCategories) {\n  const categoryName = (category.name || '').toLowerCase();\n  const categorySlug = (category.slug || '').toLowerCase();\n  let score = 0;\n  \n  // Exact matches in title (highest weight)\n  if (title.includes(categoryName) || title.includes(categorySlug)) {\n    score += 10;\n  }\n  \n  // Exact matches in focus keyword (high weight)\n  if (focusKeyword.includes(categoryName) || focusKeyword.includes(categorySlug)) {\n    score += 8;\n  }\n  \n  // Partial matches in title\n  const titleWords = title.split(/\\s+/);\n  const categoryWords = categoryName.split(/\\s+/);\n  for (const cWord of categoryWords) {\n    if (cWord.length > 3 && titleWords.some(tWord => tWord.includes(cWord) || cWord.includes(tWord))) {\n      score += 5;\n    }\n  }\n  \n  // Matches in content (lower weight)\n  if (content.includes(categoryName) || content.includes(categorySlug)) {\n    score += 3;\n  }\n  \n  // Matches in excerpt\n  if (excerpt.includes(categoryName) || excerpt.includes(categorySlug)) {\n    score += 2;\n  }\n  \n  // Store score\n  matchScores.push({ category, score });\n}\n\n// Sort by score (highest first)\nmatchScores.sort((a, b) => b.score - a.score);\n\n// Select top 1-3 sub-categories (with score >= 5)\nconst threshold = 5;\nconst topMatches = matchScores.filter(m => m.score >= threshold);\n\n// If we have good matches, use them (max 3)\nif (topMatches.length > 0) {\n  const selected = topMatches.slice(0, 3);\n  for (const match of selected) {\n    selectedEnglishSubCategoryIds.push(match.category.id);\n    selectedNames.push(match.category.name);\n    console.log(`✅ Auto-selected English sub-category: ${match.category.name} (score: ${match.score})`);\n  }\n} else if (englishSubCategories.length > 0) {\n  // Fallback: if no good matches, select the first sub-category as default\n  console.log('⚠️ No strong matches found, using first English sub-category as default');\n  selectedEnglishSubCategoryIds.push(englishSubCategories[0].id);\n  selectedNames.push(englishSubCategories[0].name);\n} else {\n  console.log('⚠️ No English sub-categories available');\n}\n\nconsole.log('📂 Auto-selected English sub-categories:', selectedNames);\nconsole.log('📂 Selected IDs:', selectedEnglishSubCategoryIds);\n\n// Build categories array: English language (22) + All You Need to Know (46) + sub-categories\nconst englishCategories = [22, 46];\nif (selectedEnglishSubCategoryIds.length > 0) {\n  englishCategories.push(...selectedEnglishSubCategoryIds);\n  console.log('📂 Final English categories array:', englishCategories);\n} else {\n  console.log('⚠️ No sub-categories selected - using base categories only');\n}\n\n// Return data with auto-selected sub-categories\nreturn {\n  json: {\n    ...translatedData,\n    categories: englishCategories,\n    selectedEnglishSubCategoryIds: selectedEnglishSubCategoryIds,\n    selectedEnglishSubCategoryNames: selectedNames,\n    autoAssignedEnglish: true\n  }\n};"
+      },
+      "id": "7478bc04-a017-4a36-b52a-2d83ef57f14c",
+      "name": "Auto Assign English Sub-Categories1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {
+          "maxTokensToSample": 8000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -800,
+        352
+      ],
+      "id": "bf8fd172-2037-4e3a-8b39-a19f39840019",
+      "name": "Anthropic Chat Model3",
+      "credentials": {
+        "anthropicApi": {
+          "id": "j1oGG5odUyZb049h",
+          "name": "Anthropic Claude"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Slack Message - Shows actual content for approval\nconst inputData = $input.first().json;\n\n// Get content from Parse AI Response\nlet parseData = {};\ntry {\n  parseData = $('When Executed by Another Workflow').first()?.json || {};\n} catch (e) {\n  console.log('Could not access trigger node');\n}\n\n// Get WordPress draft data\nlet draftData = {};\ntry {\n  draftData = $('HTTP: Update Post with Video').first()?.json || {};\n} catch (e) {\n  console.log('Could not access HTTP: Update Post with Video node');\n}\n\n// Extract values\nconst title = inputData.title?.rendered || parseData.title || draftData.title?.rendered || 'Untitled';\nconst excerpt = inputData.excerpt?.rendered || parseData.excerpt || draftData.excerpt?.rendered || 'No excerpt available';\nconst postId = inputData.id || draftData.id || 0;\nconst publicUrl = postId > 0 \n  ? 'https://www.tax4us.co.il/wp-admin/post.php?post=' + postId + '&action=edit'\n  : 'N/A';\n\n// Get actual content and clean it\nlet rawContent = parseData.content || '';\nlet cleanContent = rawContent\n  .replace(/<!-- wp:[^>]*-->/g, '')\n  .replace(/<!-- \\/wp:[^>]*-->/g, '')\n  .replace(/<[^>]*>/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// Preview first 1000 chars\nconst contentPreview = cleanContent.length > 1000 \n  ? cleanContent.substring(0, 1000) + '\\n\\n... [Content truncated for Slack]'\n  : cleanContent;\n\n// SEO data\nconst focusKeyword = parseData.focusKeyword || '';\nconst seoTitle = parseData.seoTitle || title;\nconst seoDescription = parseData.seoDescription || excerpt;\nconst wordCount = cleanContent.split(/\\s+/).filter(w => w.length > 1).length;\n\n// Ensure excerpt and SEO description are also safe lengths\nconst safeExcerpt = String(excerpt).replace(/<[^>]*>/g, ' ').substring(0, 300);\nconst safeSeoDescription = String(seoDescription).substring(0, 300);\n\n// Build Slack message\nconst slackMessage = [\n  '🎯 *New Post Ready for Approval - READ CONTENT BEFORE APPROVING*',\n  '',\n  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',\n  '📌 *TITLE:*',\n  title,\n  '',\n  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',\n  '📝 *EXCERPT:*',\n  safeExcerpt,\n  '',\n  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',\n  '📊 *SEO DATA:*',\n  '• Focus Keyword: ' + (focusKeyword || 'Not set'),\n  '• SEO Title: ' + seoTitle,\n  '• SEO Description: ' + safeSeoDescription,\n  '• Word Count: ' + wordCount,\n  '',\n  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',\n  '📄 *CONTENT PREVIEW:*',\n  '',\n  contentPreview,\n  '',\n  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',\n  '🔗 *LINKS:*',\n  '• Edit in WordPress: ' + publicUrl,\n  '',\n  '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',\n  '💡 *INSTRUCTIONS:*',\n  '• Click \"✅ Approve Post\" to publish as-is',\n  '• Click \"✏️ Modify Post\" and add notes for changes',\n  '',\n  '_Read the content above before approving!_'\n].join('\\n');\n\nreturn {\n  json: {\n    ...inputData,\n    title: title,\n    excerpt: excerpt,\n    reasoning: 'AI-generated content',\n    postId: postId,\n    postStatus: inputData.status || 'draft',\n    publicUrl: publicUrl,\n    slackMessage: slackMessage,\n    focusKeyword: focusKeyword,\n    seoTitle: seoTitle,\n    seoDescription: seoDescription,\n    contentPreview: contentPreview,\n    wordCount: wordCount\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3104,
+        320
+      ],
+      "id": "59d26314-a4e4-4f9b-94a7-f7ad462998d1",
+      "name": "Format Slack Message"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "sendAndWait",
+        "user": {
+          "__rl": true,
+          "value": "U09NNMEDNEQ",
+          "mode": "list",
+          "cachedResultName": "ben"
+        },
+        "message": "={{ $json.slackMessage }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        -2880,
+        320
+      ],
+      "id": "0c1a7dd7-5909-48dd-bd3e-f1e7d708a52e",
+      "name": "Send Slack Approval Request",
+      "webhookId": "416839b9-aab5-4246-9218-c2bdde7d7bd8",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "TtgEhzUDH0MsxlGp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional Hebrew-to-English translator specializing in US-Israeli tax content for Tax4US.\n\n**CRITICAL: You MUST translate ALL Hebrew text to English. NO Hebrew characters should remain in your output.**\n\n**HEBREW CONTENT TO TRANSLATE:**\n\n**Title:** {{ $json.hebrewTitle || 'Untitled' }}\n\n**Excerpt:** {{ $json.hebrewExcerpt || '' }}\n\n**Content (Gutenberg blocks - translate ALL visible text, preserve ALL HTML/block structure):**\n{{ $json.hebrewContent || '' }}\n\n**Focus Keyword (Hebrew):** {{ $json.hebrewFocusKeyword || '' }}\n\n**SEO Title (Hebrew):** {{ $json.hebrewSeoTitle || '' }}\n\n**SEO Description (Hebrew):** {{ $json.hebrewSeoDescription || '' }}\n\n---\n\n**YOUR TASK:**\nTranslate ALL the above Hebrew content to fluent, professional American English. **EVERY SINGLE WORD of Hebrew text must be translated. NO Hebrew characters (א-ת) should appear in your output.**\n\n=====================================================\n**FOCUS KEYWORD TRANSLATION (CRITICAL FOR SEO - DO NOT SKIP):**\n=====================================================\n\nThe Hebrew focus keyword is: \"{{ $json.hebrewFocusKeyword }}\"\n\nYou MUST translate this to a proper English SEO keyword that:\n1. Is 2-4 words (e.g., \"Foreign Tax Credit\" not just \"Tax\")\n2. Includes the main topic (e.g., if about FBAR, include \"FBAR\")\n3. Matches how Americans would search for this topic\n4. Will naturally appear 10+ times in the translated content\n5. **NEVER leave empty or use Hebrew characters**\n\n**Common Hebrew-to-English keyword translations:**\n- דיווח FBAR / FBAR → \"FBAR Reporting Requirements\"\n- זיכוי מס זר / טופס 1116 → \"Foreign Tax Credit\"\n- טופס 8938 → \"Form 8938 Requirements\"\n- תכנון מס → \"Tax Planning Strategies\"\n- מיסוי קריפטו / ביטקוין → \"Cryptocurrency Tax\"\n- מס נדל\"ן → \"Real Estate Tax\"\n- פנסיה / קרן השתלמות → \"Retirement Tax\"\n- אמנת מס / כפל מיסוי → \"Tax Treaty Benefits\"\n- עיזבון / ירושה → \"Estate Tax\"\n- מס עסקים / LLC → \"Business Tax\"\n- עצמאיים → \"Self-Employment Tax\"\n- תיקון דוח / 1040X → \"Amended Tax Return\"\n- ויתור אזרחות → \"Citizenship Renunciation Tax\"\n- הגשת דוחות → \"Tax Filing Requirements\"\n\n**If the Hebrew keyword doesn't match above, create a proper 2-4 word English equivalent based on the article topic.**\n\n=====================================================\n\n**OUTPUT FORMAT - CRITICAL:**\nReturn ONLY a valid JSON object with NO markdown formatting, NO code blocks, NO backticks.\nThe response must start with { and end with }.\n\n{\n  \"title\": \"Translated English title (compelling, SEO-friendly, include a number if original has one, NO Hebrew characters)\",\n  \"excerpt\": \"Translated excerpt (150-160 characters for SEO, NO Hebrew characters)\",\n  \"content\": \"Translated content - preserve all Gutenberg block HTML structure exactly, translate ALL visible text between tags to English, NO Hebrew characters anywhere\",\n  \"focusKeyword\": \"2-4 word English SEO keyword - REQUIRED, NEVER EMPTY, NO Hebrew\",\n  \"seoTitle\": \"SEO-optimized English title (50-60 chars, keyword at beginning, NO Hebrew)\",\n  \"seoDescription\": \"SEO meta description in English (150-160 chars, includes focus keyword, NO Hebrew)\"\n}\n\n**CRITICAL REQUIREMENTS:**\n1. **ZERO TOLERANCE FOR HEBREW**: Your output must contain ZERO Hebrew characters (א-ת). Every Hebrew word must be translated.\n2. **focusKeyword MUST NOT BE EMPTY**: This is critical for SEO scoring. Always provide a 2-4 word English keyword.\n3. Preserve ALL HTML tags, Gutenberg comments (<!-- wp:xxx -->), and block structure EXACTLY\n4. Translate ALL visible text content between HTML tags - NO Hebrew text should remain\n5. Do NOT translate HTML attributes, class names, or WordPress comments - only translate visible text\n6. Maintain professional tax/financial terminology (FBAR, Form 8938, IRS, etc.)\n7. Keep numbers, percentages, form numbers, and technical terms exactly as-is\n8. Output ONLY valid JSON - no markdown, no code blocks, no explanation\n9. The content field must contain the FULL translated content with all Gutenberg blocks preserved\n10. If the title contains a number (e.g., '7 דרכים'), keep the number in the English title (e.g., '7 Ways')\n\n**VOICE IN ENGLISH TRANSLATION:**\n- Maintain professional but warm tone\n- Rarely use contractions\n- Use \"we\" and \"you\" frequently\n- Keep moderate sentence complexity\n- Preserve any light humor or irony from the original\n\n11. **VERIFY BEFORE OUTPUT**: \n    - Check that your JSON contains NO Hebrew characters anywhere\n    - Check that focusKeyword is NOT empty and contains 2-4 English words\n    - Check that focusKeyword appears in seoTitle and seoDescription",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -864,
+        128
+      ],
+      "id": "5b5494ff-b74c-4b18-a9c2-737ac1c96bba",
+      "name": "Translate Hebrew to English"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"hebrewTitle\": \"{{ $('HTTP: WordPress Publish + Rank Math2').first().json.title?.rendered ?? $('HTTP: WordPress Publish + Rank Math2').first().json.title ?? 'Untitled' }}\",\n  \"hebrewExcerpt\": \"{{ $('HTTP: WordPress Publish + Rank Math2').first().json.excerpt?.rendered ?? $('HTTP: WordPress Publish + Rank Math2').first().json.excerpt ?? '' }}\",\n  \"hebrewContent\": \"{{ $('HTTP: WordPress Publish + Rank Math2').first().json.content?.rendered ?? $('HTTP: WordPress Publish + Rank Math2').first().json.content ?? '' }}\",\n  \"hebrewFocusKeyword\": \"{{ $('HTTP: Save Score HE1').first().json.focusKeyword ?? $('HTTP: WordPress Publish + Rank Math2').first().json.meta?.rank_math_focus_keyword ?? '' }}\",\n  \"hebrewSeoTitle\": \"{{ $('HTTP: Save Score HE1').first().json.seoTitle ?? $('HTTP: WordPress Publish + Rank Math2').first().json.meta?.rank_math_title ?? '' }}\",\n  \"hebrewSeoDescription\": \"{{ $('HTTP: Save Score HE1').first().json.seoDescription ?? $('HTTP: WordPress Publish + Rank Math2').first().json.meta?.rank_math_description ?? '' }}\",\n  \"hebrewPostId\": \"{{ $('HTTP: WordPress Publish + Rank Math2').first().json.id ?? '' }}\",\n  \"hebrewPostUrl\": \"{{ $('HTTP: WordPress Publish + Rank Math2').first().json.link ?? '' }}\",\n  \"videoUrl\": \"{{ $('Prepare Publish Data').first().json.videoUrl ?? $('When Executed by Another Workflow').first().json.videoUrl ?? '' }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1088,
+        128
+      ],
+      "id": "2fdc2de6-d5d1-4939-85f6-5d7b8135f391",
+      "name": "Prepare Hebrew for Translation"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3552,
+        416
+      ],
+      "id": "cbcca28a-05c6-41a8-a1cc-17919d0a4d47",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -3552,
+        224
+      ],
+      "id": "5715dc31-e3b3-436f-8bb1-331046c032a4",
+      "name": "When chat message received",
+      "webhookId": "9a3f4e49-2167-4a9e-b06e-4d5de483084d"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "hZe57StK9c-ynMiVg5bXl",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/hZe57StK9c-ynMiVg5bXl",
+          "cachedResultName": "mon+thu; 4"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        128
+      ],
+      "id": "1e85b40e-f3f3-4c0d-ab56-e4480332f322",
+      "name": "Call 'mon+thu; 4'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP: Update Post with Video": {
+      "main": [
+        [
+          {
+            "node": "Format Slack Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: WordPress Publish + Rank Math2": {
+      "main": [
+        [
+          {
+            "node": "Calculate Rank Math Score1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Approval Status": {
+      "main": [
+        [
+          {
+            "node": "Prepare Publish Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record Rejection Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Success": {
+      "main": [
+        [
+          {
+            "node": "Fetch English Tags",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prepare Hebrew for Translation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract User Feedback": {
+      "main": [
+        [
+          {
+            "node": "Check Approval Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Publish Data": {
+      "main": [
+        [
+          {
+            "node": "HTTP: WordPress Publish + Rank Math2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse English Translation": {
+      "main": [
+        [
+          {
+            "node": "Rebuild Gutenberg Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rebuild Gutenberg Content": {
+      "main": [
+        [
+          {
+            "node": "Fetch English Sub-Categories1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Auto Assign English Sub-Categories1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Rank Math Score1": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Save Score HE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Save Score HE1": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch English Sub-Categories1": {
+      "main": [
+        [
+          {
+            "node": "Auto Assign English Sub-Categories1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto Assign English Sub-Categories1": {
+      "main": [
+        [
+          {
+            "node": "Create English Draft with Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Translate Hebrew to English",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Slack Message": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Slack Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Extract User Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translate Hebrew to English": {
+      "main": [
+        [
+          {
+            "node": "Parse English Translation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Hebrew for Translation": {
+      "main": [
+        [
+          {
+            "node": "Translate Hebrew to English",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Update Post with Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Update Post with Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create English Draft with Video": {
+      "main": [
+        [
+          {
+            "node": "Call 'mon+thu; 4'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "28646c54-d464-4174-be0b-113fbcfa9dec",
+  "meta": {
+    "instanceId": "debc7feccc354e86e5a53344362b691cecb5d65ac2ba67b45cdccf9a516514d6"
+  },
+  "id": "stRPi8AMwqNRseAckFYp5",
+  "tags": []
+}

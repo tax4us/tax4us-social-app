@@ -20,7 +20,7 @@ export class TopicManager {
             filterByFormula: "AND({Status}='Ready', {Platform}='WP_POST')",
         });
 
-        return records.map((rec: any) => ({
+        return (records as any[]).map((rec: { id: string; fields: any }) => ({
             id: rec.id,
             spec_id: rec.fields["Spec ID"],
             title: rec.fields["Title EN"] || rec.fields["title_html"] || "",
@@ -29,7 +29,7 @@ export class TopicManager {
             language: rec.fields["lang"] || "en",
             type: "blog_post",
             status: "ready",
-            keywords: rec.fields["Keywords"] ? rec.fields["Keywords"].split(",").map((k: string) => k.trim()) : [],
+            keywords: rec.fields["Keywords"] ? (rec.fields["Keywords"] as string).split(",").map((k: string) => k.trim()) : [],
             outline: rec.fields["Outline"] || "",
         }));
     }
@@ -71,7 +71,7 @@ export class TopicManager {
     }
 
     async updateTopicPlan(topicId: string, plan: Partial<Topic>) {
-        const fields: any = {};
+        const fields: Record<string, string> = {};
         if (plan.title) fields["Title EN"] = plan.title;
         if (plan.keywords) fields["Keywords"] = plan.keywords.join(", ");
         if (plan.outline) fields["Outline"] = plan.outline;

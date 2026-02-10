@@ -17,13 +17,20 @@ export async function GET(request: Request) {
     }
 
     try {
-        console.log("Cron triggered: Running Pipeline AutoPilot...");
+        const { searchParams } = new URL(request.url);
+        const type = searchParams.get("type") || "content";
+
+        console.log(`Cron triggered: Running Pipeline AutoPilot (${type})...`);
         const orchestrator = new PipelineOrchestrator();
 
-        // This runs the pipeline for all "Ready" topics
-        await orchestrator.runAutoPilot();
+        if (type === "seo") {
+            await orchestrator.runSEOAutoPilot();
+        } else {
+            // Default: New content pipeline
+            await orchestrator.runAutoPilot();
+        }
 
-        return NextResponse.json({ success: true, message: "Pipeline executed successfully." });
+        return NextResponse.json({ success: true, message: `Pipeline (${type}) executed successfully.` });
     } catch (error: any) {
         console.error("Cron failed:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });

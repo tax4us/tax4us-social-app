@@ -1,26 +1,114 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Fonts - using variables from layout.tsx */
+  --font-sans: var(--font-assistant), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-secular-one), serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Brand Colors from design-reference.html */
+  --color-background: #fbfbfb;
+  --color-foreground: #606164;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-card: #ffffff;
+  --color-card-foreground: #606164;
+
+  --color-popover: #ffffff;
+  --color-popover-foreground: #606164;
+
+  --color-primary: #9FCA3B;
+  --color-primary-alt: #A1CD3A;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #7A7A7A;
+  --color-secondary-foreground: #ffffff;
+
+  --color-muted: #f9fafb;
+  --color-muted-foreground: #67768e;
+
+  --color-accent: #f0f0f0;
+  --color-accent-foreground: #333333;
+
+  --color-border: #f1f1f1;
+  --color-input: #f1f1f1;
+  --color-ring: #9FCA3B;
+
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+
+    to {
+      height: 0;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading tracking-tight text-foreground;
+  }
+}
+
+.ast-rounded {
+  border-radius: 50px;
+}
+
+/* Tax4Us Brand Utilities */
+.tax4us-gradient {
+  background: linear-gradient(135deg, #9FCA3B 0%, #A1CD3A 100%);
+}
+
+.tax4us-button {
+  background: #FFFFFF;
+  color: #000000;
+  border-radius: 50px;
+  padding: 20px 40px;
+  font-weight: 600;
+  font-size: 20px;
+  border: none;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.tax4us-button:hover {
+  background: #F5F5F5;
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tax4us-card {
+  background: linear-gradient(135deg, #9FCA3B 0%, #A1CD3A 100%);
+  border-radius: 32px;
+  padding: 40px;
+  color: #000000;
 }
