@@ -4,7 +4,7 @@ import React from "react";
 import { InventoryItem } from "@/lib/pipeline-data";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Image as ImageIcon, Video, Languages } from "lucide-react";
+import { FileText, Image as ImageIcon, Video, Languages, ExternalLink } from "lucide-react";
 
 interface ContentInventoryGridProps {
     items: InventoryItem[];
@@ -41,7 +41,19 @@ export function ContentInventoryGrid({ items }: ContentInventoryGridProps) {
                             <TableRow key={item.id} className="hover:bg-muted/20">
                                 <TableCell className="font-medium">
                                     <div className="flex flex-col">
-                                        <span>{item.titleHe || item.titleEn}</span>
+                                        {item.url ? (
+                                            <a
+                                                href={item.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-primary transition-colors flex items-center gap-1 group"
+                                            >
+                                                <span>{item.titleHe || item.titleEn}</span>
+                                                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </a>
+                                        ) : (
+                                            <span>{item.titleHe || item.titleEn}</span>
+                                        )}
                                         {item.titleHe && item.titleEn && <span className="text-xs text-muted-foreground">{item.titleEn}</span>}
                                     </div>
                                 </TableCell>

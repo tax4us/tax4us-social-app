@@ -38,6 +38,7 @@ export interface InventoryItem {
     hasVideo: boolean;
     hasFeaturedImage: boolean;
     translationStatus: "linked" | "missing" | "pending";
+    url?: string; // Live WordPress link
 }
 
 export interface SeoMetric {
@@ -79,6 +80,11 @@ export interface PodcastEpisode {
     status: "scripting" | "synthesis" | "concatenating" | "uploading" | "published";
     duration: string;
     publishDate?: string;
+    url?: string; // Direct share link
+    platformLinks?: {
+        apple?: string;
+        spotify?: string;
+    };
     platformStatus: {
         elevenLabs: "done" | "processing" | "pending";
         captivate: "done" | "processing" | "pending";
@@ -201,7 +207,8 @@ export async function fetchInventory(): Promise<InventoryItem[]> {
             category: "Tax",
             hasVideo: !!p.meta?.kie_video_url,
             hasFeaturedImage: !!p.featured_media,
-            translationStatus: p.meta?.en_link ? "linked" : "missing"
+            translationStatus: p.meta?.en_link ? "linked" : "missing",
+            url: p.link
         }));
     } catch (e) {
         return mockInventory;
@@ -241,6 +248,11 @@ export async function fetchPodcasts(): Promise<PodcastEpisode[]> {
             status: ep.status === 'Published' ? 'published' : 'synthesis',
             duration: ep.duration || "0:00",
             publishDate: ep.date,
+            url: ep.share_link || `https://player.captivate.fm/episode/${ep.id}`,
+            platformLinks: {
+                spotify: ep.spotify_url || undefined,
+                apple: ep.apple_url || undefined
+            },
             platformStatus: {
                 elevenLabs: "done",
                 captivate: "done",

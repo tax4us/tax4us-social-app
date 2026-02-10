@@ -1,11 +1,12 @@
 "use client";
 
 import { PremiumStatCard } from "./dashboard/PremiumStatCard";
-import { FileText, CheckCircle, Clock, AlertTriangle, TrendingUp, Podcast, ArrowUpRight } from "lucide-react";
+import { FileText, CheckCircle, Clock, AlertTriangle, TrendingUp, Podcast, ArrowUpRight, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { InventoryItem } from "@/lib/pipeline-data";
 import { FinancialTable } from "./ui/financial-markets-table";
 import SystemMonitor from "./ui/system-monitor";
+import { LiveFeed } from "./dashboard/LiveFeed";
 
 interface AirtableRecord {
     id: string;
@@ -194,6 +195,26 @@ export function Dashboard({ initialRecords, podcastEpisodes = [], wordpressInven
 
                     {/* System Monitor */}
                     <SystemMonitor />
+
+                    {/* Live Feed Widget */}
+                    <LiveFeed
+                        activities={([
+                            ...wordpressInventory.slice(0, 3).map(i => ({
+                                id: i.id,
+                                type: "wordpress" as const,
+                                title: i.titleEn || i.titleHe,
+                                timestamp: i.date,
+                                url: i.url
+                            })),
+                            ...podcastEpisodes.slice(0, 2).map(e => ({
+                                id: e.id,
+                                type: "podcast" as const,
+                                title: e.title,
+                                timestamp: e.publishDate || "Live",
+                                url: e.url
+                            }))
+                        ] as any[]).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())}
+                    />
                 </div>
 
                 {/* CENTER/RIGHT: Stats & Content */}
@@ -252,8 +273,17 @@ export function Dashboard({ initialRecords, podcastEpisodes = [], wordpressInven
                                     {wordpressInventory.slice(0, 10).map((item) => (
                                         <tr key={item.id} className="hover:bg-white/40 transition-colors group">
                                             <td className="px-10 py-5">
-                                                <div className="font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
-                                                    {item.titleEn || item.titleHe || "Untitled Article"}
+                                                <div className="flex items-center gap-2 group">
+                                                    <div className="font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
+                                                        {item.url ? (
+                                                            <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                                                                {item.titleEn || item.titleHe || "Untitled Article"}
+                                                                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                            </a>
+                                                        ) : (
+                                                            item.titleEn || item.titleHe || "Untitled Article"
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <div className="text-xs text-foreground/40 mt-0.5">{item.titleHe}</div>
                                             </td>

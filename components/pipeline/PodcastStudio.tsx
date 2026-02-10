@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PodcastEpisode } from "@/lib/pipeline-data";
-import { Mic, Radio, CheckCircle2, Loader2 } from "lucide-react";
+import { Mic, Radio, CheckCircle2, Loader2, ExternalLink, Music2, Apple } from "lucide-react";
 
 interface PodcastStudioProps {
     episodes: PodcastEpisode[];
@@ -26,7 +26,26 @@ export function PodcastStudio({ episodes }: PodcastStudioProps) {
                                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Episode {ep.episodeNumber}</span>
                                 <h4 className="font-medium text-sm">{ep.title}</h4>
                             </div>
-                            <span className="text-xs font-mono bg-muted px-1.5 rounded">{ep.duration}</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-mono bg-muted px-1.5 rounded">{ep.duration}</span>
+                                {ep.status === 'published' && ep.url && (
+                                    <div className="flex items-center gap-1">
+                                        <a href={ep.url} target="_blank" rel="noopener noreferrer" className="p-1 hover:bg-muted rounded transition-colors" title="Listen on Captivate">
+                                            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground hover:text-primary" />
+                                        </a>
+                                        {ep.platformLinks?.spotify && (
+                                            <a href={ep.platformLinks.spotify} target="_blank" rel="noopener noreferrer" className="p-1 hover:bg-muted rounded transition-colors" title="Listen on Spotify">
+                                                <Music2 className="w-3.5 h-3.5 text-green-500 hover:brightness-110" />
+                                            </a>
+                                        )}
+                                        {ep.platformLinks?.apple && (
+                                            <a href={ep.platformLinks.apple} target="_blank" rel="noopener noreferrer" className="p-1 hover:bg-muted rounded transition-colors" title="Listen on Apple Podcasts">
+                                                <Apple className="w-3.5 h-3.5 text-slate-900 hover:text-black" />
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Pipeline Visualizer */}
