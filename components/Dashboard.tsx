@@ -15,7 +15,7 @@ interface AirtableRecord {
         Topic?: string;
         "Title EN"?: string;
         title?: string;
-        Status?: string;
+        Status?: "Ready" | "Error" | "Review" | "Succeeded" | "Generating" | "Draft";
         "Last Modified"?: string;
         [key: string]: any;
     };
@@ -199,21 +199,23 @@ export function Dashboard({ initialRecords, podcastEpisodes = [], wordpressInven
                     {/* Live Feed Widget */}
                     <LiveFeed
                         activities={([
-                            ...wordpressInventory.slice(0, 3).map(i => ({
+                            ...wordpressInventory.slice(0, 5).map(i => ({
                                 id: i.id,
                                 type: "wordpress" as const,
                                 title: i.titleEn || i.titleHe,
                                 timestamp: i.date,
+                                rawDate: i.rawDate,
                                 url: i.url
                             })),
-                            ...podcastEpisodes.slice(0, 2).map(e => ({
+                            ...podcastEpisodes.slice(0, 5).map(e => ({
                                 id: e.id,
                                 type: "podcast" as const,
                                 title: e.title,
                                 timestamp: e.publishDate || "Live",
+                                rawDate: e.rawDate,
                                 url: e.url
                             }))
-                        ] as any[]).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())}
+                        ]).sort((a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime()).slice(0, 5)}
                     />
                 </div>
 

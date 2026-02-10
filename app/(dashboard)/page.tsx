@@ -18,7 +18,7 @@ export default async function DashboardPage() {
     id: item.id,
     fields: {
       topic: item.topic,
-      Status: item.status === 'pending' ? 'Ready' : item.status === 'failed' ? 'Error' : 'Review' as any,
+      Status: (item.status === 'pending' ? 'Ready' : item.status === 'failed' ? 'Error' : 'Review') as "Ready" | "Error" | "Review",
       "Last Modified": item.lastUpdated
     }
   }));

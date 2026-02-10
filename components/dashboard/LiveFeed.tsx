@@ -18,6 +18,7 @@ interface ActivityItem {
     type: "wordpress" | "facebook" | "linkedin" | "podcast";
     title: string;
     timestamp: string;
+    rawDate: string;
     url?: string;
 }
 
@@ -26,10 +27,10 @@ interface LiveFeedProps {
 }
 
 const defaultActivities: ActivityItem[] = [
-    { id: "1", type: "wordpress", title: "Navigating 2025 US Tax Reforms", timestamp: "2 hours ago", url: "#" },
-    { id: "2", type: "podcast", title: "Emma & Ben: Cross-Border Wealth", timestamp: "5 hours ago", url: "#" },
-    { id: "3", type: "linkedin", title: "Expert Insight: Corporate Tax 🇮🇱", timestamp: "1 day ago", url: "#" },
-    { id: "4", type: "facebook", title: "Live Update: FBAR Deadlines", timestamp: "2 days ago", url: "#" },
+    { id: "1", type: "wordpress", title: "Navigating 2025 US Tax Reforms", timestamp: "2 hours ago", rawDate: new Date().toISOString(), url: "#" },
+    { id: "2", type: "podcast", title: "Emma & Ben: Cross-Border Wealth", timestamp: "5 hours ago", rawDate: new Date().toISOString(), url: "#" },
+    { id: "3", type: "linkedin", title: "Expert Insight: Corporate Tax 🇮🇱", timestamp: "1 day ago", rawDate: new Date().toISOString(), url: "#" },
+    { id: "4", type: "facebook", title: "Live Update: FBAR Deadlines", timestamp: "2 days ago", rawDate: new Date().toISOString(), url: "#" },
 ];
 
 export function LiveFeed({ activities = defaultActivities }: LiveFeedProps) {

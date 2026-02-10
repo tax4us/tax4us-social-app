@@ -39,6 +39,7 @@ export interface InventoryItem {
     hasFeaturedImage: boolean;
     translationStatus: "linked" | "missing" | "pending";
     url?: string; // Live WordPress link
+    rawDate: string; // ISO string for sorting
 }
 
 export interface SeoMetric {
@@ -80,6 +81,7 @@ export interface PodcastEpisode {
     status: "scripting" | "synthesis" | "concatenating" | "uploading" | "published";
     duration: string;
     publishDate?: string;
+    rawDate: string; // ISO string for sorting
     url?: string; // Direct share link
     platformLinks?: {
         apple?: string;
@@ -121,7 +123,7 @@ export const mockPipelineItems: PipelineItem[] = [
 ];
 
 export const mockInventory: InventoryItem[] = [
-    { id: "wp-501", titleHe: "מדריך FBAR שלם", titleEn: "Complete FBAR Guide", status: "published", date: "2024-02-10", category: "Compliance", hasVideo: true, hasFeaturedImage: true, translationStatus: "linked" }
+    { id: "wp-501", titleHe: "מדריך FBAR שלם", titleEn: "Complete FBAR Guide", status: "published", date: "2024-02-10", category: "Compliance", hasVideo: true, hasFeaturedImage: true, translationStatus: "linked", rawDate: "2024-02-10" }
 ];
 
 export const mockSeoMetrics: SeoMetric[] = [
@@ -129,7 +131,7 @@ export const mockSeoMetrics: SeoMetric[] = [
 ];
 
 export const mockPodcasts: PodcastEpisode[] = [
-    { id: "pod-1", episodeNumber: 42, title: "Navigating Filing Season", status: "published", duration: "14:20", publishDate: "Feb 5, 2025", platformStatus: { elevenLabs: "done", captivate: "done", wordpress: "done" } }
+    { id: "pod-1", episodeNumber: 42, title: "Navigating Filing Season", status: "published", duration: "14:20", publishDate: "Feb 5, 2025", rawDate: "2025-02-05", platformStatus: { elevenLabs: "done", captivate: "done", wordpress: "done" } }
 ];
 
 export const mockServices: SystemService[] = [
@@ -202,13 +204,14 @@ export async function fetchInventory(): Promise<InventoryItem[]> {
             id: p.id.toString(),
             titleHe: p.title.rendered,
             titleEn: p.meta?.en_title || undefined,
-            status: p.status as any,
-            date: new Date(p.date).toLocaleDateString(),
+            status: (p.status === 'publish' ? 'published' : p.status === 'future' ? 'scheduled' : 'draft') as any,
+            date: new Date(p.date).toLocaleDateString('en-GB'),
             category: "Tax",
             hasVideo: !!p.meta?.kie_video_url,
             hasFeaturedImage: !!p.featured_media,
             translationStatus: p.meta?.en_link ? "linked" : "missing",
-            url: p.link
+            url: p.link,
+            rawDate: p.date
         }));
     } catch (e) {
         return mockInventory;
@@ -247,7 +250,8 @@ export async function fetchPodcasts(): Promise<PodcastEpisode[]> {
             title: ep.title,
             status: ep.status === 'Published' ? 'published' : 'synthesis',
             duration: ep.duration || "0:00",
-            publishDate: ep.date,
+            publishDate: ep.date ? new Date(ep.date).toLocaleDateString('en-GB') : undefined,
+            rawDate: ep.date || new Date().toISOString(),
             url: ep.share_link || `https://player.captivate.fm/episode/${ep.id}`,
             platformLinks: {
                 spotify: ep.spotify_url || undefined,
