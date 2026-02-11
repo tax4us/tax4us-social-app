@@ -93,6 +93,86 @@ export class WordPressClient {
     return response.json();
   }
 
+  /**
+   * Resolve category names to WordPress category IDs.
+   * Creates categories that don't exist yet.
+   */
+  async resolveCategories(names: string[]): Promise<number[]> {
+    if (!names || names.length === 0) return [1]; // Uncategorized fallback
+
+    try {
+      const existing = await this.request("/categories?per_page=100");
+      const ids: number[] = [];
+
+      for (const name of names) {
+        const found = existing.find((c: any) =>
+          c.name.toLowerCase() === name.toLowerCase() ||
+          c.slug === name.toLowerCase().replace(/\s+/g, '-')
+        );
+
+        if (found) {
+          ids.push(found.id);
+        } else {
+          // Create new category
+          try {
+            const created = await this.request("/categories", {
+              method: "POST",
+              body: JSON.stringify({ name }),
+            });
+            ids.push(created.id);
+          } catch (e) {
+            console.error(`Failed to create category "${name}":`, e);
+          }
+        }
+      }
+
+      return ids.length > 0 ? ids : [1];
+    } catch (e) {
+      console.error("Category resolution failed:", e);
+      return [1];
+    }
+  }
+
+  /**
+   * Resolve tag names to WordPress tag IDs.
+   * Creates tags that don't exist yet.
+   */
+  async resolveTags(names: string[]): Promise<number[]> {
+    if (!names || names.length === 0) return [];
+
+    try {
+      const existing = await this.request("/tags?per_page=100");
+      const ids: number[] = [];
+
+      for (const name of names) {
+        const found = existing.find((t: any) =>
+          t.name.toLowerCase() === name.toLowerCase() ||
+          t.slug === name.toLowerCase().replace(/\s+/g, '-')
+        );
+
+        if (found) {
+          ids.push(found.id);
+        } else {
+          // Create new tag
+          try {
+            const created = await this.request("/tags", {
+              method: "POST",
+              body: JSON.stringify({ name }),
+            });
+            ids.push(created.id);
+          } catch (e) {
+            console.error(`Failed to create tag "${name}":`, e);
+          }
+        }
+      }
+
+      return ids;
+    } catch (e) {
+      console.error("Tag resolution failed:", e);
+      return [];
+    }
+  }
+
   async getStats() {
     // Fetch total published posts
     const postsResponse = await fetch(`${this.baseUrl}/posts?status=publish&per_page=1`, {

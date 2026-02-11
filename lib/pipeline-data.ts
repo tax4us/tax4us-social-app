@@ -155,24 +155,32 @@ export async function fetchPipelineStatus(): Promise<PipelineItem[]> {
         // 1. Fetch from Airtable (The Proposal/Ready queue)
         const airtableRecords = await airtable.getRecords(contentTable, { maxRecords: 10 });
 
-        const items: PipelineItem[] = airtableRecords.map((rec: any) => ({
-            id: rec.id,
-            topic: rec.fields.topic || "Untitled Topic",
-            stage: rec.fields.Status === 'Ready' ? 'hebrew-generation' : 'topic-selection',
-            status: rec.fields.Status === 'Ready' ? 'pending' : 'waiting-approval',
-            category: rec.fields.Category || "Tax",
-            lastUpdated: new Date(rec.createdTime).toLocaleDateString(),
-            gates: {
-                topicApproved: rec.fields.Status === 'Ready',
-                hebrewContentApproved: false,
-                videoApproved: false,
-                linkedinApproved: false,
-                facebookApproved: false
-            }
-        }));
+        const items: PipelineItem[] = airtableRecords.map((rec: any) => {
+            const fields = rec.fields;
+            const topic = fields.topic || fields.Topic || fields.title || fields.Title || fields["Title EN"] || "Untitled Topic";
+            const rawStatus = fields.Status || fields.status || "";
+            const isReady = rawStatus === 'Ready' || rawStatus === 'ready';
+            const isPublished = rawStatus === 'Published' || rawStatus === 'published' || rawStatus === 'publish';
 
-        // 2. Fetch from WordPress (The Published/Draft pipeline)
-        const wpPosts = await wp.getPosts({ status: 'any', per_page: '10' });
+            return {
+                id: rec.id,
+                topic,
+                stage: isReady ? 'hebrew-generation' : (isPublished ? 'english-publish-social' : 'topic-selection'),
+                status: isReady ? 'pending' : (isPublished ? 'completed' : 'waiting-approval'),
+                category: fields.Category || fields.category || "Tax",
+                lastUpdated: new Date(rec.createdTime).toLocaleDateString(),
+                gates: {
+                    topicApproved: isReady || isPublished,
+                    hebrewContentApproved: isPublished,
+                    videoApproved: isPublished,
+                    linkedinApproved: isPublished,
+                    facebookApproved: isPublished
+                }
+            };
+        });
+
+        // 2. Fetch from WordPress (recent posts for pipeline view)
+        const wpPosts = await wp.getPosts({ status: 'any', per_page: '20' });
         const wpItems: PipelineItem[] = wpPosts.map((post: any) => ({
             id: post.id.toString(),
             topic: post.title.rendered,
@@ -199,7 +207,7 @@ export async function fetchPipelineStatus(): Promise<PipelineItem[]> {
 export async function fetchInventory(): Promise<InventoryItem[]> {
     const wp = new WordPressClient();
     try {
-        const posts = await wp.getPosts({ status: 'any', per_page: '20' });
+        const posts = await wp.getPosts({ status: 'any', per_page: '100' });
         return posts.map((p: any) => ({
             id: p.id.toString(),
             titleHe: p.title.rendered,
@@ -214,6 +222,7 @@ export async function fetchInventory(): Promise<InventoryItem[]> {
             rawDate: p.date
         }));
     } catch (e) {
+        console.error("Inventory Fetch Error:", e);
         return mockInventory;
     }
 }
@@ -221,7 +230,7 @@ export async function fetchInventory(): Promise<InventoryItem[]> {
 export async function fetchSeoMetrics(): Promise<SeoMetric[]> {
     const wp = new WordPressClient();
     try {
-        const posts = await wp.getPosts({ status: 'publish', per_page: '20' });
+        const posts = await wp.getPosts({ status: 'publish', per_page: '100' });
         return posts.map((p: any) => {
             const score = parseInt(p.meta?.rank_math_seo_score || "0");
             return {
@@ -235,6 +244,7 @@ export async function fetchSeoMetrics(): Promise<SeoMetric[]> {
             };
         });
     } catch (e) {
+        console.error("SEO Metrics Fetch Error:", e);
         return mockSeoMetrics;
     }
 }

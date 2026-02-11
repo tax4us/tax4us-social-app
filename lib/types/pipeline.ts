@@ -16,15 +16,17 @@ export interface Topic {
 export interface ContentMetadata {
     title: string;
     excerpt: string;
-    slug: string;
+    slug?: string;
     focus_keyword: string;
-    keywords: string[];
+    keywords?: string[];
     word_count: number;
-    h2_count: number;
-    h3_count: number;
+    h2_count?: number;
+    h3_count?: number;
     status: string;
     seo_title: string;
     seo_description: string;
+    categories?: string[];
+    tags?: string[];
 }
 
 export interface ArticleContent {

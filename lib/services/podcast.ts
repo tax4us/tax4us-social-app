@@ -116,13 +116,12 @@ export class PodcastService {
                                 id: `pod-${ep.id}`,
                                 title: ep.title,
                                 status: (ep.status === "published" ? "published" : "scripting"),
-                                // Mapping Captivate status to PodcastEpisode status: 
-                                // published -> published, everything else -> scripting/draft as fallback
                                 episodeNumber: Number(ep.episode_number) || 0,
                                 duration: this.formatDuration(ep.duration),
-                                publishDate: ep.published_date,
+                                publishDate: ep.published_date ? new Date(ep.published_date).toLocaleDateString('en-GB') : undefined,
+                                rawDate: ep.published_date || new Date().toISOString(),
                                 platformStatus: {
-                                    elevenLabs: "done", // Assumed done if on Captivate
+                                    elevenLabs: "done",
                                     captivate: ep.status === "published" ? "done" : "processing",
                                     wordpress: "done"
                                 }
@@ -152,11 +151,12 @@ export class PodcastService {
                     // We add them as "synthesis" status items
                     items.push(...history.map((item) => ({
                         id: `xi-${item.history_item_id}`,
-                        episodeNumber: 0, // No episode number yet
+                        episodeNumber: 0,
                         title: (item.text || "Untitled Voice Generation").substring(0, 40) + "...",
                         status: "synthesis",
                         duration: "--:--",
-                        updatedAt: new Date(item.date_unix * 1000).toISOString(),
+                        publishDate: new Date(item.date_unix * 1000).toLocaleDateString('en-GB'),
+                        rawDate: new Date(item.date_unix * 1000).toISOString(),
                         platformStatus: {
                             elevenLabs: "processing",
                             captivate: "pending",

@@ -4,9 +4,10 @@ import { pipelineLogger } from "@/lib/pipeline/logger";
 
 export async function POST(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
-    const postId = parseInt(params.id);
+    const { id } = await context.params;
+    const postId = parseInt(id);
     if (isNaN(postId)) {
         return NextResponse.json({ error: "Invalid Post ID" }, { status: 400 });
     }

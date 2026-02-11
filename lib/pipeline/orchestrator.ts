@@ -67,11 +67,13 @@ export class PipelineOrchestrator {
 
             // 3. Create "Proposal" Draft in WordPress
             // We use a specific draft structure to store the proposal data
+            // Resolve a "Pipeline" category for proposals
+            const proposalCategoryIds = await this.wp.resolveCategories(["Pipeline"]);
             const draftProp = await this.wp.createPost({
                 title: `[PROPOSAL] ${proposal.topic}`,
                 content: `<!-- wp:paragraph -->{"audience": "${proposal.audience}", "reasoning": "${proposal.reasoning}"}<!-- /wp:paragraph -->`,
                 status: "draft",
-                categories: [1] // Uncategorized or specific "Pipeline" category
+                categories: proposalCategoryIds
             });
 
             if (!draftProp) throw new Error("Failed to create proposal draft");
@@ -130,16 +132,22 @@ export class PipelineOrchestrator {
                 article.featured_media = mediaId;
             } catch (mediaError: any) {
                 pipelineLogger.error(`Media Generation Failed (Non-blocking): ${mediaError.message}`, draftPostId.toString());
-                // Optional: set a default fallback image URL or leave empty
             }
+
+            // 4b. Resolve categories and tags from AI-generated metadata
+            pipelineLogger.agent("Resolving categories and tags...", draftPostId.toString());
+            const categoryIds = await this.wp.resolveCategories(article.metadata.categories || []);
+            const tagIds = await this.wp.resolveTags(article.metadata.tags || []);
 
             // 5. Update WordPress Post (Hebrew version)
             await this.wp.updatePost(draftPostId, {
-                title: article.metadata.title, // USE HEBREW TITLE
+                title: article.metadata.title,
                 content: article.content,
                 status: "publish",
                 featured_media: mediaId,
                 excerpt: article.metadata.excerpt,
+                categories: categoryIds,
+                tags: tagIds,
                 meta: {
                     rank_math_focus_keyword: article.metadata.focus_keyword,
                     rank_math_title: article.metadata.seo_title,
@@ -165,12 +173,18 @@ export class PipelineOrchestrator {
             });
 
             pipelineLogger.agent("Creating English translated post...", draftPostId.toString());
+            // Resolve English categories and tags
+            const enCategoryIds = await this.wp.resolveCategories(englishSeoMeta.metadata.categories || ["Business Tax", "English"]);
+            const enTagIds = await this.wp.resolveTags(englishSeoMeta.metadata.tags || []);
+
             const englishPost = await this.wp.createPost({
                 title: englishSeoMeta.metadata.title,
                 content: englishContent,
                 status: "publish",
                 excerpt: englishSeoMeta.metadata.excerpt,
-                featured_media: article.featured_media || 0, // Reuse same image
+                featured_media: article.featured_media || 0,
+                categories: enCategoryIds,
+                tags: enTagIds,
                 meta: {
                     rank_math_focus_keyword: englishSeoMeta.metadata.focus_keyword,
                     rank_math_title: englishSeoMeta.metadata.seo_title,
@@ -304,8 +318,8 @@ export class PipelineOrchestrator {
 
                 pipelineLogger.agent(`Analyzing SEO for: "${title}" (Keyword: "${focusKeyword}", Score: ${analysis}%)`, post.id.toString());
 
-                // Threshold check (80%)
-                if (analysis < 80) {
+                // Threshold check (90%)
+                if (analysis < 90) {
                     pipelineLogger.info(`Low SEO score (${analysis}%) identified for "${title}". Starting enhancement.`, post.id.toString());
 
                     // Dynamic import or direct call if SEOScorer is available
@@ -328,9 +342,15 @@ export class PipelineOrchestrator {
                         diagnostic.improvements
                     );
 
-                    // 4. Update WordPress
+                    // 4. Resolve categories and tags for enhanced post
+                    const enhancedCatIds = await this.wp.resolveCategories(enhanced.metadata.categories || []);
+                    const enhancedTagIds = await this.wp.resolveTags(enhanced.metadata.tags || []);
+
+                    // 5. Update WordPress
                     await this.wp.updatePost(post.id, {
                         content: enhanced.content,
+                        categories: enhancedCatIds.length > 0 ? enhancedCatIds : undefined,
+                        tags: enhancedTagIds.length > 0 ? enhancedTagIds : undefined,
                         meta: {
                             rank_math_focus_keyword: enhanced.metadata.focus_keyword,
                             rank_math_title: enhanced.metadata.seo_title,
@@ -359,7 +379,7 @@ export class PipelineOrchestrator {
             }
 
             if (fixedCount === 0) {
-                await this.slack.sendMessage("✅ *SEO Audit Complete*: All recent posts meet the minimum score threshold (80+). No changes needed.");
+                await this.slack.sendMessage("✅ *SEO Audit Complete*: All recent posts meet the minimum score threshold (90+). No changes needed.");
             }
 
         } catch (error: any) {
