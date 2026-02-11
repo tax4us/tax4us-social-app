@@ -178,7 +178,7 @@ export function Dashboard({ wordpressInventory, podcastEpisodes, initialRecords,
                                         title: i.titleEn || i.titleHe,
                                         timestamp: i.date,
                                         url: i.url,
-                                        rawDate: new Date(i.date)
+                                        rawDate: new Date(i.rawDate)
                                     })),
                                     ...podcastEpisodes.slice(0, 2).map(e => ({
                                         id: e.id,
@@ -186,7 +186,7 @@ export function Dashboard({ wordpressInventory, podcastEpisodes, initialRecords,
                                         title: e.title,
                                         timestamp: e.publishDate || "Live",
                                         url: e.url,
-                                        rawDate: new Date(e.publishDate || Date.now())
+                                        rawDate: new Date(e.rawDate || Date.now())
                                     }))
                                 ] as any[]).sort((a, b) => b.rawDate.getTime() - a.rawDate.getTime())}
                             />
