@@ -374,6 +374,7 @@ export default function Dashboard({
                                         }))
                                     ] as any[]).sort((a, b) => b.rawDate.getTime() - a.rawDate.getTime())}
                                 />
+                            </div>
                         </CardContent>
                     </Card>
 
