@@ -25,17 +25,22 @@ export class WordPressClient {
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...(options.headers as Record<string, string>),
+    };
+
+    if (this.auth) {
+      headers["Authorization"] = `Basic ${this.auth}`;
+    }
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
-      headers: {
-        Authorization: `Basic ${this.auth}`,
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
+      headers,
     });
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(`WordPress API Error: ${JSON.stringify(error)}`);
     }
 
@@ -77,13 +82,18 @@ export class WordPressClient {
   }
 
   async uploadMedia(buffer: Buffer, filename: string, mimeType: string) {
+    const headers: Record<string, string> = {
+      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Type": mimeType,
+    };
+
+    if (this.auth) {
+      headers["Authorization"] = `Basic ${this.auth}`;
+    }
+
     const response = await fetch(`${this.baseUrl}/media`, {
       method: "POST",
-      headers: {
-        Authorization: `Basic ${this.auth}`,
-        "Content-Disposition": `attachment; filename="${filename}"`,
-        "Content-Type": mimeType,
-      },
+      headers,
       body: buffer as any,
     });
 
@@ -176,20 +186,21 @@ export class WordPressClient {
   }
 
   async getStats() {
+    const headers: Record<string, string> = {};
+    if (this.auth) {
+      headers["Authorization"] = `Basic ${this.auth}`;
+    }
+
     // Fetch total published posts
     const postsResponse = await fetch(`${this.baseUrl}/posts?status=publish&per_page=1`, {
       method: "GET",
-      headers: {
-        Authorization: `Basic ${this.auth}`,
-      },
+      headers,
     });
 
     // Fetch categories count
     const categoriesResponse = await fetch(`${this.baseUrl}/categories?per_page=1`, {
       method: "GET",
-      headers: {
-        Authorization: `Basic ${this.auth}`,
-      },
+      headers,
     });
 
     return {
