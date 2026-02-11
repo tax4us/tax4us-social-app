@@ -29,19 +29,24 @@ const INITIAL_STATE: PipelineState = {
     lastUpdated: new Date().toISOString()
 };
 
+// In-memory fallback for environments where file system is read-only (e.g., Vercel)
+let memoryState: PipelineState | null = null;
+
 export async function getN8nState(): Promise<PipelineState> {
-    await ensureDataDir();
     try {
+        await ensureDataDir();
         const data = await fs.readFile(PIPELINE_FILE, 'utf-8');
-        return JSON.parse(data);
+        const state = JSON.parse(data);
+        memoryState = state;
+        return state;
     } catch (error) {
-        // If file doesn't exist or error, return initial state (or maybe mocks if we want fallback)
+        // If file doesn't exist or error (like read-only FS), return memory state or initial state
+        if (memoryState) return memoryState;
         return INITIAL_STATE;
     }
 }
 
 export async function updateN8nState(partialState: Partial<PipelineState>): Promise<PipelineState> {
-    await ensureDataDir();
     const currentState = await getN8nState();
 
     const newState = {
@@ -50,7 +55,15 @@ export async function updateN8nState(partialState: Partial<PipelineState>): Prom
         lastUpdated: new Date().toISOString()
     };
 
-    await fs.writeFile(PIPELINE_FILE, JSON.stringify(newState, null, 2));
+    memoryState = newState;
+
+    try {
+        await ensureDataDir();
+        await fs.writeFile(PIPELINE_FILE, JSON.stringify(newState, null, 2));
+    } catch (error) {
+        console.warn("n8n-bridge: Failed to persist state to disk, using memory fallback.", error);
+    }
+
     return newState;
 }
 

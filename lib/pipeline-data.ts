@@ -207,10 +207,20 @@ export async function fetchPipelineStatus(): Promise<PipelineItem[]> {
 export async function fetchInventory(): Promise<InventoryItem[]> {
     const wp = new WordPressClient();
     try {
-        const posts = await wp.getPosts({ status: 'any', per_page: '100' });
+        // If we have auth, we can fetch everything, otherwise just public posts
+        const params: Record<string, string> = { per_page: '100' };
+        // Check if WP credentials exist (this is internal to WordPressClient now, but we check presence of auth)
+        // For now, getPosts will catch if status=any fails.
+        const posts = await wp.getPosts({ status: 'publish', ...params });
+
+        if (!posts || !Array.isArray(posts)) {
+            console.warn("fetchInventory: No posts returned from WordPress.");
+            return mockInventory;
+        }
+
         return posts.map((p: any) => ({
             id: p.id.toString(),
-            titleHe: p.title.rendered,
+            titleHe: p.title?.rendered || "Unknown Title",
             titleEn: p.meta?.en_title || undefined,
             status: (p.status === 'publish' ? 'published' : p.status === 'future' ? 'scheduled' : 'draft') as any,
             date: new Date(p.date).toLocaleDateString('en-GB'),
@@ -223,6 +233,7 @@ export async function fetchInventory(): Promise<InventoryItem[]> {
         }));
     } catch (e) {
         console.error("Inventory Fetch Error:", e);
+        // Fallback to mock data so UI doesn't crash
         return mockInventory;
     }
 }

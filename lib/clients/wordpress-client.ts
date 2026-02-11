@@ -7,19 +7,21 @@ export class WordPressClient {
   private auth: string;
 
   constructor() {
-    const url = process.env.NEXT_PUBLIC_WP_API_URL || process.env.WP_URL;
+    const url = process.env.NEXT_PUBLIC_WP_API_URL || process.env.WP_URL || "https://tax4us.co.il";
     const user = process.env.WORDPRESS_APP_USERNAME || process.env.WP_USER || process.env.WP_USERNAME;
     const pass = process.env.WORDPRESS_APP_PASSWORD || process.env.WP_APP_PASSWORD || process.env.WP_APPLICATION_PASSWORD;
-
-    if (!url || !user || !pass) {
-      throw new Error(`Missing WordPress credentials. Found: URL=${!!url}, USER=${!!user}, PASS=${!!pass}`);
-    }
 
     this.baseUrl = url.replace(/\/$/, "");
     if (!this.baseUrl.includes("/wp-json/wp/v2")) {
       this.baseUrl = `${this.baseUrl}/wp-json/wp/v2`;
     }
-    this.auth = Buffer.from(`${user}:${pass}`).toString("base64");
+
+    if (user && pass) {
+      this.auth = Buffer.from(`${user}:${pass}`).toString("base64");
+    } else {
+      console.warn("WordPressClient: Missing credentials. Some operations may fail.");
+      this.auth = "";
+    }
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {
