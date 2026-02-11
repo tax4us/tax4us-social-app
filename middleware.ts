@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
     return new NextResponse('Unauthorized', {
         status: 401,
         headers: {
-            'WWW-Authenticate': 'Basic realm="Secure Area"',
+            'WWW-Authenticate': 'Basic realm="Tax4Us Agent Platform Access"',
         },
     });
 }

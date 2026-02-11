@@ -2,11 +2,17 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { DollarSign, TrendingDown, TrendingUp, AlertTriangle } from "lucide-react";
+import { DollarSign, TrendingDown, TrendingUp, AlertTriangle, Info } from "lucide-react";
 import type { CostSummary } from "@/lib/services/api-costs";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CostMonitorProps {
-    costData: CostSummary;
+    costSummary: CostSummary;
 }
 
 function MiniSparkline({ data }: { data: number[] }) {
@@ -35,8 +41,9 @@ function MiniSparkline({ data }: { data: number[] }) {
     );
 }
 
-export function CostMonitor({ costData }: CostMonitorProps) {
-    const trend = costData.weeklyTrend;
+export function CostMonitor({ costSummary }: CostMonitorProps) {
+    if (!costSummary) return null;
+    const trend = costSummary.weeklyTrend;
     const isRising = trend.length >= 2 && trend[trend.length - 1] > trend[trend.length - 2];
 
     return (
@@ -58,7 +65,7 @@ export function CostMonitor({ costData }: CostMonitorProps) {
                         </div>
                         <div>
                             <h3 className="text-xs font-bold text-foreground/50 tracking-wider uppercase">AI Spend</h3>
-                            <p className="text-[10px] text-foreground/30">Updated {costData.lastUpdated}</p>
+                            <p className="text-[10px] text-foreground/30">Updated {costSummary.lastUpdated}</p>
                         </div>
                     </div>
                     <MiniSparkline data={trend} />
@@ -67,7 +74,7 @@ export function CostMonitor({ costData }: CostMonitorProps) {
                 {/* Hero Number */}
                 <div className="flex items-baseline gap-2 mb-4">
                     <span className="text-3xl font-bold text-foreground font-heading">
-                        ${costData.totalThisMonth.toFixed(2)}
+                        ${costSummary.totalThisMonth.toFixed(2)}
                     </span>
                     <span className="text-xs text-foreground/40">this month</span>
                     {isRising ? (
@@ -80,22 +87,22 @@ export function CostMonitor({ costData }: CostMonitorProps) {
                 {/* Per-unit costs */}
                 <div className="grid grid-cols-3 gap-2 mb-4">
                     <div className="text-center p-2 rounded-lg bg-foreground/[0.02] border border-foreground/5">
-                        <p className="text-lg font-bold text-foreground">${costData.costPerArticle.toFixed(2)}</p>
+                        <p className="text-lg font-bold text-foreground">${costSummary.costPerArticle.toFixed(2)}</p>
                         <p className="text-[9px] text-foreground/40 uppercase tracking-wide">per article</p>
                     </div>
                     <div className="text-center p-2 rounded-lg bg-foreground/[0.02] border border-foreground/5">
-                        <p className="text-lg font-bold text-foreground">${costData.costPerPodcast.toFixed(2)}</p>
+                        <p className="text-lg font-bold text-foreground">${costSummary.costPerPodcast.toFixed(2)}</p>
                         <p className="text-[9px] text-foreground/40 uppercase tracking-wide">per episode</p>
                     </div>
                     <div className="text-center p-2 rounded-lg bg-foreground/[0.02] border border-foreground/5">
-                        <p className="text-lg font-bold text-foreground">${costData.costPerVideo.toFixed(2)}</p>
+                        <p className="text-lg font-bold text-foreground">${costSummary.costPerVideo.toFixed(2)}</p>
                         <p className="text-[9px] text-foreground/40 uppercase tracking-wide">per video</p>
                     </div>
                 </div>
 
                 {/* Service Breakdown */}
                 <div className="space-y-2">
-                    {costData.services.map((svc) => (
+                    {costSummary.services.map((svc: any) => (
                         <div key={svc.id} className="flex items-center gap-2.5">
                             <span className="text-sm w-5 text-center">{svc.icon}</span>
                             <div className="flex-1 min-w-0">
@@ -109,8 +116,8 @@ export function CostMonitor({ costData }: CostMonitorProps) {
                                         animate={{ width: `${Math.min(svc.usagePercent, 100)}%` }}
                                         transition={{ duration: 0.8, delay: 0.3 }}
                                         className={`h-full rounded-full ${svc.usagePercent >= 90 ? "bg-red-500" :
-                                                svc.usagePercent >= 70 ? "bg-amber-500" :
-                                                    "bg-emerald-500"
+                                            svc.usagePercent >= 70 ? "bg-amber-500" :
+                                                "bg-emerald-500"
                                             }`}
                                     />
                                 </div>
@@ -123,20 +130,36 @@ export function CostMonitor({ costData }: CostMonitorProps) {
                 </div>
 
                 {/* Alerts */}
-                {costData.alerts.length > 0 && (
+                {costSummary.alerts.length > 0 && (
                     <div className="mt-3 space-y-1.5">
-                        {costData.alerts.map((alert, i) => (
-                            <div
-                                key={i}
-                                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[10px] font-medium ${alert.severity === "critical"
-                                        ? "bg-red-500/10 text-red-600 border border-red-500/20"
-                                        : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
-                                    }`}
-                            >
-                                <AlertTriangle className="w-3 h-3 flex-shrink-0" />
-                                <span>{alert.message}</span>
-                            </div>
-                        ))}
+                        <TooltipProvider>
+                            {costSummary.alerts.map((alert: any, i: number) => (
+                                <Tooltip key={i}>
+                                    <TooltipTrigger asChild>
+                                        <div
+                                            className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[10px] font-medium cursor-help transition-all hover:scale-[1.02] ${alert.severity === "critical"
+                                                ? "bg-red-500/10 text-red-600 border border-red-500/20"
+                                                : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
+                                                }`}
+                                        >
+                                            <AlertTriangle className="w-3 h-3 flex-shrink-0" />
+                                            <span>{alert.message}</span>
+                                            <div className="ml-auto opacity-50">
+                                                <Info className="w-3 h-3" />
+                                            </div>
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right" className="max-w-[200px] text-[10px] leading-tight p-2">
+                                        <p className="font-bold mb-1">Quota Warning</p>
+                                        <p className="opacity-80">
+                                            {alert.service.includes("Voice")
+                                                ? "Your ElevenLabs character limit is nearly full. This may slow down or pause new podcast episodes until your billing cycle resets."
+                                                : `Your monthly usage for ${alert.service} is unusually high. Review your recent production activity to ensure efficiency.`}
+                                        </p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            ))}
+                        </TooltipProvider>
                     </div>
                 )}
             </div>

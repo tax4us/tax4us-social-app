@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <main className="w-full bg-background">
                 <div className="flex h-16 items-center border-b px-8 bg-white/50 backdrop-blur-sm sticky top-0 z-50">
                     <SidebarTrigger />
-                    <div className="ml-4 text-sm font-bold text-foreground/60 font-sans">Tax4Us / Dashboard</div>
+                    <div className="ml-4 text-sm font-bold text-foreground/60 font-sans tracking-tight">Tax4Us Agent Platform</div>
                 </div>
                 <div className="p-4 md:p-10">
                     {children}

@@ -19,7 +19,7 @@ export async function checkSystemHealth(): Promise<SystemService[]> {
             const response = await fetch(target.url, {
                 method: "HEAD",
                 cache: "no-store",
-                signal: AbortSignal.timeout(5000)
+                signal: AbortSignal.timeout(2000)
             });
             latency = Date.now() - start;
 

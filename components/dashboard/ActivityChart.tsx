@@ -3,17 +3,11 @@
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-const data = [
-    { name: "Mon", total: 12 },
-    { name: "Tue", total: 18 },
-    { name: "Wed", total: 15 },
-    { name: "Thu", total: 25 },
-    { name: "Fri", total: 20 },
-    { name: "Sat", total: 8 },
-    { name: "Sun", total: 10 },
-]
+interface ActivityChartProps {
+    data: { name: string; total: number }[];
+}
 
-export function ActivityChart() {
+export function ActivityChart({ data }: ActivityChartProps) {
     return (
         <Card className="col-span-4">
             <CardHeader>

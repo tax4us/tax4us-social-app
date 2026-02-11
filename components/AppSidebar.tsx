@@ -41,17 +41,17 @@ const navMain = [
         icon: FileText,
     },
     {
-        title: "Performance",
+        title: "Analytics",
         url: "/analytics",
         icon: PieChart,
     },
     {
-        title: "Content Pipeline",
+        title: "Production Roadmap",
         url: "/content-pipeline",
         icon: SquareTerminal,
     },
     {
-        title: "Generators",
+        title: "Factory Controls",
         url: "/generators",
         icon: Sparkles,
     },
@@ -60,7 +60,7 @@ const navMain = [
 const navSecondary = [
     {
         title: "Support",
-        url: "mailto:support@tax4us.com",
+        url: "mailto:service@rensto.com",
         icon: LifeBuoy,
     },
 ]
@@ -73,8 +73,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild className="hover:bg-white/10 active:bg-white/20 transition-colors">
                             <a href="/" className="flex items-center gap-3">
-                                <div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-white/20 text-white shadow-sm font-bold text-lg font-heading">
-                                    T
+                                <div className="relative aspect-square size-9 shrink-0 overflow-hidden rounded-lg border border-white/20 shadow-lg ring-1 ring-white/10 transition-transform hover:scale-105 active:scale-95">
+                                    <img
+                                        src="/rob-avatar.png"
+                                        alt="Rob Lubow"
+                                        className="h-full w-full object-cover"
+                                    />
                                 </div>
                                 <div className="flex flex-col leading-tight">
                                     <span className="truncate font-bold text-lg font-heading">Tax4Us</span>
@@ -126,11 +130,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="border-t bg-muted/30">
-                <div className="p-4 text-[10px] uppercase tracking-widest text-muted-foreground/50 text-center font-bold">
-                    v1.0.0 • B.L.A.S.T.
-                </div>
-            </SidebarFooter>
+            <div className="p-4 text-[10px] uppercase tracking-widest text-muted-foreground/30 text-center font-bold">
+                Tax4Us Agent Platform • Pro
+            </div>
             <SidebarRail />
         </Sidebar>
     )

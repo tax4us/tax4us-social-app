@@ -6,9 +6,9 @@ import {
     fetchPodcasts,
     fetchServicesStatus,
     mockApprovals,
-    mockMedia,
     ApprovalItem
 } from "@/lib/pipeline-data";
+import { fetchRecentMedia } from "@/lib/services/intelligence";
 
 import { PipelineKanban } from "@/components/pipeline/PipelineKanban";
 import { ContentInventoryGrid } from "@/components/pipeline/ContentInventoryGrid";
@@ -25,17 +25,21 @@ export default async function ContentPipelinePage() {
     // 1. Fetch live data from our unified layer
     const [
         pipelineItems,
-        inventoryItems,
+        inventoryResult,
         seoMetrics,
         podcasts,
-        services
+        services,
+        mediaItems
     ] = await Promise.all([
         fetchPipelineStatus(),
         fetchInventory(),
         fetchSeoMetrics(),
         fetchPodcasts(),
-        fetchServicesStatus()
+        fetchServicesStatus(),
+        fetchRecentMedia()
     ]);
+
+    const inventoryItems = inventoryResult.items;
 
     // 2. Fetch specific Approvals from Airtable
     const airtable = new AirtableClient();
@@ -58,9 +62,6 @@ export default async function ContentPipelinePage() {
     } catch (e) {
         console.error("Failed to fetch approvals:", e);
     }
-
-    // Media Items (Still partially mock/placeholder for ephemeral generation)
-    const mediaItems = mockMedia;
 
 
     return (

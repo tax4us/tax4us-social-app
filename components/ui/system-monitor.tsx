@@ -17,6 +17,7 @@ import {
     CheckCircle2,
     Clock
 } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 // Mock Data Types
 interface SystemMetric {
@@ -114,7 +115,6 @@ const initialServices: ServiceStatus[] = [
 
 export default function SystemMonitor() {
     const [metrics, setMetrics] = useState<SystemMetric[]>(initialMetrics);
-    const [selectedMetric, setSelectedMetric] = useState<string>("cpu");
     const [isLive, setIsLive] = useState(true);
 
     // Simulate live data updates
@@ -124,216 +124,97 @@ export default function SystemMonitor() {
         const interval = setInterval(() => {
             setMetrics(prevMetrics =>
                 prevMetrics.map(metric => {
-                    // Generate realistic fluctuation
-                    const change = (Math.random() - 0.5) * 10;
+                    const change = (Math.random() - 0.5) * 5;
                     let newValue = Math.max(0, Math.min(100, metric.value + change));
-
-                    // Special handling for network which isn't percentage based
                     if (metric.id === 'network') {
-                        newValue = Math.max(0, metric.value + (Math.random() - 0.5) * 50);
+                        newValue = Math.max(0, metric.value + (Math.random() - 0.5) * 20);
                     }
-
-                    // Determine status based on thresholds
                     let status: SystemMetric["status"] = "healthy";
                     if (metric.id !== 'network') {
                         if (newValue > 90) status = "critical";
                         else if (newValue > 75) status = "warning";
                     }
-
                     const newHistory = [...metric.history.slice(1), newValue];
-
-                    return {
-                        ...metric,
-                        value: Math.round(newValue),
-                        status,
-                        history: newHistory
-                    };
+                    return { ...metric, value: Math.round(newValue), status, history: newHistory };
                 })
             );
-        }, 2000);
+        }, 3000);
 
         return () => clearInterval(interval);
     }, [isLive]);
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case "operational":
-            case "healthy":
-                return "text-green-500 bg-green-500/10 border-green-500/20";
-            case "warning":
-            case "degraded":
-                return "text-yellow-500 bg-yellow-500/10 border-yellow-500/20";
-            case "critical":
-            case "outage":
-                return "text-red-500 bg-red-500/10 border-red-500/20";
-            case "maintenance":
-                return "text-blue-500 bg-blue-500/10 border-blue-500/20";
-            default:
-                return "text-muted-foreground bg-muted/10 border-border/20";
+            case "operational": case "healthy": return "text-emerald-500 bg-emerald-500/10 border-emerald-500/20";
+            case "warning": case "degraded": return "text-amber-500 bg-amber-500/10 border-amber-500/20";
+            case "critical": case "outage": return "text-rose-500 bg-rose-500/10 border-rose-500/20";
+            default: return "text-muted-foreground bg-muted/10 border-border/20";
         }
     };
 
     const getIcon = (id: string) => {
         switch (id) {
-            case "cpu": return <Cpu className="w-5 h-5" />;
-            case "memory": return <MemoryStick className="w-5 h-5" />;
-            case "storage": return <HardDrive className="w-5 h-5" />;
-            case "network": return <Activity className="w-5 h-5" />;
-            default: return <Activity className="w-5 h-5" />;
+            case "cpu": return <Cpu className="w-3.5 h-3.5" />;
+            case "memory": return <MemoryStick className="w-3.5 h-3.5" />;
+            case "storage": return <HardDrive className="w-3.5 h-3.5" />;
+            default: return <Activity className="w-3.5 h-3.5" />;
         }
     };
 
-    const Sparkline = ({ data, colorClass }: { data: number[], colorClass: string }) => {
-        const max = Math.max(...data, 100);
-        const min = 0;
-        const range = max - min;
-
-        // Create SVG path
-        const points = data.map((val, i) => {
-            const x = (i / (data.length - 1)) * 100;
-            const y = 100 - ((val - min) / range) * 100;
-            return `${x},${y}`;
-        }).join(' ');
-
-        // Fill area path
-        const fillPoints = `0,100 ${points} 100,100`;
-
-        // Extract color for the stroke/fill from the class or define explicit colors
-        // For simplicity in this demo, we'll map status color classes to hex values
-        let strokeColor = "#22c55e"; // green default
-        if (colorClass.includes("yellow")) strokeColor = "#eab308";
-        if (colorClass.includes("red")) strokeColor = "#ef4444";
-        if (colorClass.includes("blue")) strokeColor = "#3b82f6";
-
-        return (
-            <div className="w-full h-16 relative overflow-hidden rounded-md">
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-                    <defs>
-                        <linearGradient id={`gradient-${colorClass}`} x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stopColor={strokeColor} stopOpacity="0.2" />
-                            <stop offset="100%" stopColor={strokeColor} stopOpacity="0" />
-                        </linearGradient>
-                    </defs>
-                    <path d={fillPoints} fill={`url(#gradient-${colorClass})`} className="transition-all duration-300" />
-                    <path d={`M${points}`} fill="none" stroke={strokeColor} strokeWidth="2" vectorEffect="non-scaling-stroke" className="transition-all duration-300" />
-                </svg>
-            </div>
-        );
-    };
-
     return (
-        <div className="w-full max-w-7xl mx-auto space-y-6 p-4">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">System Monitor</h2>
-                    <p className="text-muted-foreground">Real-time infrastructure health and performance metrics</p>
-                </div>
+        <Card className="border-primary/10 shadow-lg bg-card/40 backdrop-blur-md overflow-hidden">
+            <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0">
+                <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground/80">
+                    Infrastructure
+                </CardTitle>
                 <div className="flex items-center gap-2">
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${isLive ? 'border-green-500/30 bg-green-500/5 text-green-600 dark:text-green-400' : 'border-muted bg-muted/50 text-muted-foreground'}`}>
-                        <span className="relative flex h-2.5 w-2.5">
-                            {isLive && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>}
-                            <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isLive ? 'bg-green-500' : 'bg-muted-foreground'}`}></span>
+                    <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold ${isLive ? 'border-emerald-500/30 bg-emerald-500/5 text-emerald-500' : 'border-muted bg-muted/50 text-muted-foreground'}`}>
+                        <span className="relative flex h-1.5 w-1.5">
+                            {isLive && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
+                            <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${isLive ? 'bg-emerald-500' : 'bg-muted-foreground'}`}></span>
                         </span>
-                        <span className="text-sm font-medium">{isLive ? "Live Updates" : "Paused"}</span>
+                        {isLive ? "LIVE" : "PAUSED"}
                     </div>
-
-                    <button
-                        onClick={() => setIsLive(!isLive)}
-                        className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                        {isLive ? "Pause" : "Resume"}
-                    </button>
                 </div>
-            </div>
-
-            {/* Main Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                {/* Left Column: Metrics Overview */}
-                <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {metrics.map((metric) => (
-                        <motion.div
-                            key={metric.id}
-                            className={`relative overflow-hidden rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-md cursor-pointer ${selectedMetric === metric.id ? 'ring-2 ring-primary/20' : ''}`}
-                            onClick={() => setSelectedMetric(metric.id)}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-lg ${getStatusColor(metric.status).replace('text-', 'bg-').split(' ')[1]} bg-opacity-10`}>
-                                        {getIcon(metric.id)}
-                                    </div>
-                                    <div>
-                                        <h3 className="text-sm font-medium text-muted-foreground">{metric.name}</h3>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-2xl font-bold">{metric.value}</span>
-                                            <span className="text-sm text-muted-foreground">{metric.unit}</span>
-                                        </div>
-                                    </div>
+            </CardHeader>
+            <CardContent className="p-4 pt-2 space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                    {metrics.slice(0, 4).map((metric) => (
+                        <div key={metric.id} className="p-2.5 rounded-xl border border-primary/5 bg-background/50 hover:bg-primary/5 transition-colors group">
+                            <div className="flex items-center justify-between mb-1">
+                                <div className={`p-1.5 rounded-lg ${getStatusColor(metric.status).replace('text-', 'bg-').split(' ')[1]} bg-opacity-10 group-hover:scale-110 transition-transform`}>
+                                    {getIcon(metric.id)}
                                 </div>
-
-                                <div className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(metric.status)}`}>
-                                    {metric.status.toUpperCase()}
-                                </div>
+                                <span className="text-[10px] font-bold text-muted-foreground/60">{metric.unit}</span>
                             </div>
-
-                            <Sparkline data={metric.history} colorClass={getStatusColor(metric.status)} />
-
-                        </motion.div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-lg font-bold tracking-tighter">{metric.value}</span>
+                                <span className="text-[9px] font-bold text-muted-foreground truncate uppercase">{metric.name.split(' ')[0]}</span>
+                            </div>
+                            <div className={`h-1 w-full bg-muted/30 rounded-full mt-2 overflow-hidden`}>
+                                <motion.div
+                                    className={`h-full ${getStatusColor(metric.status).split(' ')[1].replace('bg-', 'bg-')}`}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${Math.min(100, metric.value)}%` }}
+                                    transition={{ duration: 1 }}
+                                />
+                            </div>
+                        </div>
                     ))}
                 </div>
 
-                {/* Right Column: Service Status */}
-                <div className="bg-card rounded-xl border shadow-sm p-6">
-                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5 text-primary" />
-                        Service Status
-                    </h3>
-
-                    <div className="space-y-4">
-                        {initialServices.map((service) => (
-                            <div key={service.id} className="group">
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-2 h-2 rounded-full ${service.status === 'operational' ? 'bg-green-500' : service.status === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'}`} />
-                                        <span className="font-medium text-sm">{service.name}</span>
-                                    </div>
-                                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${getStatusColor(service.status)}`}>
-                                        {service.status === 'operational' ? 'Operational' : service.status === 'degraded' ? 'Degraded' : 'Outage'}
-                                    </span>
-                                </div>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground pl-5 mb-2">
-                                    <span>Uptime: {service.uptime}%</span>
-                                    <span>Latency: {service.latency}ms</span>
-                                </div>
-
-                                {service.lastIncident && (
-                                    <div className="ml-5 text-xs text-yellow-600 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-900/20 p-2 rounded border border-yellow-200 dark:border-yellow-800/30 flex items-start gap-2">
-                                        <AlertCircle className="w-3 h-3 mt-0.5 shrink-0" />
-                                        {service.lastIncident}
-                                    </div>
-                                )}
-
-                                <div className="border-b border-border/50 mt-3 group-last:border-0" />
+                <div className="space-y-2 pt-2 border-t border-primary/5">
+                    {initialServices.slice(0, 3).map((service) => (
+                        <div key={service.id} className="flex items-center justify-between group cursor-default">
+                            <div className="flex items-center gap-2">
+                                <div className={`w-1.5 h-1.5 rounded-full ${service.status === 'operational' ? 'bg-emerald-500' : 'bg-amber-500'} group-hover:animate-pulse`} />
+                                <span className="text-[11px] font-bold text-muted-foreground/80 group-hover:text-primary transition-colors">{service.name}</span>
                             </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-6 pt-4 border-t flex items-center justify-between text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-green-500" />
-                            <span>All systems operational</span>
+                            <span className="text-[10px] font-mono opacity-40">{service.latency}ms</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            <span>Updated just now</span>
-                        </div>
-                    </div>
+                    ))}
                 </div>
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 }

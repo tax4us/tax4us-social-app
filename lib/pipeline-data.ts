@@ -18,6 +18,7 @@ export interface PipelineItem {
     status: Status;
     category: string;
     lastUpdated: string;
+    url?: string;
     error?: string;
     gates: {
         topicApproved: boolean;
@@ -152,45 +153,57 @@ export async function fetchPipelineStatus(): Promise<PipelineItem[]> {
     const contentTable = "tblq7MDqeogrsdInc";
 
     try {
-        // 1. Fetch from Airtable (The Proposal/Ready queue)
-        const airtableRecords = await airtable.getRecords(contentTable, { maxRecords: 10 });
+        // 1. Parallel Fetch from Airtable and WordPress
+        const [airtableRecords, wpPosts] = await Promise.all([
+            airtable.getRecords(contentTable, { maxRecords: 100 }).catch(() => []),
+            wp.getPosts({ status: 'publish', per_page: '20' }).catch(() => [])
+        ]);
 
-        const items: PipelineItem[] = airtableRecords.map((rec: any) => {
-            const fields = rec.fields;
-            const topic = fields.topic || fields.Topic || fields.title || fields.Title || fields["Title EN"] || "Untitled Topic";
-            const rawStatus = fields.Status || fields.status || "";
-            const isReady = rawStatus === 'Ready' || rawStatus === 'ready';
-            const isPublished = rawStatus === 'Published' || rawStatus === 'published' || rawStatus === 'publish';
+        const items: PipelineItem[] = airtableRecords
+            .map((rec: any) => {
+                const fields = rec.fields;
+                const topic = fields.topic || fields.Topic || fields.title || fields.Title || fields["Title EN"] || "";
+                const rawStatus = fields.Status || fields.status || "";
+                const isReady = rawStatus === 'Ready' || rawStatus === 'ready';
+                const isPublished = rawStatus === 'Published' || rawStatus === 'published' || rawStatus === 'publish';
 
-            return {
-                id: rec.id,
-                topic,
-                stage: isReady ? 'hebrew-generation' : (isPublished ? 'english-publish-social' : 'topic-selection'),
-                status: isReady ? 'pending' : (isPublished ? 'completed' : 'waiting-approval'),
-                category: fields.Category || fields.category || "Tax",
-                lastUpdated: new Date(rec.createdTime).toLocaleDateString(),
-                gates: {
-                    topicApproved: isReady || isPublished,
-                    hebrewContentApproved: isPublished,
-                    videoApproved: isPublished,
-                    linkedinApproved: isPublished,
-                    facebookApproved: isPublished
-                }
-            };
+                return {
+                    id: rec.id,
+                    topic: topic.trim(),
+                    stage: isReady ? 'hebrew-generation' : (isPublished ? 'english-publish-social' : 'topic-selection'),
+                    status: isReady ? 'pending' : (isPublished ? 'completed' : 'waiting-approval'),
+                    category: fields.Category || fields.category || "Tax",
+                    lastUpdated: new Date(rec.createdTime).toLocaleDateString(),
+                    url: fields.url || fields.URL || fields["Public URL"] || fields["Share Link"] || undefined,
+                    gates: {
+                        topicApproved: isReady || isPublished,
+                        hebrewContentApproved: isPublished,
+                        videoApproved: isPublished,
+                        linkedinApproved: isPublished,
+                        facebookApproved: isPublished
+                    }
+                } as PipelineItem;
+            })
+            // Filter out empty or "Untitled" topics
+            .filter((item: PipelineItem) => item.topic && item.topic.toLowerCase() !== "untitled topic" && item.topic.length > 3);
+
+        // Deduplicate by title (keep newest)
+        const seen = new Set();
+        const dedupedItems = items.filter(item => {
+            const duplicate = seen.has(item.topic.toLowerCase());
+            seen.add(item.topic.toLowerCase());
+            return !duplicate;
         });
 
-        // 2. Fetch from WordPress (recent posts for pipeline view)
-        // Avoid status=any if auth is missing
-        const wpParams: any = { per_page: '20' };
-        // We can check if wp has auth if we had a getter, but for now we'll just try publish if it fails or just use publish defaults.
-        const wpPosts = await wp.getPosts({ status: 'publish', ...wpParams });
+        // 2. Map WordPress posts to PipelineItems
         const wpItems: PipelineItem[] = Array.isArray(wpPosts) ? wpPosts.map((post: any) => ({
             id: post.id.toString(),
-            topic: post.title?.rendered || "Untitled Post",
+            topic: post.title?.rendered || "Unknown Post",
             stage: post.status === 'publish' ? 'english-publish-social' : 'hebrew-publish',
             status: post.status === 'publish' ? 'completed' : 'in-progress',
             category: "WP Post",
             lastUpdated: new Date(post.modified).toLocaleDateString(),
+            url: post.link,
             gates: {
                 topicApproved: true,
                 hebrewContentApproved: true,
@@ -200,28 +213,42 @@ export async function fetchPipelineStatus(): Promise<PipelineItem[]> {
             }
         })) : [];
 
-        return [...items, ...wpItems];
+        // Return a combined list, but sliced to a reasonable dashboard view
+        return [...dedupedItems, ...wpItems].slice(0, 30);
     } catch (e) {
         console.error("Pipeline Fetch Error:", e);
         return mockPipelineItems;
     }
 }
 
-export async function fetchInventory(): Promise<InventoryItem[]> {
+export async function fetchInventory(): Promise<{ items: InventoryItem[], total: number }> {
     const wp = new WordPressClient();
     try {
-        // If we have auth, we can fetch everything, otherwise just public posts
-        const params: Record<string, string> = { per_page: '100' };
-        // Check if WP credentials exist (this is internal to WordPressClient now, but we check presence of auth)
-        // For now, getPosts will catch if status=any fails.
-        const posts = await wp.getPosts({ status: 'publish', ...params });
+        // Only fetch fields we need — no _embed (huge payload), limit to 30 posts
+        const query = new URLSearchParams({
+            status: 'publish',
+            per_page: '30',
+            _fields: 'id,title,status,date,link,featured_media,meta'
+        }).toString();
+        const url = `${(wp as any).baseUrl}/posts?${query}`;
 
-        if (!posts || !Array.isArray(posts)) {
-            console.warn("fetchInventory: No posts returned from WordPress.");
-            return mockInventory;
+        const response = await fetch(url, {
+            headers: (wp as any).auth ? { "Authorization": `Basic ${(wp as any).auth}` } : {},
+            signal: AbortSignal.timeout(4000)
+        });
+
+        if (!response.ok) {
+            return { items: mockInventory, total: mockInventory.length };
         }
 
-        return posts.map((p: any) => ({
+        const total = parseInt(response.headers.get("x-wp-total") || "0", 10);
+        const posts = await response.json();
+
+        if (!posts || !Array.isArray(posts)) {
+            return { items: mockInventory, total: mockInventory.length };
+        }
+
+        const items = posts.map((p: any) => ({
             id: p.id.toString(),
             titleHe: p.title?.rendered || "Unknown Title",
             titleEn: p.meta?.en_title || undefined,
@@ -230,28 +257,29 @@ export async function fetchInventory(): Promise<InventoryItem[]> {
             category: "Tax",
             hasVideo: !!p.meta?.kie_video_url,
             hasFeaturedImage: !!p.featured_media,
-            translationStatus: p.meta?.en_link ? "linked" : "missing",
+            translationStatus: (p.meta?.en_link ? "linked" : "missing") as "linked" | "missing" | "pending",
             url: p.link,
             rawDate: p.date
         }));
+
+        return { items, total };
     } catch (e) {
         console.error("Inventory Fetch Error:", e);
-        // Fallback to mock data so UI doesn't crash
-        return mockInventory;
+        return { items: mockInventory, total: mockInventory.length };
     }
 }
 
 export async function fetchSeoMetrics(): Promise<SeoMetric[]> {
     const wp = new WordPressClient();
     try {
-        const posts = await wp.getPosts({ status: 'publish', per_page: '100' });
+        const posts = await wp.getPosts({ status: 'publish', per_page: '50' });
         return posts.map((p: any) => {
             const score = parseInt(p.meta?.rank_math_seo_score || "0");
             return {
                 id: p.id.toString(),
                 title: p.title.rendered,
                 score,
-                keywordDensity: 1.5, // Calc simplified
+                keywordDensity: 1.5,
                 wordCount: p.content.rendered.split(/\s+/).length,
                 status: score > 80 ? "good" : score > 50 ? "ok" : "bad",
                 trend: "flat"

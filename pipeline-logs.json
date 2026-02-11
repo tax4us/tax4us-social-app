@@ -1,5 +1,74 @@
 [
   {
+    "id": "48egft",
+    "timestamp": "2026-02-11T16:58:07.951Z",
+    "level": "info",
+    "message": "Social approval request sent."
+  },
+  {
+    "id": "jg658h",
+    "timestamp": "2026-02-11T16:58:04.990Z",
+    "level": "info",
+    "message": "Task ID: 07721cacb6c8dcfaa5043faf6ef92671",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "ek76lw",
+    "timestamp": "2026-02-11T16:58:04.824Z",
+    "level": "info",
+    "message": "Preparing social posts for: US-Israel Tax Treaty Guide 2024"
+  },
+  {
+    "id": "nkiix2",
+    "timestamp": "2026-02-11T16:57:43.132Z",
+    "level": "success",
+    "message": "Successfully published to Facebook and LinkedIn for topic audit-123 (No video)"
+  },
+  {
+    "id": "i49xxl",
+    "timestamp": "2026-02-11T16:57:43.132Z",
+    "level": "warn",
+    "message": "Video still not ready (Status: failed). Publishing without video."
+  },
+  {
+    "id": "n9vsp",
+    "timestamp": "2026-02-11T16:57:43.131Z",
+    "level": "error",
+    "message": "Kie.ai Task Failed: internal error, please try again later.",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "xytfq6",
+    "timestamp": "2026-02-11T16:57:43.047Z",
+    "level": "info",
+    "message": "Video was pending. Checking status for Task: 578f9ded5aca90dbbb6cdde19dc81f0c"
+  },
+  {
+    "id": "ern9g",
+    "timestamp": "2026-02-11T16:57:43.046Z",
+    "level": "info",
+    "message": "Publishing social posts for topic: audit-123"
+  },
+  {
+    "id": "6nx3zv",
+    "timestamp": "2026-02-11T16:57:43.045Z",
+    "level": "info",
+    "message": "Social approval request sent."
+  },
+  {
+    "id": "h3lrts",
+    "timestamp": "2026-02-11T16:57:40.333Z",
+    "level": "info",
+    "message": "Task ID: aef0a98bde62f59cbf66ce07acf18da1",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "li828q",
+    "timestamp": "2026-02-11T16:57:39.999Z",
+    "level": "info",
+    "message": "Preparing social posts for: Audit Topic"
+  },
+  {
     "id": "tmjdg4",
     "timestamp": "2026-02-10T22:37:00.935Z",
     "level": "agent",

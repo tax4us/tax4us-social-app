@@ -44,52 +44,41 @@ export function LiveFeed({ activities = defaultActivities }: LiveFeedProps) {
     };
 
     return (
-        <Card className="border-border/50 shadow-sm overflow-hidden h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 bg-muted/30">
-                <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
-                    Live System activity
-                </CardTitle>
-                <div className="flex items-center gap-1.5 animate-pulse">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                    <span className="text-[10px] font-bold text-green-600 uppercase">Live Feed</span>
-                </div>
-            </CardHeader>
-            <CardContent className="p-0 flex-1 overflow-auto">
-                <div className="divide-y divide-border/30">
+        <div className="overflow-hidden h-full flex flex-col">
+            <div className="flex-1 overflow-auto max-h-[350px] scrollbar-hide">
+                <div className="divide-y divide-border/20">
                     {activities.map((activity, idx) => (
                         <motion.div
                             key={activity.id}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="p-4 hover:bg-muted/30 transition-colors group cursor-pointer"
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            className="p-3 hover:bg-primary/5 transition-all duration-200 group cursor-pointer border-l-2 border-transparent hover:border-primary"
                         >
                             <div className="flex items-start gap-3">
-                                <div className="mt-0.5 p-2 rounded-lg bg-background border border-border shadow-sm group-hover:bg-primary/5 transition-colors">
+                                <div className="mt-0.5 p-1.5 rounded-lg bg-background border border-border/50 shadow-sm group-hover:border-primary/30 transition-colors">
                                     {getIcon(activity.type)}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start gap-2">
-                                        <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
+                                        <p className="text-xs font-bold truncate group-hover:text-primary transition-colors leading-tight">
                                             {activity.title}
                                         </p>
-                                        <span className="text-[10px] text-muted-foreground whitespace-nowrap flex items-center gap-1">
-                                            <Clock className="w-2.5 h-2.5" />
-                                            {activity.timestamp}
-                                        </span>
                                     </div>
                                     <div className="flex items-center justify-between mt-1">
-                                        <span className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider">
+                                        <span className="text-[9px] uppercase font-bold text-muted-foreground/50 tracking-wider flex items-center gap-1">
                                             {activity.type === 'wordpress' ? 'WP Post' : activity.type}
+                                            <span className="opacity-40">•</span>
+                                            {activity.timestamp}
                                         </span>
                                         {activity.url && (
                                             <a
                                                 href={activity.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-[10px] font-bold text-primary flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="text-[9px] font-bold text-primary flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
-                                                VIEW LIVE <ChevronRight className="w-2.5 h-2.5" />
+                                                LINK <ExternalLink className="w-2 h-2" />
                                             </a>
                                         )}
                                     </div>
@@ -98,7 +87,7 @@ export function LiveFeed({ activities = defaultActivities }: LiveFeedProps) {
                         </motion.div>
                     ))}
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }

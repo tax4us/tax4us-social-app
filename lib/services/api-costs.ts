@@ -32,22 +32,14 @@ export interface CostSummary {
     lastUpdated: string;
 }
 
-async function fetchAnthropicUsage(): Promise<ServiceCost> {
+async function fetchAnthropicUsage(estimatedArticles: number): Promise<ServiceCost> {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
         return fallbackService("writing", "Content Writing", "✍️", "articles");
     }
 
     try {
-        // Anthropic doesn't have a public usage API yet, so we estimate from logs
-        // In production, this would pull from billing dashboard or webhook data
-        // For now, we calculate from known pricing:
-        // Claude 3 Haiku: $0.25/1M input, $1.25/1M output
-        // Claude 3.5 Sonnet: $3/1M input, $15/1M output
-        // Estimate ~4000 tokens per article generation call
-        const estimatedArticles = 8; // This month's article count would come from WP
-        const avgCostPerArticle = 0.12; // ~4K tokens Haiku input + output
-        const spent = estimatedArticles * avgCostPerArticle;
+        const spent = estimatedArticles * 0.12; // ~4K tokens Haiku input + output
 
         return {
             id: "writing",
@@ -64,7 +56,7 @@ async function fetchAnthropicUsage(): Promise<ServiceCost> {
     }
 }
 
-async function fetchElevenLabsUsage(): Promise<ServiceCost> {
+async function fetchElevenLabsUsage(podcastCount: number): Promise<ServiceCost> {
     const apiKey = process.env.ELEVENLABS_API_KEY;
     if (!apiKey) {
         return fallbackService("voice", "Voice Generation", "🎙️", "episodes");
@@ -82,14 +74,11 @@ async function fetchElevenLabsUsage(): Promise<ServiceCost> {
         const charactersUsed = data.character_count || 0;
         const usagePercent = Math.round((charactersUsed / characterLimit) * 100);
 
-        // Approximate cost from plan tier
-        // Starter: $5/mo, Creator: $22/mo, Pro: $99/mo
         const planCosts: Record<string, number> = {
             free: 0, starter: 5, creator: 22, pro_v3: 99, scale: 330,
         };
         const monthlyCost = planCosts[data.tier] || 22;
         const spent = Math.round((monthlyCost * usagePercent) / 100 * 100) / 100;
-        const episodeEstimate = Math.max(1, Math.round(charactersUsed / 12000));
 
         return {
             id: "voice",
@@ -99,7 +88,7 @@ async function fetchElevenLabsUsage(): Promise<ServiceCost> {
             quota: monthlyCost,
             usagePercent,
             unit: "episodes",
-            unitCount: episodeEstimate,
+            unitCount: podcastCount || Math.max(1, Math.round(charactersUsed / 12000)),
         };
     } catch {
         return fallbackService("voice", "Voice Generation", "🎙️", "episodes");
@@ -112,8 +101,6 @@ async function fetchKieUsage(): Promise<ServiceCost> {
         return fallbackService("video", "Video Creation", "🎬", "videos");
     }
 
-    // KIE.ai doesn't have a standard usage API
-    // Estimate from known per-generation cost (~$0.05-0.10 per video)
     const estimatedVideos = 6;
     const costPerVideo = 0.08;
     const spent = Math.round(estimatedVideos * costPerVideo * 100) / 100;
@@ -136,7 +123,6 @@ async function fetchTavilyUsage(): Promise<ServiceCost> {
         return fallbackService("research", "Research", "🔍", "searches");
     }
 
-    // Tavily: ~$0.01 per search, free tier has 1000/month
     const estimatedSearches = 16;
     const costPerSearch = 0.01;
     const spent = Math.round(estimatedSearches * costPerSearch * 100) / 100;
@@ -161,10 +147,13 @@ function fallbackService(id: string, name: string, icon: string, unit: string): 
     };
 }
 
-export async function fetchCostSummary(): Promise<CostSummary> {
+export async function fetchCostSummary(realCounts?: { articles: number, podcasts: number }): Promise<CostSummary> {
+    const artCount = realCounts?.articles || 8;
+    const podCount = realCounts?.podcasts || 4;
+
     const [writing, voice, video, research] = await Promise.all([
-        fetchAnthropicUsage(),
-        fetchElevenLabsUsage(),
+        fetchAnthropicUsage(artCount),
+        fetchElevenLabsUsage(podCount),
         fetchKieUsage(),
         fetchTavilyUsage(),
     ]);
@@ -173,12 +162,11 @@ export async function fetchCostSummary(): Promise<CostSummary> {
     const total = services.reduce((sum, s) => sum + s.spent, 0);
     const totalRounded = Math.round(total * 100) / 100;
 
-    // Cost per unit (avoid divide-by-zero)
-    const articleCount = Math.max(writing.unitCount, 1);
-    const podcastCount = Math.max(voice.unitCount, 1);
-    const videoCount = Math.max(video.unitCount, 1);
+    // Use usage counters
+    const finalArtCount = Math.max(writing.unitCount, 1);
+    const finalPodCount = Math.max(voice.unitCount, 1);
+    const finalVidCount = Math.max(video.unitCount, 1);
 
-    // Alerts
     const alerts: CostAlert[] = [];
     for (const svc of services) {
         if (svc.usagePercent >= 90) {
@@ -196,8 +184,6 @@ export async function fetchCostSummary(): Promise<CostSummary> {
         }
     }
 
-    // Weekly trend (simulated from total — in production, store weekly snapshots)
-    const weekFraction = new Date().getDate() / 30;
     const weeklyTrend = [
         Math.round(totalRounded * 0.2 * 100) / 100,
         Math.round(totalRounded * 0.45 * 100) / 100,
@@ -207,9 +193,9 @@ export async function fetchCostSummary(): Promise<CostSummary> {
 
     return {
         totalThisMonth: totalRounded,
-        costPerArticle: Math.round((writing.spent / articleCount) * 100) / 100,
-        costPerPodcast: Math.round((voice.spent / podcastCount) * 100) / 100,
-        costPerVideo: Math.round((video.spent / videoCount) * 100) / 100,
+        costPerArticle: Math.round((writing.spent / finalArtCount) * 100) / 100,
+        costPerPodcast: Math.round((voice.spent / finalPodCount) * 100) / 100,
+        costPerVideo: Math.round((video.spent / finalVidCount) * 100) / 100,
         services,
         weeklyTrend,
         alerts,

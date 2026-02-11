@@ -1,26 +1,43 @@
-import { fetchInventory, fetchPodcasts, fetchPipelineStatus } from "@/lib/pipeline-data";
-import { fetchCostSummary } from "@/lib/services/api-costs";
-import { Dashboard } from "@/components/UniversalDashboard";
+import { fetchPipelineStatus, fetchInventory } from "@/lib/pipeline-data"
+import { fetchPodcastEpisodes } from "@/lib/services/podcast"
+import { fetchCostSummary } from "@/lib/services/api-costs"
+import { insightsService } from "@/lib/services/insights"
+import UniversalDashboard from "@/components/UniversalDashboard"
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
+
+/** Wraps a fetch with a timeout — returns fallback if it takes too long */
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms))
+  ])
+}
 
 export default async function DashboardPage() {
-  // Parallel fetch for live "Proof of Work"
-  const [inventory, podcasts, pipeline, costData] = await Promise.all([
-    fetchInventory(),
-    fetchPodcasts(),
-    fetchPipelineStatus(),
-    fetchCostSummary().catch(() => undefined),
-  ]);
+  // All fetches in parallel — non-critical ones get aggressive timeouts + fallbacks
+  const [
+    inventory,
+    podcasts,
+    pipelineStatus,
+    costs,
+  ] = await Promise.all([
+    withTimeout(fetchInventory(), 4000, { items: [], total: 0 }),
+    withTimeout(fetchPodcastEpisodes(), 3000, []),
+    withTimeout(fetchPipelineStatus(), 4000, []),
+    withTimeout(fetchCostSummary(), 3000, undefined),
+  ])
+
+  // Insights now include real Facebook data — reuses inventory total for WP/LinkedIn derived metrics
+  const insights = await insightsService.fetchUnifiedInsights(inventory.total)
 
   return (
-    <div className="md:p-2 p-1">
-      <Dashboard
-        initialRecords={pipeline}
-        podcastEpisodes={podcasts}
-        wordpressInventory={inventory}
-        costData={costData}
-      />
-    </div>
-  );
+    <UniversalDashboard
+      inventory={inventory}
+      podcasts={podcasts}
+      initialRecords={pipelineStatus}
+      costSummary={costs}
+      insights={insights}
+    />
+  )
 }

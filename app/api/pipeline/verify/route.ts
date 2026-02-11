@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { fetchInventory, fetchPodcasts, fetchSeoMetrics } from '@/lib/pipeline-data';
 import { getN8nState } from '@/lib/n8n-bridge';
 import { checkSystemHealth } from '@/lib/health-check';
-import { fetchMediaGenerations } from '@/lib/services/intelligence';
+import { fetchRecentMedia } from '@/lib/services/intelligence';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,14 +20,14 @@ export async function GET() {
         getN8nState().catch(() => ({})),
         checkSystemHealth().catch(() => []),
         fetchPodcasts().catch(() => []),
-        fetchMediaGenerations().catch(() => []),
+        fetchRecentMedia().catch(() => []),
         fetchSeoMetrics().catch(() => [])
     ]);
 
     return NextResponse.json({
         timestamp: new Date().toISOString(),
         inventory: {
-            count: inventory ? inventory.length : 0,
+            count: inventory ? (Array.isArray(inventory) ? inventory.length : (inventory as any).total || 0) : 0,
             status: inventory ? "connected" : "error_fallback"
         },
         podcasts: {
@@ -43,7 +43,7 @@ export async function GET() {
             status: seo.length > 0 ? "connected" : "no_data_or_error"
         },
         health: {
-            statuses: health.map(s => ({ name: s.name, status: s.status, latency: s.latency }))
+            statuses: health.map((s: any) => ({ name: s.name, status: s.status, latency: s.latency }))
         }
     });
 }
