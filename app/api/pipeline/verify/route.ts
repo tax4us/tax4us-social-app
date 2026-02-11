@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { fetchWordPressInventory } from '@/lib/wordpress-client';
+import { fetchInventory, fetchPodcasts, fetchSeoMetrics } from '@/lib/pipeline-data';
 import { getN8nState } from '@/lib/n8n-bridge';
 import { checkSystemHealth } from '@/lib/health-check';
-import { fetchPodcastEpisodes } from '@/lib/services/podcast';
-import { fetchMediaGenerations, fetchSeoMetrics } from '@/lib/services/intelligence';
+import { fetchMediaGenerations } from '@/lib/services/intelligence';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+    // We use the same functions as the dashboard for consistency
     const [
         inventory,
         n8nState,
@@ -16,12 +16,12 @@ export async function GET() {
         media,
         seo
     ] = await Promise.all([
-        fetchWordPressInventory(),
-        getN8nState(),
-        checkSystemHealth(),
-        fetchPodcastEpisodes(),
-        fetchMediaGenerations(),
-        fetchSeoMetrics()
+        fetchInventory().catch(() => []),
+        getN8nState().catch(() => ({})),
+        checkSystemHealth().catch(() => []),
+        fetchPodcasts().catch(() => []),
+        fetchMediaGenerations().catch(() => []),
+        fetchSeoMetrics().catch(() => [])
     ]);
 
     return NextResponse.json({

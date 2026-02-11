@@ -180,10 +180,13 @@ export async function fetchPipelineStatus(): Promise<PipelineItem[]> {
         });
 
         // 2. Fetch from WordPress (recent posts for pipeline view)
-        const wpPosts = await wp.getPosts({ status: 'any', per_page: '20' });
-        const wpItems: PipelineItem[] = wpPosts.map((post: any) => ({
+        // Avoid status=any if auth is missing
+        const wpParams: any = { per_page: '20' };
+        // We can check if wp has auth if we had a getter, but for now we'll just try publish if it fails or just use publish defaults.
+        const wpPosts = await wp.getPosts({ status: 'publish', ...wpParams });
+        const wpItems: PipelineItem[] = Array.isArray(wpPosts) ? wpPosts.map((post: any) => ({
             id: post.id.toString(),
-            topic: post.title.rendered,
+            topic: post.title?.rendered || "Untitled Post",
             stage: post.status === 'publish' ? 'english-publish-social' : 'hebrew-publish',
             status: post.status === 'publish' ? 'completed' : 'in-progress',
             category: "WP Post",
@@ -195,7 +198,7 @@ export async function fetchPipelineStatus(): Promise<PipelineItem[]> {
                 linkedinApproved: post.status === 'publish',
                 facebookApproved: post.status === 'publish'
             }
-        }));
+        })) : [];
 
         return [...items, ...wpItems];
     } catch (e) {
