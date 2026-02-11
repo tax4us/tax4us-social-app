@@ -1,5 +1,55 @@
 [
   {
+    "id": "r6268f",
+    "timestamp": "2026-02-11T17:06:32.219Z",
+    "level": "success",
+    "message": "Successfully published to Facebook and LinkedIn for topic audit-123 (No video)"
+  },
+  {
+    "id": "mbslp",
+    "timestamp": "2026-02-11T17:06:32.218Z",
+    "level": "warn",
+    "message": "Video still not ready (Status: failed). Publishing without video."
+  },
+  {
+    "id": "79gu9r",
+    "timestamp": "2026-02-11T17:06:32.215Z",
+    "level": "error",
+    "message": "Kie.ai Task Failed: internal error, please try again later.",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "94ltm",
+    "timestamp": "2026-02-11T17:06:32.133Z",
+    "level": "info",
+    "message": "Video was pending. Checking status for Task: 578f9ded5aca90dbbb6cdde19dc81f0c"
+  },
+  {
+    "id": "lahzx",
+    "timestamp": "2026-02-11T17:06:32.131Z",
+    "level": "info",
+    "message": "Publishing social posts for topic: audit-123"
+  },
+  {
+    "id": "9wwtr",
+    "timestamp": "2026-02-11T17:06:32.129Z",
+    "level": "info",
+    "message": "Social approval request sent."
+  },
+  {
+    "id": "g0otkf",
+    "timestamp": "2026-02-11T17:06:29.951Z",
+    "level": "info",
+    "message": "Task ID: 254aed9ca3cbb432059ddf3ea235ac42",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "iv1tc",
+    "timestamp": "2026-02-11T17:06:29.364Z",
+    "level": "info",
+    "message": "Preparing social posts for: Audit Topic"
+  },
+  {
     "id": "48egft",
     "timestamp": "2026-02-11T16:58:07.951Z",
     "level": "info",

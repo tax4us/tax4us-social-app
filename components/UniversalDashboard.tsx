@@ -141,53 +141,53 @@ export default function Dashboard({
             </div>
 
             {/* Business Impact KPI Grid */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                 <PremiumStatCard
                     title="Digital Assets"
                     value={totalArticles.toString()}
-                    description="Live Salespeople"
+                    description="Live Sales"
                     icon={<FileText className="h-4 w-4" />}
-                    trend={`+${Math.round(weeklyVelocity)} this week`}
+                    trend={`+${Math.round(weeklyVelocity)}/wk`}
                     explanation="These are your assets available 24/7 on Google. Each article acts as a digital salesperson, answering client questions and bringing in leads automatically."
                 />
                 <PremiumStatCard
                     title="Audience Reach"
                     value={`${avgSeo}%`}
-                    description="Visibility Index"
+                    description="Visibility"
                     icon={<Target className="h-4 w-4 text-emerald-500" />}
-                    trend="High Priority"
+                    trend="Priority"
                     explanation={`Your content visibility index is at ${avgSeo}%. This measures how likely Google is to show your expertise to potential clients searching for tax advice.`}
                 />
                 <PremiumStatCard
                     title="Efficiency Gain"
                     value={`${hoursSaved}h`}
-                    description="Human Labor Saved"
+                    description="Labor Saved"
                     icon={<Hourglass className="h-4 w-4 text-primary" />}
-                    trend="~11 Weeks Saved"
+                    trend="~11 Weeks"
                     explanation={`By using AI, you've saved roughly ${hoursSaved} man-hours this month. That is equivalent to having a professional content team working for 2.5 months straight.`}
                 />
                 <PremiumStatCard
                     title="Growth Velocity"
                     value={weeklyVelocity}
-                    description="Weekly Production"
+                    description="Weekly"
                     icon={<TrendingUp className="h-4 w-4 text-emerald-500" />}
-                    trend="Scaling active"
+                    trend="Scaling"
                     explanation="This is the speed of your content factory. A higher velocity signals authority to search engines, leading to faster business growth."
                 />
                 <PremiumStatCard
-                    title="Production Roadmap"
+                    title="Roadmap"
                     value={activePipeline}
-                    description="Assets in Factory"
+                    description="In Factory"
                     icon={<Zap className="h-4 w-4 text-amber-500" />}
-                    trend="Moving fast"
+                    trend="Moving"
                     explanation="The number of topics currently being developed. These will become live articles and podcasts within days, expanding your digital footprint."
                 />
                 <PremiumStatCard
-                    title="Asset Valuation"
+                    title="Valuation"
                     value={`$${(hoursSaved * 75).toLocaleString()}`}
-                    description="Est. Replacement Cost"
+                    description="Replacement"
                     icon={<Activity className="h-4 w-4 text-primary" />}
-                    trend="ROI: 18.2x"
+                    trend="18.2x ROI"
                     explanation="This estimates what it would cost to produce this volume of high-quality content using a traditional agency. Your AI factory is building significant equity."
                 />
             </div>
@@ -209,7 +209,7 @@ export default function Dashboard({
                                 <input
                                     type="text"
                                     placeholder="Search assets..."
-                                    className="pl-8 h-8 w-[180px] rounded-full border border-primary/10 bg-white/50 text-[11px] focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                                    className="pl-8 h-8 w-[140px] xl:w-[180px] rounded-full border border-primary/10 bg-white/50 text-[11px] focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all"
                                 />
                             </div>
                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0 rounded-full hover:bg-primary/5">
@@ -220,18 +220,18 @@ export default function Dashboard({
                     <CardContent className="p-0 flex-1 overflow-auto custom-scrollbar">
                         <div className="divide-y divide-primary/5">
                             {paginatedRecords.map((item) => (
-                                <div key={item.id} className="group flex items-center justify-between p-4 hover:bg-primary/[0.02] transition-colors border-l-2 border-transparent hover:border-primary/20">
-                                    <div className="flex items-center gap-4 flex-1 min-w-0">
-                                        <div className={`h-10 w-10 shrink-0 rounded-xl flex items-center justify-center shadow-inner border border-white/40 ${item.status === 'completed' ? 'bg-emerald-50' :
+                                <div key={item.id} className="group flex items-center justify-between p-4 py-3 hover:bg-primary/[0.02] transition-colors border-l-2 border-transparent hover:border-primary/20">
+                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                        <div className={`h-9 w-9 shrink-0 rounded-xl flex items-center justify-center shadow-inner border border-white/40 ${item.status === 'completed' ? 'bg-emerald-50' :
                                             item.status === 'in-progress' ? 'bg-amber-50' :
                                                 'bg-indigo-50'
                                             }`}>
                                             {item.status === 'completed' ? (
-                                                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                                                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                                             ) : item.status === 'in-progress' ? (
-                                                <Hourglass className="h-5 w-5 text-amber-500 animate-pulse-slow" />
+                                                <Hourglass className="h-4 w-4 text-amber-500 animate-pulse-slow" />
                                             ) : (
-                                                <Clock className="h-5 w-5 text-indigo-500" />
+                                                <Clock className="h-4 w-4 text-indigo-500" />
                                             )}
                                         </div>
                                         <div className="min-w-0 flex-1">
@@ -245,7 +245,7 @@ export default function Dashboard({
                                                         {item.topic}
                                                     </h4>
                                                 )}
-                                                <Badge variant="secondary" className="text-[9px] h-4 px-1.5 uppercase font-mono tracking-tighter opacity-70">
+                                                <Badge variant="secondary" className="text-[8px] h-3.5 px-1 uppercase font-mono tracking-tighter opacity-70 bg-primary/5 text-primary border-primary/10 shrink-0">
                                                     {item.category}
                                                 </Badge>
                                             </div>
