@@ -30,7 +30,7 @@ export function PremiumStatCard({ title, value, trend, icon, description, explan
                     boxShadow: "0 25px 50px -12px rgba(159, 202, 59, 0.2)"
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="relative group bg-white/80 backdrop-blur-xl border border-white/20 p-5 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden cursor-default"
+                className="relative group bg-white/80 backdrop-blur-xl border border-white/20 p-5 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden cursor-default h-full"
             >
                 {/* Glossy Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -63,11 +63,11 @@ export function PremiumStatCard({ title, value, trend, icon, description, explan
                         </div>
                     </div>
 
-                    <div className="flex-1 space-y-1">
-                        <h3 className="text-[10px] font-bold text-foreground/40 tracking-[0.15em] uppercase">
+                    <div className="flex flex-col flex-1 justify-end space-y-1">
+                        <h3 className="text-[10px] font-bold text-foreground/40 tracking-[0.15em] uppercase leading-tight min-h-[20px]">
                             {title}
                         </h3>
-                        <div className="flex items-baseline gap-1.5">
+                        <div className="flex items-baseline gap-1.5 mt-auto">
                             <p className="text-3xl font-bold text-foreground font-heading tracking-tight italic">
                                 {value}
                             </p>
