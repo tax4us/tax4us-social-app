@@ -356,7 +356,7 @@ class SEOOptimizer {
    */
   private async updateContentPiece(contentId: string, updates: Partial<ContentPiece>): Promise<void> {
     try {
-      await this.db.updateContentPiece(contentId, updates)
+      await db.updateContentPiece(contentId, updates)
       console.log(`Successfully updated content piece ${contentId} with SEO optimizations`)
     } catch (error) {
       console.error(`Failed to update content piece ${contentId}:`, error)
