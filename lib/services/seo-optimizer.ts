@@ -4,7 +4,7 @@
  */
 
 // Using internal API for NotebookLM queries
-import { ContentPiece } from './database'
+import { ContentPiece, db } from './database'
 import { wordPressPublisher } from './wordpress-publisher'
 
 export interface SEOAnalysis {
@@ -216,7 +216,7 @@ class SEOOptimizer {
   async getLowPerformingContent(threshold: number = 80, limit: number = 10): Promise<ContentPiece[]> {
     try {
       // Query database for content pieces with SEO score below threshold
-      const contentPieces = await this.db.getContentPieces()
+      const contentPieces = await db.getContentPieces()
       return contentPieces
         .filter(piece => piece.seo_score && piece.seo_score < threshold)
         .slice(0, limit)
