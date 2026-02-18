@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Publish to WordPress
-    const result = await wordPressPublisher.publishToWordPress(contentPiece, options)
+    const result = await wordPressPublisher.publishContent(contentPiece, options)
     
     return NextResponse.json({
       success: true,
