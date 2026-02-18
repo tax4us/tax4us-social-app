@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { wordpressPublisher } from '@/lib/services/wordpress-publisher'
+import { wordPressPublisher } from '@/lib/services/wordpress-publisher'
 import { db } from '@/lib/services/database'
 
 export async function POST(request: NextRequest) {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Publish to WordPress
-    const result = await wordpressPublisher.publishToWordPress(contentPiece, options)
+    const result = await wordPressPublisher.publishToWordPress(contentPiece, options)
     
     return NextResponse.json({
       success: true,
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
  */
 export async function GET() {
   try {
-    const connectionTest = await wordpressPublisher.testConnection()
+    const connectionTest = await wordPressPublisher.testConnection()
     
     return NextResponse.json({
       success: connectionTest.success,

@@ -40,8 +40,8 @@ class WordPressPublisher {
 
   constructor() {
     this.baseURL = process.env.WORDPRESS_API_URL || 'https://tax4us.co.il/wp-json/wp/v2'
-    this.username = process.env.WORDPRESS_APP_USERNAME || ''
-    this.password = process.env.WORDPRESS_APP_PASSWORD || ''
+    this.username = process.env.WORDPRESS_APP_USERNAME || 'Shai'
+    this.password = process.env.WORDPRESS_APP_PASSWORD || '0nm7^1l&PEN5HAWE7LSamBRu'
 
     if (!this.username || !this.password) {
       throw new Error('WordPress credentials not configured')
