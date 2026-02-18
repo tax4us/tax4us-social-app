@@ -82,7 +82,7 @@ export function GeneratorCard({ title, description, icon, endpoint, inputType = 
                 )}
             </CardContent>
             <CardFooter>
-                <Button onClick={handleRun} disabled={isLoading} size="xl" className="w-full">
+                <Button onClick={handleRun} disabled={isLoading} size="lg" className="w-full h-12">
                     {isLoading ? (
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     ) : (
