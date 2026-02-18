@@ -1,0 +1,100 @@
+[
+  {
+    "type": "content_review",
+    "related_id": "content_1771293216381_dif130c3k",
+    "status": "pending",
+    "id": "approval_1771293216917_rdp7o0ye7",
+    "created_at": "2026-02-17T01:53:36.917Z",
+    "updated_at": "2026-02-17T01:53:36.917Z"
+  },
+  {
+    "type": "topic_selection",
+    "related_id": "topic_1771292761138_di8pznxnx",
+    "status": "approved",
+    "notes": "High priority FBAR topic - approved for content generation",
+    "approver": "Executive Review",
+    "id": "approval_1771293486969_39b35onis",
+    "created_at": "2026-02-17T01:58:06.969Z",
+    "updated_at": "2026-02-17T01:58:06.969Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771293490706_6i9fhaeid",
+    "status": "pending",
+    "id": "approval_1771293491491_rbweccw0g",
+    "created_at": "2026-02-17T01:58:11.491Z",
+    "updated_at": "2026-02-17T01:58:11.491Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771310374592_hctcoclz4",
+    "status": "pending",
+    "id": "approval_1771310375356_c5h9n72nl",
+    "created_at": "2026-02-17T06:39:35.356Z",
+    "updated_at": "2026-02-17T06:39:35.356Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771310533159_ndixwm0cb",
+    "status": "pending",
+    "id": "approval_1771310533792_hdug75qmq",
+    "created_at": "2026-02-17T06:42:13.792Z",
+    "updated_at": "2026-02-17T06:42:13.792Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771310559286_q18otwmjr",
+    "status": "pending",
+    "id": "approval_1771310559770_eyraq5eiy",
+    "created_at": "2026-02-17T06:42:39.770Z",
+    "updated_at": "2026-02-17T06:42:39.770Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771313913604_k6ht1jhdz",
+    "status": "pending",
+    "id": "approval_1771313914310_60wzqq05x",
+    "created_at": "2026-02-17T07:38:34.311Z",
+    "updated_at": "2026-02-17T07:38:34.311Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771345742962_0a7i9j9zx",
+    "status": "pending",
+    "id": "approval_1771345743319_cipr27zyg",
+    "created_at": "2026-02-17T16:29:03.319Z",
+    "updated_at": "2026-02-17T16:29:03.319Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771345810027_3z1xr2sfs",
+    "status": "pending",
+    "id": "approval_1771345810308_3l4aagg85",
+    "created_at": "2026-02-17T16:30:10.308Z",
+    "updated_at": "2026-02-17T16:30:10.308Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771364931250_jge0w900u",
+    "status": "pending",
+    "id": "approval_1771364931660_cj0dot68e",
+    "created_at": "2026-02-17T21:48:51.660Z",
+    "updated_at": "2026-02-17T21:48:51.660Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771386780353_czqv3hor2",
+    "status": "pending",
+    "id": "approval_1771386780948_wps4hb56c",
+    "created_at": "2026-02-18T03:53:00.948Z",
+    "updated_at": "2026-02-18T03:53:00.948Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771388594785_oxji4wf9b",
+    "status": "pending",
+    "id": "approval_1771388595315_jfd0jf4d4",
+    "created_at": "2026-02-18T04:23:15.315Z",
+    "updated_at": "2026-02-18T04:23:15.315Z"
+  }
+]

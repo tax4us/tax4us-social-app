@@ -1,0 +1,21 @@
+[
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "seo_optimization",
+    "status": "completed",
+    "current_stage": "scanning_posts",
+    "stages_completed": [],
+    "stages_failed": [],
+    "logs": [
+      {
+        "timestamp": "2026-02-18T04:27:56.237Z",
+        "level": "info",
+        "stage": "scanning_posts",
+        "message": "Found 0 posts with SEO score < 80"
+      }
+    ],
+    "started_at": "2026-02-18T04:27:56.235Z",
+    "id": "run_1771388876236_hdh4mkbwp",
+    "completed_at": "2026-02-18T04:27:56.239Z"
+  }
+]

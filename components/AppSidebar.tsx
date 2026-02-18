@@ -8,6 +8,10 @@ import {
     Sparkles,
     PieChart,
     LifeBuoy,
+    Video,
+    Users,
+    TrendingUp,
+    Library,
 } from "lucide-react"
 
 import {
@@ -30,15 +34,30 @@ import {
 // Menu items.
 const navMain = [
     {
-        title: "Overview",
-        url: "/",
+        title: "Executive Center",
+        url: "/executive-center",
         icon: LayoutDashboard,
         isActive: true,
+    },
+    {
+        title: "Content Generation",
+        url: "/content-generation",
+        icon: Video,
+    },
+    {
+        title: "Overview",
+        url: "/",
+        icon: PieChart,
     },
     {
         title: "Topics & Ideas",
         url: "/topics",
         icon: FileText,
+    },
+    {
+        title: "Content Library",
+        url: "/content-library",
+        icon: Library,
     },
     {
         title: "Analytics",
@@ -54,6 +73,21 @@ const navMain = [
         title: "Factory Controls",
         url: "/generators",
         icon: Sparkles,
+    },
+    {
+        title: "Lead Generation",
+        url: "/lead-generation",
+        icon: Users,
+    },
+    {
+        title: "Content Optimization",
+        url: "/content-optimization",
+        icon: TrendingUp,
+    },
+    {
+        title: "Video Studio",
+        url: "/video-studio",
+        icon: Video,
     },
 ]
 
@@ -81,8 +115,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     />
                                 </div>
                                 <div className="flex flex-col leading-tight">
-                                    <span className="truncate font-bold text-lg font-heading">Tax4Us</span>
-                                    <span className="truncate text-[10px] uppercase tracking-widest opacity-70 font-sans">Agent Console</span>
+                                    <span className="truncate font-bold text-lg font-heading">Tax4US</span>
+                                    <span className="truncate text-[10px] uppercase tracking-widest opacity-70 font-sans">Content Factory</span>
                                 </div>
                             </a>
                         </SidebarMenuButton>
@@ -131,7 +165,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarGroup>
             </SidebarContent>
             <div className="p-4 text-[10px] uppercase tracking-widest text-muted-foreground/30 text-center font-bold">
-                Tax4Us Agent Platform • Pro
+                Tax4US Content Factory • AI
             </div>
             <SidebarRail />
         </Sidebar>

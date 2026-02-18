@@ -23,7 +23,8 @@ export default async function DashboardPage() {
     costs,
   ] = await Promise.all([
     withTimeout(fetchInventory(), 4000, { items: [], total: 0 }),
-    withTimeout(fetchPodcastEpisodes(), 3000, []),
+    // Skip podcast API in development to prevent auth spam
+    process.env.NODE_ENV === 'development' ? Promise.resolve([]) : withTimeout(fetchPodcastEpisodes(), 3000, []),
     withTimeout(fetchPipelineStatus(), 4000, []),
     withTimeout(fetchCostSummary(), 3000, undefined),
   ])

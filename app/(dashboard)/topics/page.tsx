@@ -1,25 +1,45 @@
-import { AirtableClient } from "@/lib/clients/airtable-client";
+"use client"
+
+import { useState, useEffect } from 'react'
 import { TopicsTable, TopicRecord } from "@/components/dashboard/TopicsTable";
+import { Button } from "@/components/ui/button";
+import { RefreshCw, Plus } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+export default function TopicsPage() {
+    const [records, setRecords] = useState<TopicRecord[]>([])
+    const [loading, setLoading] = useState(true)
 
-export default async function TopicsPage() {
-    const airtable = new AirtableClient();
-    let records: TopicRecord[] = [];
+    useEffect(() => {
+        fetchTopics()
+    }, [])
 
-    try {
-        // Fetch topics from the main content table
-        // tblq7MDqeogrsdInc
-        const rawRecords = await airtable.getRecords("tblq7MDqeogrsdInc", {
-            maxRecords: 100
-        });
-
-        records = rawRecords.map((rec: any) => ({
-            id: rec.id,
-            fields: rec.fields
-        }));
-    } catch (e) {
-        console.error("Failed to fetch topics", e);
+    const fetchTopics = async () => {
+        setLoading(true)
+        try {
+            const response = await fetch('/api/topics')
+            const data = await response.json()
+            
+            if (data.success) {
+                const formattedRecords: TopicRecord[] = data.topics.map((topic: any) => ({
+                    id: topic.id,
+                    fields: {
+                        topic: topic.title_english,
+                        "Title EN": topic.title_english,
+                        "Title HE": topic.title_hebrew,
+                        Status: topic.status || 'pending',
+                        Priority: topic.priority || 'medium',
+                        "Last Modified": new Date(topic.updated_at).toLocaleDateString(),
+                        Tags: topic.tags?.join(', ') || '',
+                        URL: topic.url || null
+                    }
+                }))
+                setRecords(formattedRecords)
+            }
+        } catch (error) {
+            console.error("Failed to fetch topics", error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -28,13 +48,34 @@ export default async function TopicsPage() {
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight text-foreground">Topics & Ideas</h2>
                     <p className="text-muted-foreground">
-                        Manage your content pipeline and ideation from Airtable.
+                        Manage your bilingual tax content pipeline with {records.length} topics.
                     </p>
+                </div>
+                <div className="flex gap-2">
+                    <Button
+                        variant="outline"
+                        onClick={fetchTopics}
+                        disabled={loading}
+                    >
+                        <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </Button>
+                    <Button>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Topic
+                    </Button>
                 </div>
             </div>
 
             <div className="bg-card border rounded-xl p-6 shadow-sm">
-                <TopicsTable data={records} />
+                {loading ? (
+                    <div className="flex items-center justify-center h-64">
+                        <RefreshCw className="w-8 h-8 animate-spin text-muted-foreground" />
+                        <span className="ml-2 text-muted-foreground">Loading topics...</span>
+                    </div>
+                ) : (
+                    <TopicsTable data={records} />
+                )}
             </div>
         </div>
     )

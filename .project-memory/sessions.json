@@ -1,0 +1,408 @@
+[
+  {
+    "id": "session_1771293035900_0mko08rw9",
+    "started_at": "2026-02-17T01:50:35.909Z",
+    "ended_at": "2026-02-17T21:50:00.000Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Fixed all broken dashboard functionality, eliminated console error spam, implemented proper development mode handling",
+    "goals": [
+      "Test and fix all 8 dashboard URLs",
+      "Eliminate Captivate/Facebook API auth error spam",
+      "Implement proper caching and development modes",
+      "Fix MCP NotebookLM authentication issues"
+    ],
+    "achievements": [
+      "Created missing Topics API endpoint (/app/api/topics/route.ts)",
+      "Fixed video generation by adding getRecentTasks method",
+      "Eliminated console error spam with proper development bypasses",
+      "Fixed app caching issues by clearing .next/.turbo cache",
+      "Resolved MCP authentication with user-provided cookies"
+    ],
+    "challenges": [
+      "User criticized superficial testing approach",
+      "Multiple external API authentication failures in development",
+      "Next.js caching prevented updated app from loading",
+      "Content duplication between notebooks and codebase"
+    ],
+    "next_priorities": [
+      "Separate notebook content from codebase development tracking",
+      "Implement proper content template system using NotebookLM",
+      "Complete pipeline automation testing"
+    ]
+  },
+  {
+    "id": "session_1771293128570_3a9qqqmle",
+    "started_at": "2026-02-17T01:52:08.578Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771293202603_34j14fk42",
+    "started_at": "2026-02-17T01:53:22.683Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771293216374_y9plb5g7t",
+    "started_at": "2026-02-17T01:53:36.378Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771293327240_8uqpu48nk",
+    "started_at": "2026-02-17T01:55:27.246Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771293490681_3yjeewftp",
+    "started_at": "2026-02-17T01:58:10.687Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771293984556_unm7htaw2",
+    "started_at": "2026-02-17T02:06:24.562Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771305220245_n93i17lf6",
+    "started_at": "2026-02-17T05:13:40.252Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771305497007_ntq3er46s",
+    "started_at": "2026-02-17T05:18:17.017Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771309745768_tkmcgirp0",
+    "started_at": "2026-02-17T06:29:05.848Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771310486305_5rg5u6y4e",
+    "started_at": "2026-02-17T06:41:26.312Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771310530804_tg2om6zah",
+    "started_at": "2026-02-17T06:42:10.809Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771310532808_2pkxm4hzx",
+    "started_at": "2026-02-17T06:42:12.816Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771345742127_c7qdjw1ta",
+    "started_at": "2026-02-17T16:29:02.138Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771345761244_mzap6aveb",
+    "started_at": "2026-02-17T16:29:21.258Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771345810017_6ariw5mb8",
+    "started_at": "2026-02-17T16:30:10.022Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771346162367_4ubijmfud",
+    "started_at": "2026-02-17T16:36:02.381Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771346192179_qblo2d2d7",
+    "started_at": "2026-02-17T16:36:32.192Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771346566779_jpx3s7k0h",
+    "started_at": "2026-02-17T16:42:46.791Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771346633190_i2sff1t84",
+    "started_at": "2026-02-17T16:43:53.198Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771363414738_s57ztohyt",
+    "started_at": "2026-02-17T21:23:34.742Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771385185046_q83loo38y",
+    "started_at": "2026-02-18T03:26:25.075Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771385185115_ixdghibhx",
+    "started_at": "2026-02-18T03:26:25.133Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771385185240_8icldd9jv",
+    "started_at": "2026-02-18T03:26:25.280Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771386780329_92ci2kngp",
+    "started_at": "2026-02-18T03:53:00.335Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  },
+  {
+    "id": "session_1771388556245_qcdkd77uh",
+    "started_at": "2026-02-18T04:22:36.254Z",
+    "claude_version": "Sonnet 4 (claude-sonnet-4-20250514)",
+    "session_summary": "Tax4US Content Factory Development Session",
+    "goals": [
+      "Complete autonomous content pipeline implementation",
+      "Integrate all external APIs (WordPress, Slack, ElevenLabs, etc.)",
+      "Build executive dashboard for pipeline monitoring",
+      "Implement NotebookLM-powered content templates"
+    ],
+    "achievements": [],
+    "challenges": [],
+    "next_priorities": []
+  }
+]

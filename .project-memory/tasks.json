@@ -1,0 +1,489 @@
+[
+  {
+    "id": "task_1771293135238_6qjim",
+    "session_id": "session_1771293128570_3a9qqqmle",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic topic_1771293036029_jf0zk",
+    "status": "completed",
+    "started_at": "2026-02-17T01:52:15.238Z",
+    "notes": "Content generated successfully. Length: 76 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T01:52:15.334Z"
+  },
+  {
+    "id": "task_1771293135335_6pt2d",
+    "session_id": "session_1771293128570_3a9qqqmle",
+    "task_name": "Save generated content: LinkedIn Tax Tip Post - topic_1771293036029_jf0zk",
+    "status": "completed",
+    "started_at": "2026-02-17T01:52:15.335Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293151864_3ymy9",
+    "session_id": "session_1771293128570_3a9qqqmle",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic 0",
+    "status": "completed",
+    "started_at": "2026-02-17T01:52:31.864Z",
+    "notes": "Content generated successfully. Length: 52 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T01:52:31.994Z"
+  },
+  {
+    "id": "task_1771293152001_ajv0j",
+    "session_id": "session_1771293128570_3a9qqqmle",
+    "task_name": "Save generated content: LinkedIn Tax Tip Post - 0",
+    "status": "completed",
+    "started_at": "2026-02-17T01:52:32.001Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293155333_kzxo5",
+    "session_id": "session_1771293128570_3a9qqqmle",
+    "task_name": "Generate content: Bilingual Tax Article for topic 0",
+    "status": "completed",
+    "started_at": "2026-02-17T01:52:35.333Z",
+    "notes": "Content generated successfully. Length: 52 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T01:52:35.372Z"
+  },
+  {
+    "id": "task_1771293155373_2tn4n",
+    "session_id": "session_1771293128570_3a9qqqmle",
+    "task_name": "Save generated content: Bilingual Tax Article - 0",
+    "status": "completed",
+    "started_at": "2026-02-17T01:52:35.373Z",
+    "notes": "Content type: article, Language: bilingual",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293202683_r309v",
+    "session_id": "session_1771293202603_34j14fk42",
+    "task_name": "Failed to start content pipeline",
+    "status": "blocked",
+    "started_at": "2026-02-17T01:53:22.683Z",
+    "notes": "Error: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$services$2f$pipeline$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.pipelineManager.startPipeline is not a function",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293205632_bulcz",
+    "session_id": "session_1771293202603_34j14fk42",
+    "task_name": "Failed to start content pipeline",
+    "status": "blocked",
+    "started_at": "2026-02-17T01:53:25.632Z",
+    "notes": "Error: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$services$2f$pipeline$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__.pipelineManager.startPipeline is not a function",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293216378_l3w0p",
+    "session_id": "session_1771293216374_y9plb5g7t",
+    "task_name": "Manual content pipeline started (Run: run_1771293216377_o5y68lrxl)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T01:53:36.378Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771293216377_o5y68lrxl",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293327246_8fplh",
+    "session_id": "session_1771293327240_8uqpu48nk",
+    "task_name": "Generate content: Bilingual Tax Article for topic topic_1771292761138_di8pznxnx",
+    "status": "completed",
+    "started_at": "2026-02-17T01:55:27.246Z",
+    "notes": "Content generated successfully. Length: 1367 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T01:55:27.331Z"
+  },
+  {
+    "id": "task_1771293327332_dw8ab",
+    "session_id": "session_1771293327240_8uqpu48nk",
+    "task_name": "Save generated content: דרישות הגשת FBAR לישראלים-אמריקאים | FBAR Filing Requirements for Israeli-Americans",
+    "status": "completed",
+    "started_at": "2026-02-17T01:55:27.332Z",
+    "notes": "Content type: article, Language: bilingual",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293331038_1z6sv",
+    "session_id": "session_1771293327240_8uqpu48nk",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic topic_1771292761138_di8pznxnx",
+    "status": "completed",
+    "started_at": "2026-02-17T01:55:31.038Z",
+    "notes": "Content generated successfully. Length: 568 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T01:55:31.075Z"
+  },
+  {
+    "id": "task_1771293331076_m8fir",
+    "session_id": "session_1771293327240_8uqpu48nk",
+    "task_name": "Save generated content: FBAR Filing Requirements for Israeli-Americans",
+    "status": "completed",
+    "started_at": "2026-02-17T01:55:31.076Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293334674_fmqoz",
+    "session_id": "session_1771293327240_8uqpu48nk",
+    "task_name": "Generate content: Podcast Episode Script for topic topic_1771292761157_yzr97o3s8",
+    "status": "completed",
+    "started_at": "2026-02-17T01:55:34.674Z",
+    "notes": "Content generated successfully. Length: 1500 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T01:55:34.711Z"
+  },
+  {
+    "id": "task_1771293334712_z7jzh",
+    "session_id": "session_1771293327240_8uqpu48nk",
+    "task_name": "Save generated content: US-Israel Tax Treaty: Complete Guide to Double Taxation Relief",
+    "status": "completed",
+    "started_at": "2026-02-17T01:55:34.712Z",
+    "notes": "Content type: podcast_script, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293490692_bld73",
+    "session_id": "session_1771293490681_3yjeewftp",
+    "task_name": "Manual content pipeline started (Run: run_1771293490687_8xqpgthx4)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T01:58:10.692Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771293490687_8xqpgthx4",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293984562_l95n0",
+    "session_id": "session_1771293984556_unm7htaw2",
+    "task_name": "Build IRS knowledge base for RAG system",
+    "status": "blocked",
+    "started_at": "2026-02-17T02:06:24.562Z",
+    "notes": "Knowledge base build failed: Apify API error: Not Found",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293984564_qyzwx",
+    "session_id": "session_1771293984556_unm7htaw2",
+    "task_name": "Scrape IRS content from 5 URLs using Apify",
+    "status": "blocked",
+    "started_at": "2026-02-17T02:06:24.564Z",
+    "notes": "IRS scraping failed: Apify API error: Not Found",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293988187_66plx",
+    "session_id": "session_1771293984556_unm7htaw2",
+    "task_name": "Build IRS knowledge base for RAG system",
+    "status": "blocked",
+    "started_at": "2026-02-17T02:06:28.187Z",
+    "notes": "Knowledge base build failed: Apify API error: Not Found",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771293988188_ntv8x",
+    "session_id": "session_1771293984556_unm7htaw2",
+    "task_name": "Scrape IRS content from 5 URLs using Apify",
+    "status": "blocked",
+    "started_at": "2026-02-17T02:06:28.188Z",
+    "notes": "IRS scraping failed: Apify API error: Not Found",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771305497016_96hcw",
+    "session_id": "session_1771305497007_ntq3er46s",
+    "task_name": "Scrape IRS content from 1 URLs using Apify",
+    "status": "in_progress",
+    "started_at": "2026-02-17T05:18:17.016Z",
+    "notes": "URLs: https://www.irs.gov/individuals/international-taxpayers/foreign-account-tax-compliance-act-fatca",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771309920123_kdoca",
+    "session_id": "session_1771309745768_tkmcgirp0",
+    "task_name": "Generate documentary video for facebook",
+    "status": "in_progress",
+    "started_at": "2026-02-17T06:32:00.123Z",
+    "notes": "Title: FBAR Requirements for Israeli-Americans",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310374381_di9pc",
+    "session_id": "session_1771309745768_tkmcgirp0",
+    "task_name": "Generate documentary video for facebook",
+    "status": "in_progress",
+    "started_at": "2026-02-17T06:39:34.381Z",
+    "notes": "Title: Test Video",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310374577_zfa1r",
+    "session_id": "session_1771309745768_tkmcgirp0",
+    "task_name": "Manual content pipeline started (Run: run_1771310374575_btpvfjwx5)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T06:39:34.577Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771310374575_btpvfjwx5",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310486312_yjf18",
+    "session_id": "session_1771310486305_5rg5u6y4e",
+    "task_name": "Generate documentary video for facebook",
+    "status": "in_progress",
+    "started_at": "2026-02-17T06:41:26.312Z",
+    "notes": "Title: Test",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310532822_xw76h",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic topic_1771292761138_di8pznxnx",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:12.822Z",
+    "notes": "Content generated successfully. Length: 568 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T06:42:13.000Z"
+  },
+  {
+    "id": "task_1771310533001_de9n4",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Save generated content: FBAR Filing Requirements for Israeli-Americans",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:13.001Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310533006_tnchy",
+    "session_id": "session_1771310532808_2pkxm4hzx",
+    "task_name": "Generate documentary video for facebook",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:13.006Z",
+    "notes": "Title: Test Video",
+    "dependencies": [],
+    "completed_at": "2026-02-17T06:42:13.130Z"
+  },
+  {
+    "id": "task_1771310533156_7fqb9",
+    "session_id": "session_1771310532808_2pkxm4hzx",
+    "task_name": "Manual content pipeline started (Run: run_1771310533155_k69ghkjsu)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T06:42:13.156Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771310533155_k69ghkjsu",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310540887_fr34v",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic topic_1771292761138_di8pznxnx",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:20.887Z",
+    "notes": "Content generated successfully. Length: 568 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T06:42:21.009Z"
+  },
+  {
+    "id": "task_1771310541010_kgvtu",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Save generated content: FBAR Filing Requirements for Israeli-Americans",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:21.010Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310543882_dk9jl",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic topic_1771292761138_di8pznxnx",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:23.882Z",
+    "notes": "Content generated successfully. Length: 568 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T06:42:24.013Z"
+  },
+  {
+    "id": "task_1771310544014_vbjhg",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Save generated content: FBAR Filing Requirements for Israeli-Americans",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:24.014Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310558858_7d61u",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic topic_1771292761138_di8pznxnx",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:38.858Z",
+    "notes": "Content generated successfully. Length: 568 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T06:42:38.971Z"
+  },
+  {
+    "id": "task_1771310558972_gbief",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Save generated content: FBAR Filing Requirements for Israeli-Americans",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:38.972Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310558979_k1yu7",
+    "session_id": "session_1771310532808_2pkxm4hzx",
+    "task_name": "Generate documentary video for facebook",
+    "status": "completed",
+    "started_at": "2026-02-17T06:42:38.979Z",
+    "notes": "Title: Test Video",
+    "dependencies": [],
+    "completed_at": "2026-02-17T06:42:39.261Z"
+  },
+  {
+    "id": "task_1771310559278_ujgml",
+    "session_id": "session_1771310532808_2pkxm4hzx",
+    "task_name": "Manual content pipeline started (Run: run_1771310559276_bexmhymtg)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T06:42:39.278Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771310559276_bexmhymtg",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771310765976_1thx4",
+    "session_id": "session_1771310532808_2pkxm4hzx",
+    "task_name": "Generate documentary video for facebook",
+    "status": "completed",
+    "started_at": "2026-02-17T06:46:05.977Z",
+    "notes": "Title: Quick FBAR Test",
+    "dependencies": [],
+    "completed_at": "2026-02-17T06:46:06.339Z"
+  },
+  {
+    "id": "task_1771313108991_zwg7w",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Generate content: LinkedIn Tax Tip Post for topic fbar_requirements",
+    "status": "completed",
+    "started_at": "2026-02-17T07:25:08.991Z",
+    "notes": "Content generated successfully. Length: 68 characters",
+    "dependencies": [],
+    "completed_at": "2026-02-17T07:25:09.122Z"
+  },
+  {
+    "id": "task_1771313109124_22gqc",
+    "session_id": "session_1771310530804_tg2om6zah",
+    "task_name": "Save generated content: LinkedIn Tax Tip Post - fbar_requirements",
+    "status": "completed",
+    "started_at": "2026-02-17T07:25:09.124Z",
+    "notes": "Content type: social_post, Language: english",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771313913568_zpckf",
+    "session_id": "session_1771310532808_2pkxm4hzx",
+    "task_name": "Manual content pipeline started (Run: run_1771313913557_ycf8tpxe7)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T07:38:33.568Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771313913557_ycf8tpxe7",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771345742960_20j3p",
+    "session_id": "session_1771345742127_c7qdjw1ta",
+    "task_name": "Manual content pipeline started (Run: run_1771345742958_qa9g848yu)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T16:29:02.960Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771345742958_qa9g848yu",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771345810023_2spwm",
+    "session_id": "session_1771345810017_6ariw5mb8",
+    "task_name": "Manual content pipeline started (Run: run_1771345810021_7fyumlanj)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T16:30:10.023Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771345810021_7fyumlanj",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771345901505_uayb5",
+    "session_id": "session_1771345761244_mzap6aveb",
+    "task_name": "Generate corporate video for linkedin",
+    "status": "completed",
+    "started_at": "2026-02-17T16:31:41.505Z",
+    "notes": "Title: US-Israel Tax Treaty Benefits Explained",
+    "dependencies": [],
+    "completed_at": "2026-02-17T16:31:41.650Z"
+  },
+  {
+    "id": "task_1771345902503_6kpsd",
+    "session_id": "session_1771345761244_mzap6aveb",
+    "task_name": "Generate corporate video for linkedin",
+    "status": "completed",
+    "started_at": "2026-02-17T16:31:42.503Z",
+    "notes": "Title: US-Israel Tax Treaty Benefits Explained",
+    "dependencies": [],
+    "completed_at": "2026-02-17T16:31:42.610Z"
+  },
+  {
+    "id": "task_1771345961295_4m1ba",
+    "session_id": "session_1771345761244_mzap6aveb",
+    "task_name": "Generate corporate video for linkedin",
+    "status": "completed",
+    "started_at": "2026-02-17T16:32:41.295Z",
+    "notes": "Title: US-Israel Tax Treaty Benefits Explained",
+    "dependencies": [],
+    "completed_at": "2026-02-17T16:32:41.428Z"
+  },
+  {
+    "id": "task_1771345962238_hj93d",
+    "session_id": "session_1771345761244_mzap6aveb",
+    "task_name": "Generate corporate video for linkedin",
+    "status": "completed",
+    "started_at": "2026-02-17T16:32:42.238Z",
+    "notes": "Title: US-Israel Tax Treaty Benefits Explained",
+    "dependencies": [],
+    "completed_at": "2026-02-17T16:32:42.350Z"
+  },
+  {
+    "id": "task_1771346196553_n35yt",
+    "session_id": "session_1771346192179_qblo2d2d7",
+    "task_name": "Generate documentary video for facebook",
+    "status": "completed",
+    "started_at": "2026-02-17T16:36:36.553Z",
+    "notes": "Title: Test FBAR Video",
+    "dependencies": [],
+    "completed_at": "2026-02-17T16:36:36.733Z"
+  },
+  {
+    "id": "task_1771364931246_r8n39",
+    "session_id": "session_1771363414738_s57ztohyt",
+    "task_name": "Manual content pipeline started (Run: run_1771364931244_vcmol2nt9)",
+    "status": "in_progress",
+    "started_at": "2026-02-17T21:48:51.246Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771364931244_vcmol2nt9",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771386780340_j30tf",
+    "session_id": "session_1771386780329_92ci2kngp",
+    "task_name": "Manual content pipeline started (Run: run_1771386780334_8ubyay3eg)",
+    "status": "in_progress",
+    "started_at": "2026-02-18T03:53:00.340Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771386780334_8ubyay3eg",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771388556256_g0pqd",
+    "session_id": "session_1771388556245_qcdkd77uh",
+    "task_name": "Manual content pipeline started (Run: run_1771388556254_5ityqtdvj)",
+    "status": "in_progress",
+    "started_at": "2026-02-18T04:22:36.256Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771388556254_5ityqtdvj",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771388594782_p0dng",
+    "session_id": "session_1771388556245_qcdkd77uh",
+    "task_name": "Manual content pipeline started (Run: run_1771388594779_v88fh7n3z)",
+    "status": "in_progress",
+    "started_at": "2026-02-18T04:23:14.782Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771388594779_v88fh7n3z",
+    "dependencies": []
+  }
+]

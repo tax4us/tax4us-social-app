@@ -19,24 +19,37 @@ export function GeneratorCard({ title, description, icon, endpoint, inputType = 
     const [inputValue, setInputValue] = useState("")
 
     const handleRun = async () => {
-        const secret = prompt("Enter CRON_SECRET/API_KEY:")
-        if (!secret) return
-
         setIsLoading(true)
         try {
-            const url = new URL(endpoint, window.location.origin)
-            url.searchParams.append("cron_secret", secret)
-            if (inputType === "topicId" && inputValue) {
-                url.searchParams.append("topicId", inputValue)
+            let fetchOptions: RequestInit = {
+                method: endpoint.includes('/cron') ? 'GET' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             }
 
-            const response = await fetch(url)
-            if (!response.ok) throw new Error("Trigger failed")
+            let url = endpoint
+            if (inputType === "topicId" && inputValue) {
+                if (fetchOptions.method === 'POST') {
+                    fetchOptions.body = JSON.stringify({ topicId: inputValue, trigger_type: 'manual' })
+                } else {
+                    url += `?topicId=${inputValue}`
+                }
+            } else if (fetchOptions.method === 'POST') {
+                fetchOptions.body = JSON.stringify({ trigger_type: 'manual' })
+            }
 
-            alert(`${title} triggered successfully!`)
+            const response = await fetch(url, fetchOptions)
+            const result = await response.json()
+            
+            if (response.ok) {
+                alert(`${title} started successfully! ${result.runId ? `Run ID: ${result.runId}` : ''}`)
+            } else {
+                throw new Error(result.error || 'Pipeline trigger failed')
+            }
         } catch (error) {
             console.error(error)
-            alert(`Failed to trigger ${title}`)
+            alert(`Failed to trigger ${title}: ${error}`)
         } finally {
             setIsLoading(false)
         }

@@ -23,9 +23,17 @@ interface ChartProps {
 }
 
 export function StatusDistributionChart({ data }: ChartProps) {
+    if (!data || data.length === 0) {
+        return (
+            <div className="h-[300px] w-full flex items-center justify-center text-gray-500">
+                No data available
+            </div>
+        )
+    }
+
     return (
         <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={200} minHeight={200}>
                 <PieChart>
                     <Pie
                         data={data}
@@ -50,9 +58,17 @@ export function StatusDistributionChart({ data }: ChartProps) {
 }
 
 export function ContentGrowthChart({ data }: ChartProps) {
+    if (!data || data.length === 0) {
+        return (
+            <div className="h-[300px] w-full flex items-center justify-center text-gray-500">
+                No data available
+            </div>
+        )
+    }
+
     return (
         <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={200} minHeight={200}>
                 <LineChart data={data}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                     <XAxis

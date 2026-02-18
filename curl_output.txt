@@ -1,25 +1,0 @@
-* Host localhost:3001 was resolved.
-* IPv6: ::1
-* IPv4: 127.0.0.1
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:3001...
-* Connected to localhost (::1) port 3001
-> GET /api/pipeline/verify HTTP/1.1
-> Host: localhost:3001
-> User-Agent: curl/8.7.1
-> Accept: */*
-> 
-* Request completely sent off
-  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:09 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:10 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:12 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:13 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:14 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:15 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:16 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:17 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:18 --:--:--     0< HTTP/1.1 200 OK
-< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
-< content-type: application/json
-< Date: Tue, 10 Feb 2026 07:36:33 GMT
-< Connection: keep-alive
-< Keep-Alive: timeout=5
-< Transfer-Encoding: chunked
-< 
-{ [562 bytes data]
-100   550    0   550    0     0     28      0 --:--:--  0:00:19 --:--:--   112
-* Connection #0 to host localhost left intact
-{"timestamp":"2026-02-10T07:36:33.900Z","inventory":{"count":100,"status":"connected"},"podcasts":{"count":6,"status":"connected"},"media":{"count":1,"status":"connected"},"seo":{"count":2,"status":"connected"},"health":{"statuses":[{"name":"WordPress API","status":"degraded","latency":1693},{"name":"Slack Notifications","status":"operational","latency":290},{"name":"Claude AI","status":"operational","latency":414},{"name":"Kie.ai Generation","status":"operational","latency":618},{"name":"ElevenLabs TTS","status":"operational","latency":370}]}}

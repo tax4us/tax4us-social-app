@@ -16,6 +16,11 @@ export interface UnifiedInsights {
 
 class InsightsService {
     private inventoryTotal = 0;
+    private facebookErrorLogged = false;
+    private captivateErrorLogged = false;
+    private slackErrorLogged = false;
+    private facebookAuthFailed = false;
+    private lastFacebookAttempt = 0;
     /**
      * Unified insights — real data from Facebook Graph API, WordPress inventory,
      * and Captivate podcast stats. LinkedIn uses derived data until OAuth is set up.
@@ -27,7 +32,8 @@ class InsightsService {
 
             const [pod, fb] = await Promise.all([
                 this.fetchPodcastInsights(),
-                this.fetchFacebookInsights()
+                // Skip Facebook API in development to prevent auth spam
+                process.env.NODE_ENV === 'development' ? Promise.resolve(this.deriveFacebookFallback()) : this.fetchFacebookInsights()
             ]);
 
             // LinkedIn: derive from article count until OAuth token is available
@@ -61,11 +67,16 @@ class InsightsService {
      * and page_post_engagements for engagement metrics.
      */
     private async fetchFacebookInsights(): Promise<PlatformInsights> {
+        // In development, skip external API calls and return fallback data
+        if (process.env.NODE_ENV === 'development') {
+            return this.deriveFacebookFallback();
+        }
+
         const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
         const pageId = process.env.FACEBOOK_PAGE_ID;
 
         if (!token || !pageId) {
-            return { platform: "facebook", reach: 0, engagement: 0, trending: "stable", percentage: 0 };
+            return this.deriveFacebookFallback();
         }
 
         try {
@@ -74,7 +85,12 @@ class InsightsService {
             const json = await res.json();
 
             if (json.error) {
-                console.warn("Facebook Insights API error:", json.error.message);
+                this.facebookAuthFailed = true;
+                this.lastFacebookAttempt = Date.now();
+                if (!this.facebookErrorLogged) {
+                    console.warn("Facebook Insights API error:", json.error.message);
+                    this.facebookErrorLogged = true;
+                }
                 return this.deriveFacebookFallback();
             }
 
