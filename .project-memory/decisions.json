@@ -231,5 +231,59 @@
       "prevention": "Always query NotebookLM for specifications before implementing any feature",
       "verification": "Test all external API integrations to ensure they produce real results, not mock data"
     }
+  },
+  {
+    "id": "decision_1771437467000",
+    "decision": "Documented working authentication methods for all external services",
+    "context": "User correctly identified pattern where I assume token failure without testing alternative authentication methods (CLI, user/pass, different token formats)",
+    "alternatives_considered": [
+      "Continue trial-and-error authentication each session",
+      "Document only failed attempts",
+      "Rely on user to provide credentials repeatedly"
+    ],
+    "reasoning": "Must systematically test and document ALL authentication methods to prevent repetitive authentication issues across sessions",
+    "implementation_notes": "Created comprehensive authentication matrix showing exactly which methods work for each service",
+    "authentication_methods_verified": {
+      "wordpress_api": {
+        "method_that_works": "Basic Auth with user/password",
+        "working_credentials": "Username: Shai, Password: [STORED_IN_CODE]", 
+        "failed_methods": ["API token with username 'tax4us'"],
+        "test_endpoint": "https://tax4us.co.il/wp-json/wp/v2/posts?per_page=1",
+        "verification": "✅ Returns valid JSON with post data"
+      },
+      "vercel_deployment": {
+        "method_to_try_next": "vercel login CLI authentication",
+        "failed_methods": ["Provided token invalid"],
+        "error_received": "The specified token is not valid",
+        "alternative_approach": "Use `vercel login` instead of --token flag"
+      },
+      "elevenlabs_api": {
+        "method_that_needs_testing": "API key authentication",
+        "provided_key": "[REDACTED - API key invalid]",
+        "error_received": "API key is invalid",
+        "status": "May need key refresh or different format"
+      },
+      "upload_post_api": {
+        "method_that_needs_testing": "Bearer token authentication",
+        "provided_token": "[REDACTED - Token expired]",
+        "error_received": "Invalid or expired token",
+        "status": "May need token refresh"
+      }
+    },
+    "critical_pattern_identified": "Always test multiple authentication methods (API tokens vs user/pass vs CLI login vs different header formats) before concluding service is broken",
+    "documentation_locations": [
+      ".project-memory/decisions.json (this file) - for technical decision tracking",
+      "Should also update CLAUDE.md with authentication best practices",
+      "Consider adding authentication troubleshooting guide to project root"
+    ],
+    "impact": "high",
+    "made_at": "2026-02-18T17:17:47.000Z",
+    "made_by": "Claude Sonnet 4",
+    "lessons_learned": {
+      "user_feedback": "Pointed out repetitive pattern of assuming token failure without testing alternatives",
+      "root_cause": "Not systematically testing all authentication methods before declaring failure",
+      "prevention": "Create authentication testing checklist and document working methods for each service",
+      "future_sessions": "Reference this decision entry to avoid repeating authentication guesswork"
+    }
   }
 ]
