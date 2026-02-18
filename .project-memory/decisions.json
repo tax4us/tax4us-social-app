@@ -252,10 +252,17 @@
         "verification": "✅ Returns valid JSON with post data"
       },
       "vercel_deployment": {
-        "method_to_try_next": "vercel login CLI authentication",
-        "failed_methods": ["Provided token invalid"],
-        "error_received": "The specified token is not valid",
-        "alternative_approach": "Use `vercel login` instead of --token flag"
+        "CRITICAL_DISCOVERY": "Token is genuinely invalid across ALL methods tested",
+        "failed_methods": [
+          "npx vercel --token [TOKEN] deploy --prod",
+          "VERCEL_TOKEN=[TOKEN] npx vercel --prod", 
+          "curl API v13 with Bearer token",
+          "curl API v9 with Bearer token",
+          "curl API v6 with Bearer token",
+          "force-update-vercel-env.sh script (failed on all 60+ env vars)"
+        ],
+        "error_received": "The specified token is not valid / Not authorized / invalidToken:true",
+        "status": "TOKEN NEEDS REFRESH - all authentication methods confirm token is invalid"
       },
       "elevenlabs_api": {
         "method_that_needs_testing": "API key authentication",

@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       status: newStatus,
       response_user_id: mockApprovalResponse.userId,
       response_timestamp: new Date().toISOString(),
-      feedback: mockApprovalResponse.replyText
+      feedback: mockApprovalResponse.replyText || undefined
     })
 
     return NextResponse.json({
