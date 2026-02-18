@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
 import {
     SquareTerminal,
     LayoutDashboard,
@@ -37,7 +38,6 @@ const navMain = [
         title: "Executive Center",
         url: "/executive-center",
         icon: LayoutDashboard,
-        isActive: true,
     },
     {
         title: "Content Generation",
@@ -94,12 +94,14 @@ const navMain = [
 const navSecondary = [
     {
         title: "Support",
-        url: "mailto:service@rensto.com",
+        url: "https://api.whatsapp.com/send?phone=972543022554&text=Hi%20Shai,%20I%20need%20help%20with%20Tax4US%20platform",
         icon: LifeBuoy,
     },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const pathname = usePathname()
+    
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader className="border-b h-16 flex items-center px-4 bg-primary text-white">
@@ -128,21 +130,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarGroupLabel className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest py-4">Menu</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu className="px-2 space-y-1">
-                            {navMain.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        asChild
-                                        tooltip={item.title}
-                                        isActive={item.isActive}
-                                        className="h-11 rounded-lg px-3 transition-all hover:bg-muted active:scale-[0.98] data-[active=true]:bg-primary/5 data-[active=true]:text-primary"
-                                    >
-                                        <a href={item.url} className="flex items-center gap-3 font-medium">
-                                            {item.icon && <item.icon className="size-5" />}
-                                            <span>{item.title}</span>
-                                        </a>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
+                            {navMain.map((item) => {
+                                const isActive = pathname === item.url || (item.url === "/executive-center" && pathname === "/")
+                                return (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton
+                                            asChild
+                                            tooltip={item.title}
+                                            isActive={isActive}
+                                            className="h-11 rounded-lg px-3 transition-all hover:bg-muted active:scale-[0.98] data-[active=true]:bg-primary/5 data-[active=true]:text-primary"
+                                        >
+                                            <a href={item.url} className="flex items-center gap-3 font-medium">
+                                                {item.icon && <item.icon className="size-5" />}
+                                                <span>{item.title}</span>
+                                            </a>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )
+                            })}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
