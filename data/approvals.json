@@ -96,5 +96,41 @@
     "id": "approval_1771388595315_jfd0jf4d4",
     "created_at": "2026-02-18T04:23:15.315Z",
     "updated_at": "2026-02-18T04:23:15.315Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771402158698_eg8ide2b5",
+    "status": "pending",
+    "id": "approval_1771402159301_xnvywd2t5",
+    "created_at": "2026-02-18T08:09:19.301Z",
+    "updated_at": "2026-02-18T08:09:19.301Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771402949572_spjgxpfvl",
+    "status": "pending",
+    "id": "approval_1771402950024_ybh95qy7y",
+    "created_at": "2026-02-18T08:22:30.024Z",
+    "updated_at": "2026-02-18T08:22:30.024Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771386780353_czqv3hor2",
+    "status": "pending",
+    "related_title": "Tax Advice: בדיקה",
+    "id": "approval_1771403021345_vt7rtzkun",
+    "created_at": "2026-02-18T08:23:41.345Z",
+    "updated_at": "2026-02-18T08:23:41.345Z"
+  },
+  {
+    "type": "content_review",
+    "related_id": "content_1771386780353_czqv3hor2",
+    "status": "approved",
+    "related_title": "Tax Advice: בדיקה",
+    "id": "approval_1771403045751_or4a07xlc",
+    "created_at": "2026-02-18T08:24:05.751Z",
+    "updated_at": "2026-02-18T08:24:18.908Z",
+    "response_user_id": "U12345678",
+    "response_timestamp": "2026-02-18T08:24:18.906Z"
   }
 ]

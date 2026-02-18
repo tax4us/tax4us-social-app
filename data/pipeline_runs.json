@@ -1,21 +1,28 @@
 [
   {
-    "trigger_type": "cron",
-    "pipeline_type": "seo_optimization",
-    "status": "completed",
-    "current_stage": "scanning_posts",
-    "stages_completed": [],
+    "trigger_type": "manual",
+    "pipeline_type": "content_creation",
+    "status": "running",
+    "current_stage": "hebrew_content_generation",
+    "stages_completed": [
+      "topic_selection"
+    ],
     "stages_failed": [],
     "logs": [
       {
-        "timestamp": "2026-02-18T04:27:56.237Z",
+        "timestamp": "2026-02-18T08:22:29.565Z",
         "level": "info",
-        "stage": "scanning_posts",
-        "message": "Found 0 posts with SEO score < 80"
+        "stage": "topic_selection",
+        "message": "Starting stage: topic_selection"
       }
     ],
-    "started_at": "2026-02-18T04:27:56.235Z",
-    "id": "run_1771388876236_hdh4mkbwp",
-    "completed_at": "2026-02-18T04:27:56.239Z"
+    "started_at": "2026-02-18T08:22:29.565Z",
+    "id": "run_1771402949565_8odq5zn81"
+  }
+] "Selected topic: Test Topic"
+      }
+    ],
+    "started_at": "2026-02-18T08:22:29.565Z",
+    "id": "run_1771402949565_8odq5zn81"
   }
 ]

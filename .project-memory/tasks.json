@@ -485,5 +485,41 @@
     "started_at": "2026-02-18T04:23:14.782Z",
     "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771388594779_v88fh7n3z",
     "dependencies": []
+  },
+  {
+    "id": "task_1771389873934_srz2x",
+    "session_id": "session_1771389873923_f3p4vgv0q",
+    "task_name": "Manual content pipeline started (Run: run_1771389873931_pqcyiu60c)",
+    "status": "in_progress",
+    "started_at": "2026-02-18T04:44:33.934Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771389873931_pqcyiu60c",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771402158691_w21lp",
+    "session_id": "session_1771389873923_f3p4vgv0q",
+    "task_name": "Manual content pipeline started (Run: run_1771402158689_5e23j5zxt)",
+    "status": "in_progress",
+    "started_at": "2026-02-18T08:09:18.691Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771402158689_5e23j5zxt",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771402940942_tjhx1",
+    "session_id": "session_1771389873923_f3p4vgv0q",
+    "task_name": "Manual content pipeline started (Run: run_1771402940941_b9bxamjkh)",
+    "status": "in_progress",
+    "started_at": "2026-02-18T08:22:20.942Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771402940941_b9bxamjkh",
+    "dependencies": []
+  },
+  {
+    "id": "task_1771402949566_3a431",
+    "session_id": "session_1771389873923_f3p4vgv0q",
+    "task_name": "Manual content pipeline started (Run: run_1771402949565_8odq5zn81)",
+    "status": "in_progress",
+    "started_at": "2026-02-18T08:22:29.566Z",
+    "notes": "Pipeline triggered via Executive Center dashboard. Run ID: run_1771402949565_8odq5zn81",
+    "dependencies": []
   }
 ]

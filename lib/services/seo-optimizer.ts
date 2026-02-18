@@ -215,9 +215,11 @@ class SEOOptimizer {
    */
   async getLowPerformingContent(threshold: number = 80, limit: number = 10): Promise<ContentPiece[]> {
     try {
-      // This would query the database for low SEO scoring content
-      // For now, return mock data structure that matches our database
-      return []
+      // Query database for content pieces with SEO score below threshold
+      const contentPieces = await this.db.getContentPieces()
+      return contentPieces
+        .filter(piece => piece.seo_score && piece.seo_score < threshold)
+        .slice(0, limit)
     } catch (error) {
       console.error('Failed to get low performing content:', error)
       return []
@@ -350,12 +352,16 @@ class SEOOptimizer {
   }
 
   /**
-   * Update content piece in database (placeholder - would use actual DB service)
+   * Update content piece in database
    */
   private async updateContentPiece(contentId: string, updates: Partial<ContentPiece>): Promise<void> {
-    // This would call the actual database service
-    // For now, just log the update
-    console.log(`Updating content piece ${contentId} with SEO optimizations:`, updates)
+    try {
+      await this.db.updateContentPiece(contentId, updates)
+      console.log(`Successfully updated content piece ${contentId} with SEO optimizations`)
+    } catch (error) {
+      console.error(`Failed to update content piece ${contentId}:`, error)
+      throw error
+    }
   }
 
   /**

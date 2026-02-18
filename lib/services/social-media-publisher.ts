@@ -221,21 +221,23 @@ class SocialMediaPublisher {
    */
   private async publishToFacebook(post: SocialPost): Promise<PostResult> {
     try {
-      const payload = {
-        platform: 'facebook',
-        page_id: this.facebookPageId,
-        message: post.content,
-        media_url: post.mediaUrl,
-        scheduled_time: post.scheduledTime
+      const formData = new FormData()
+      formData.append('title', post.content)
+      formData.append('user', 'tax4us')
+      formData.append('platform[]', 'facebook')
+      formData.append('type', 'text') // Specify text post type
+      
+      if (post.mediaUrl) {
+        formData.append('image_url', post.mediaUrl)
+        formData.append('type', 'image') // Change to image post if media exists
       }
 
-      const response = await fetch('https://api.upload-post.com/v1/post', {
+      const response = await fetch('https://api.upload-post.com/api/upload_text', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.uploadPostApiKey}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Apikey ${this.uploadPostApiKey}`
         },
-        body: JSON.stringify(payload)
+        body: formData
       })
 
       if (!response.ok) {
@@ -267,20 +269,23 @@ class SocialMediaPublisher {
    */
   private async publishToLinkedIn(post: SocialPost): Promise<PostResult> {
     try {
-      const payload = {
-        platform: 'linkedin',
-        message: post.content,
-        media_url: post.mediaUrl,
-        scheduled_time: post.scheduledTime
+      const formData = new FormData()
+      formData.append('title', post.content)
+      formData.append('user', 'tax4us')
+      formData.append('platform[]', 'linkedin')
+      formData.append('type', 'text') // Specify text post type
+      
+      if (post.mediaUrl) {
+        formData.append('image_url', post.mediaUrl)
+        formData.append('type', 'image') // Change to image post if media exists
       }
 
-      const response = await fetch('https://api.upload-post.com/v1/post', {
+      const response = await fetch('https://api.upload-post.com/api/upload_text', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.uploadPostApiKey}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Apikey ${this.uploadPostApiKey}`
         },
-        body: JSON.stringify(payload)
+        body: formData
       })
 
       if (!response.ok) {
@@ -416,10 +421,10 @@ class SocialMediaPublisher {
     }
 
     try {
-      // Test Upload-Post API connection
-      const response = await fetch('https://api.upload-post.com/v1/account', {
+      // Test Upload-Post API connection with correct endpoint
+      const response = await fetch('https://api.upload-post.com/api/user', {
         headers: {
-          'Authorization': `Bearer ${this.uploadPostApiKey}`
+          'Authorization': `Apikey ${this.uploadPostApiKey}`
         }
       })
 

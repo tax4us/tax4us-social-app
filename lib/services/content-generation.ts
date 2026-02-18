@@ -35,19 +35,7 @@ class ContentGenerationService {
   async generateTextToSpeech(text: string, voice?: string): Promise<ContentGenerationResponse> {
     try {
       if (!process.env.KIE_API_KEY) {
-        return {
-          id: 'demo_tts_' + Date.now(),
-          status: 'completed',
-          result: {
-            url: 'https://example.com/demo-audio.mp3',
-            data: {
-              text,
-              voice: voice || 'default',
-              duration: '45 seconds',
-              note: 'Demo audio - configure KIE_API_KEY for real generation'
-            }
-          }
-        }
+        throw new Error('KIE_API_KEY is required for text-to-speech generation')
       }
 
       const response = await fetch(`${this.baseUrls.textToSpeech}/tts-turbo-2-5/generate`, {
@@ -68,18 +56,7 @@ class ContentGenerationService {
         status: 'processing'
       }
     } catch (error) {
-      return {
-        id: 'demo_tts_' + Date.now(),
-        status: 'completed',
-        result: {
-          url: 'https://example.com/demo-audio.mp3',
-          data: {
-            text,
-            voice: voice || 'default',
-            error: error instanceof Error ? error.message : 'API unavailable, showing demo'
-          }
-        }
-      }
+      throw new Error(`Text-to-speech generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
@@ -88,19 +65,7 @@ class ContentGenerationService {
     
     try {
       if (!process.env.KIE_API_KEY) {
-        return {
-          id: 'demo_video_' + Date.now(),
-          status: 'completed',
-          result: {
-            url: 'https://example.com/demo-video.mp4',
-            data: {
-              prompt,
-              imageUrl,
-              duration: '45 seconds',
-              note: 'Demo video - configure KIE_API_KEY for real generation'
-            }
-          }
-        }
+        throw new Error('KIE_API_KEY is required for video generation')
       }
 
       const body = imageUrl 
@@ -122,18 +87,7 @@ class ContentGenerationService {
         status: 'processing'
       }
     } catch (error) {
-      return {
-        id: 'demo_video_' + Date.now(),
-        status: 'completed',
-        result: {
-          url: 'https://example.com/demo-video.mp4',
-          data: {
-            prompt,
-            imageUrl,
-            error: error instanceof Error ? error.message : 'API unavailable, showing demo'
-          }
-        }
-      }
+      throw new Error(`Video generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
