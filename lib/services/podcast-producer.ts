@@ -194,17 +194,13 @@ class PodcastProducer {
       const audioSegments: ArrayBuffer[] = []
       let totalDuration = 0
       
-      // Voice IDs from NotebookLM specifications
-      const voices = {
-        'EMMA': 'pPdl9cQBQq4p6mRkZy2Z', // Emma (host) - Adorable and Upbeat
-        'EXPERT': 'ZT9u07TYPVl83ejeLakq' // Tax4Us specific expert voice
-      }
+      // Voice ID from actual n8n workflow specification  
+      const voiceId = 'TxGEqnHWrfWFTfGW9XjX' // Actual working voice from n8n
       
-      // Generate audio for each segment
-      for (const segment of segments) {
-        const voiceId = voices[segment.speaker as keyof typeof voices] || voices.EMMA
-        
-        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      // Use single voice for simplified podcast (like n8n workflow)
+      const cleanScript = this.cleanScriptForTTS(script)
+      
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
           method: 'POST',
           headers: {
             'Accept': 'audio/mpeg',
@@ -212,30 +208,25 @@ class PodcastProducer {
             'xi-api-key': this.elevenLabsApiKey
           },
           body: JSON.stringify({
-            text: segment.text,
-            model_id: 'eleven_multilingual_v2',
+            text: cleanScript,
+            model_id: 'eleven_monolingual_v1', // Match n8n workflow model
             voice_settings: {
-              stability: 0.5,
+              stability: 0.75, // Match n8n workflow settings
               similarity_boost: 0.75,
-              style: 0.0,
+              style: 0.5,
               use_speaker_boost: true
             }
           })
         })
 
-        if (!response.ok) {
-          const errorText = await response.text()
-          throw new Error(`ElevenLabs API error for ${segment.speaker}: ${response.status} - ${errorText}`)
-        }
-
-        // Get the audio buffer for this segment
-        const segmentBuffer = await response.arrayBuffer()
-        audioSegments.push(segmentBuffer)
-        totalDuration += Math.floor(segment.text.length / 15) // Rough estimate
-        
-        // Add small pause between speakers (0.5 seconds of silence)
-        // In production, this would be actual silence audio data
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`ElevenLabs API error: ${response.status} - ${errorText}`)
       }
+
+      // Get the audio buffer
+      const audioBuffer = await response.arrayBuffer()
+      totalDuration = Math.floor(cleanScript.length / 15) // Rough estimate
       
       // In a real implementation, we'd concatenate all audio segments into one file
       // and upload to a file storage service. For now, indicate real processing occurred.
@@ -252,7 +243,7 @@ class PodcastProducer {
       }
 
     } catch (error) {
-      console.error('ElevenLabs multi-voice audio generation failed:', error)
+      console.error('ElevenLabs audio generation failed:', error)
       throw error
     }
   }

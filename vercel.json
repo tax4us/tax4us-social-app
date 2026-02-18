@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/pipeline/cron?type=seo",
-      "schedule": "0 10 * * 2,5"
+      "schedule": "0 9 * * 2,4"
     }
   ]
 }
