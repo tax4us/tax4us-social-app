@@ -256,4 +256,157 @@ export class SlackClient {
 
         return this.sendMessage(`Social Post Approval Needed`, blocks);
     }
+
+    async sendTopicApprovalRequest(params: {
+        topic: string;
+        audience: string;
+        reasoning: string;
+        draftId: number;
+    }) {
+        const blocks: any[] = [
+            {
+                type: "header",
+                text: {
+                    type: "plain_text",
+                    text: "🔔 Content Topic Proposal",
+                    emoji: true,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Proposed Topic:* ${params.topic}\n*Target Audience:* ${params.audience}\n\n*Reasoning:* ${params.reasoning}`,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*WordPress Draft:* <https://tax4us.co.il/wp-admin/post.php?post=${params.draftId}&action=edit|Review Draft (ID: ${params.draftId})>`,
+                },
+            },
+            {
+                type: "actions",
+                elements: [
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "✅ Approve & Generate",
+                            emoji: true,
+                        },
+                        value: JSON.stringify({
+                            action: "approve_topic",
+                            topic: params.topic,
+                            draftId: params.draftId
+                        }),
+                        action_id: "approve_topic",
+                        style: "primary",
+                    },
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "❌ Reject",
+                            emoji: true,
+                        },
+                        value: JSON.stringify({ action: "reject_topic", draftId: params.draftId }),
+                        action_id: "reject_topic",
+                        style: "danger",
+                    },
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "✍️ Give Feedback",
+                            emoji: true,
+                        },
+                        action_id: "feedback_topic",
+                        value: JSON.stringify({ action: "feedback_topic", draftId: params.draftId }),
+                    }
+                ],
+            },
+        ];
+
+        return this.sendMessage(`New topic proposal: ${params.topic}`, blocks);
+    }
+
+    async sendArticleApprovalRequest(params: {
+        title: string;
+        excerpt: string;
+        seoScore: number;
+        focusKeyword: string;
+        draftUrl: string;
+        wordCount: number;
+        draftId: number;
+    }) {
+        const blocks: any[] = [
+            {
+                type: "header",
+                text: {
+                    type: "plain_text",
+                    text: "📝 Hebrew Article Preview",
+                    emoji: true,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Title:* ${params.title}\n*Word Count:* ${params.wordCount} words\n*SEO Score:* ${params.seoScore}%\n*Focus Keyword:* ${params.focusKeyword}`,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Preview:*\n${params.excerpt}...`,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*WordPress Draft:* <${params.draftUrl}|Review Full Article>`,
+                },
+            },
+            {
+                type: "actions",
+                elements: [
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "✅ Approve & Publish",
+                            emoji: true,
+                        },
+                        value: JSON.stringify({
+                            action: "approve_article",
+                            draftId: params.draftId,
+                            seoScore: params.seoScore
+                        }),
+                        action_id: "approve_article",
+                        style: "primary",
+                    },
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "❌ Reject & Regenerate",
+                            emoji: true,
+                        },
+                        value: JSON.stringify({
+                            action: "reject_article",
+                            draftId: params.draftId
+                        }),
+                        action_id: "reject_article",
+                        style: "danger",
+                    },
+                ],
+            },
+        ];
+
+        return this.sendMessage(`Article Preview: ${params.title}`, blocks);
+    }
 }

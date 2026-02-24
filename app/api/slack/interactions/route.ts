@@ -23,44 +23,26 @@ export async function POST(req: NextRequest) {
 
         const value = JSON.parse(action.value || "{}");
 
+        console.log(`[SLACK] Action Received: ${action.action_id}`, { value });
+
         if (action.action_id === "approve_publish" && value.action === "publish") {
-            // Trigger Publish
             console.log("🚀 Slack Approval Received: Publishing Episode...", value);
-
             const producer = new PodcastProducer();
-
-            // Fire and forget (or await if fast enough)
-            // Ideally we should respond immediately and process in background
-            // For now, we'll try to await but race with response
-
-            // We'll effectively fire-and-forget by not awaiting the promise fully
-            // BUT Vercel might kill it. 
-            // Better: Respond with a message "Processing..." and do the work?
-            // Next.js App Router API routes might wait for background tasks if using `waitUntil` (Vercel specific)
-            // or just simple promise.
-
-            // Let's try to await it. If it times out, Slack retries. Ideally needs background job.
-            // Converting to "background" via unawaited promise + console logging
             producer.publishEpisode({
                 episodeId: value.episodeId,
                 title: value.title,
                 episodeNumber: value.episodeNumber,
-                // wpPostId is not passed in button value currently, would need to be added if critical
             }).catch(e => console.error("Async Publish Failed:", e));
 
-            // Respond to Slack immediately
             return NextResponse.json({
                 text: "✅ Approved! Publishing process started. You will receive a confirmation shortly.",
-                replace_original: false // Keep the approval message or replace?
-                // Replacing triggers UI update
+                replace_original: false
             });
         }
 
         if (action.action_id === "approve_social" && value.action === "publish_social") {
-            const { SocialPublisher } = require("@/lib/pipeline/social-publisher");
+            const { SocialPublisher } = require("../../../../lib/pipeline/social-publisher");
             const publisher = new SocialPublisher();
-
-            // Fire and forget
             publisher.publishSocialPosts(value).catch((e: any) => console.error("Async Social Publish Failed:", e));
 
             return NextResponse.json({
@@ -76,9 +58,72 @@ export async function POST(req: NextRequest) {
             });
         }
 
+        if (action.action_id === "approve_topic") {
+            console.log("🚀 Topic Approval Matched! Starting generation...");
+            const { PipelineOrchestrator } = require("../../../../lib/pipeline/orchestrator");
+            const orchestrator = new PipelineOrchestrator();
+
+            // Trigger content generation - we await the initial feedback step (WP title change)
+            // to ensure Vercel has time to start the process before suspending.
+            await orchestrator.generatePost(value.draftId, value.topic);
+
+            return NextResponse.json({
+                text: `✅ *Topic Approved!* I've started generating the content for: "${value.topic}". Check WordPress in a few minutes.`,
+                replace_original: false
+            });
+        }
+
+        if (action.action_id === "reject_topic") {
+            return NextResponse.json({
+                text: `❌ Topic proposal rejected.`,
+                replace_original: true
+            });
+        }
+
+        if (action.action_id === "feedback_topic") {
+            return NextResponse.json({
+                text: `✍️ *Feedback requested.* Please reply to this thread with your comments. (Note: Feedback processing is currently manual, please inform the team once you reply).`,
+                replace_original: false
+            });
+        }
+
         if (action.action_id === "cancel_social") {
             return NextResponse.json({
                 text: "❌ Social publication cancelled.",
+                replace_original: true
+            });
+        }
+
+        if (action.action_id === "approve_article") {
+            console.log("📝 Article Approval Received: Publishing...", value);
+
+            const { PipelineOrchestrator } = require("../../../../lib/pipeline/orchestrator");
+            const orchestrator = new PipelineOrchestrator();
+
+            // Trigger publish workflow (async to avoid timeout)
+            orchestrator.publishApprovedArticle(value.draftId).catch((e: any) =>
+                console.error("Article publish failed:", e)
+            );
+
+            return NextResponse.json({
+                text: `✅ Article approved! Publishing to WordPress with SEO score: ${value.seoScore}%`,
+                replace_original: false
+            });
+        }
+
+        if (action.action_id === "reject_article") {
+            console.log("❌ Article Rejected: Marking for regeneration...", value);
+
+            const { PipelineOrchestrator } = require("../../../../lib/pipeline/orchestrator");
+            const orchestrator = new PipelineOrchestrator();
+
+            // Mark for regeneration
+            orchestrator.regenerateArticle(value.draftId).catch((e: any) =>
+                console.error("Article regeneration failed:", e)
+            );
+
+            return NextResponse.json({
+                text: "❌ Article rejected. Generating new version...",
                 replace_original: true
             });
         }

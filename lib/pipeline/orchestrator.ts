@@ -80,15 +80,23 @@ export class PipelineOrchestrator {
 
             pipelineLogger.info(`Topic Proposed: ${proposal.topic}`, draftProp.id.toString());
 
-            // 4. Notify Slack (Simulating "Send Topic Approval Request")
-            await this.slack.sendMessage(
-                `💡 *New Content Proposal*\n` +
-                `*Topic:* ${proposal.topic}\n` +
-                `*Reasoning:* ${proposal.reasoning}\n` +
-                `*Action:* <https://tax4us.co.il/wp-admin/post.php?post=${draftProp.id}&action=edit|Review in WP> or Approve in Dashboard`
-            );
+            // 4. Send APPROVAL REQUEST to Ben - MUST APPROVE BEFORE CONTENT GENERATION
+            await this.slack.sendTopicApprovalRequest({
+                topic: proposal.topic,
+                audience: proposal.audience,
+                reasoning: proposal.reasoning,
+                draftId: draftProp.id
+            });
 
-            return { status: "proposed", postId: draftProp.id, topic: proposal.topic };
+            // Store pending approval in database
+            pipelineLogger.info(`Topic approval pending for: ${proposal.topic}. Waiting for Ben's response...`, draftProp.id.toString());
+
+            return {
+                status: "awaiting_approval",
+                postId: draftProp.id,
+                topic: proposal.topic,
+                message: "Topic sent to Ben for approval. No content generation until approved."
+            };
 
         } catch (error: any) {
             pipelineLogger.error(`Proposal Failed: ${error.message}`);
@@ -96,7 +104,80 @@ export class PipelineOrchestrator {
         }
     }
 
-    // Manual Entry Point: User Approves & Triggers Generation
+    // Generate new topic based on Ben's feedback
+    async proposeNewTopicWithFeedback(feedback: string) {
+        pipelineLogger.info(`Generating new topic based on feedback: ${feedback}...`);
+
+        try {
+            // 1. Fetch Context (Existing Posts)
+            const recentPosts = await this.wp.getPosts({ per_page: '20', status: 'publish' });
+            const existingTitles = recentPosts.map((p: any) => p.title.rendered).join("\n");
+
+            // 2. Generate Topic Strategy with feedback incorporated
+            const systemPrompt = "You are a Content Strategy Expert for Tax4Us.co.il. Generate a new blog topic based on the provided feedback and requirements.";
+            const userPrompt = `
+                Recent Articles (to avoid duplication):
+                ${existingTitles}
+
+                Previous Feedback from Ben: ${feedback}
+
+                Current Date: ${new Date().toISOString()}
+
+                Task:
+                Generate ONE unique blog topic that addresses Ben's feedback above.
+                Target Audience: Israeli business owners or expats dealing with US taxes.
+                Incorporate the feedback while ensuring uniqueness.
+                
+                Return JSON: { "topic": "...", "audience": "...", "reasoning": "..." }
+            `;
+
+            const response = await this.claude.generate(userPrompt, "claude-3-haiku-20240307", systemPrompt);
+
+            // Clean response
+            const jsonMatch = response.match(/\{[\s\S]*\}/);
+            const proposal = JSON.parse(jsonMatch ? jsonMatch[0] : response);
+
+            // 3. Create new proposal draft
+            const proposalCategoryIds = await this.wp.resolveCategories(["Pipeline"]);
+            const draftProp = await this.wp.createPost({
+                title: `[PROPOSAL-REVISED] ${proposal.topic}`,
+                content: `<!-- wp:paragraph -->{"audience": "${proposal.audience}", "reasoning": "${proposal.reasoning}", "feedback_addressed": "${feedback}"}<!-- /wp:paragraph -->`,
+                status: "draft",
+                categories: proposalCategoryIds
+            });
+
+            if (!draftProp) throw new Error("Failed to create revised proposal draft");
+
+            // 4. Send new approval request to Ben
+            await this.slack.sendMessage(
+                `🔄 *REVISED Topic Proposal (Based on Your Feedback)*\n\n` +
+                `**Your Feedback:** "${feedback}"\n\n` +
+                `**NEW Proposed Topic:** ${proposal.topic}\n\n` +
+                `**Audience:** ${proposal.audience}\n` +
+                `**How Feedback Was Addressed:** ${proposal.reasoning}\n\n` +
+                `**📋 ACTION REQUIRED:**\n` +
+                `• React with ✅ to APPROVE and start content generation\n` +
+                `• React with ❌ to REJECT this revised topic\n` +
+                `• Reply with additional feedback for further revisions\n\n` +
+                `**WordPress Draft:** <https://tax4us.co.il/wp-admin/post.php?post=${draftProp.id}&action=edit|Review Draft>\n` +
+                `**Draft ID:** ${draftProp.id}`
+            );
+
+            pipelineLogger.info(`Revised topic proposed: ${proposal.topic}`, draftProp.id.toString());
+
+            return {
+                status: "awaiting_approval",
+                postId: draftProp.id,
+                topic: proposal.topic,
+                message: "Revised topic sent to Ben for approval based on feedback."
+            };
+
+        } catch (error: any) {
+            pipelineLogger.error(`Revised proposal failed: ${error.message}`);
+            throw error;
+        }
+    }
+
     async generatePost(draftPostId: number, approvedTopic?: string, airtableId?: string) {
         pipelineLogger.info(`Starting Generation for Draft ${draftPostId}...`, draftPostId.toString());
 
@@ -107,6 +188,28 @@ export class PipelineOrchestrator {
 
             const topicName = approvedTopic || draft.title.rendered.replace("[PROPOSAL] ", "");
 
+            // 1.5 Immediate feedback: Update title to [PROCESSING]
+            // We await this so the caller knows the process has officially started in WP
+            await this.wp.updatePost(draftPostId, {
+                title: `[PROCESSING] ${topicName}`,
+                content: `<!-- wp:paragraph --><p><i>Generation in progress... AI is currently drafting the content.</i></p><!-- /wp:paragraph -->` + (draft.content?.rendered || "")
+            });
+
+            // 2. Start the rest in background (non-blocking for this method)
+            this.runFullGeneration(draftPostId, topicName, airtableId).catch(e => {
+                pipelineLogger.error(`Async Generation Failed: ${e.message}`, draftPostId.toString());
+            });
+
+            return { status: "processing", postId: draftPostId };
+
+        } catch (error: any) {
+            pipelineLogger.error(`Generation Trigger Failed: ${error.message}`);
+            throw error;
+        }
+    }
+
+    private async runFullGeneration(draftPostId: number, topicName: string, airtableId?: string) {
+        try {
             // 2. Generate Content
             const article = await this.contentGenerator.generateArticle({
                 id: draftPostId.toString(),
@@ -442,6 +545,113 @@ export class PipelineOrchestrator {
 
         } catch (error: any) {
             pipelineLogger.error(`Heal failed for ${postId}: ${error.message}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Publish article after approval (resumes pipeline from approval pause)
+     */
+    async publishApprovedArticle(draftId: number) {
+        pipelineLogger.info(`Publishing approved article: ${draftId}`);
+
+        try {
+            // Fetch the draft (content already generated)
+            const draft = await this.wp.getPost(draftId);
+            const content = draft.content.rendered;
+            const title = draft.title.rendered.replace(/\[AWAITING APPROVAL\]/, "").trim();
+
+            // Update title and publish
+            await this.wp.updatePost(draftId, {
+                title: title,
+                status: "publish"
+            });
+
+            const hebrewLink = draft.link;
+            pipelineLogger.success(`Hebrew article published: ${hebrewLink}`);
+
+            // Continue to English translation
+            pipelineLogger.agent("Translating to English...", draftId.toString());
+            const englishContent = await this.translator.translateHeToEn(content);
+
+            const englishSeoMeta = await this.contentGenerator.generateArticle({
+                id: `en-${draftId}`,
+                topic: title,
+                title: title,
+                audience: "English Speaking Investors/Expats",
+                language: "en",
+                type: "blog_post",
+                status: "ready"
+            });
+
+            const enCategoryIds = await this.wp.resolveCategories(englishSeoMeta.metadata.categories || ["Business Tax", "English"]);
+            const enTagIds = await this.wp.resolveTags(englishSeoMeta.metadata.tags || []);
+
+            const englishPost = await this.wp.createPost({
+                title: englishSeoMeta.metadata.title,
+                content: englishContent,
+                status: "publish",
+                excerpt: englishSeoMeta.metadata.excerpt,
+                featured_media: draft.featured_media || 0,
+                categories: enCategoryIds,
+                tags: enTagIds,
+                meta: {
+                    rank_math_focus_keyword: englishSeoMeta.metadata.focus_keyword,
+                    rank_math_title: englishSeoMeta.metadata.seo_title,
+                    rank_math_description: englishSeoMeta.metadata.seo_description,
+                    rank_math_seo_score: englishSeoMeta.seo_score
+                }
+            });
+
+            // Link with Polylang
+            await this.wp.updatePost(englishPost.id, {}, {
+                lang: "en",
+                "translations[he]": draftId.toString()
+            });
+
+            const englishLink = englishPost.link;
+            pipelineLogger.success(`English translation published: ${englishLink}`);
+
+            // Continue to social media prep
+            await this.socialPublisher.prepareSocialPosts(
+                content,
+                title,
+                hebrewLink,
+                englishLink,
+                draftId.toString()
+            );
+
+            pipelineLogger.info("Article pipeline resumed successfully");
+
+        } catch (error: any) {
+            pipelineLogger.error(`Article publish failed: ${error.message}`);
+            await this.slack.sendErrorNotification("Article Publish", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Regenerate article after rejection
+     */
+    async regenerateArticle(draftId: number) {
+        pipelineLogger.info(`Regenerating article: ${draftId}`);
+
+        try {
+            const draft = await this.wp.getPost(draftId);
+            const topic = draft.title.rendered.replace(/\[.*?\]/g, "").trim();
+
+            // Update title to show regenerating
+            await this.wp.updatePost(draftId, {
+                title: `[REGENERATING] ${topic}`,
+                content: "<!-- wp:paragraph --><p>AI is regenerating this article with improved content...</p><!-- /wp:paragraph -->"
+            });
+
+            // Re-run full content generation
+            await this.generatePost(draftId, topic);
+
+            pipelineLogger.info(`Article ${draftId} regeneration started`);
+        } catch (error: any) {
+            pipelineLogger.error(`Article regeneration failed: ${error.message}`);
             throw error;
         }
     }
