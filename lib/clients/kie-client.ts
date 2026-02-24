@@ -69,8 +69,7 @@ export class KieClient {
                         aspect_ratio: "portrait",
                         n_frames: "10",
                         size: "standard",
-                        remove_watermark: true,
-                        upload_method: "s3"
+                        remove_watermark: true
                     }
                 })
             });
@@ -113,10 +112,12 @@ export class KieClient {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "flux-pro-1.1-ultra", // Assuming this is the model for images
+                    model: "nano-banana-pro", // Correct Kie.ai image model
                     input: {
                         prompt: prompt,
-                        aspect_ratio: "16:9" // Blog post featured image
+                        aspect_ratio: "16:9", // Blog post featured image
+                        resolution: "2K",
+                        output_format: "png"
                     }
                 })
             });
