@@ -510,5 +510,49 @@
       "7_linkedin_post": "Individual LinkedIn post approval with Upload-Post API"
     },
     "automation_quality_control": "Every content type now has mandatory human approval checkpoint before publication, preventing automated mistakes while maintaining 90% time savings vs manual content creation"
+  },
+  {
+    "id": "decision_1771904400000",
+    "decision": "CRITICAL FIX: Wired 3 orphaned approval gates into pipeline execution flow",
+    "context": "After comprehensive verification, discovered that while all 7 approval gate code existed, 3 gates (Video Preview, Facebook, LinkedIn) were never called - they were orphaned code. The gates existed but pipeline bypassed them completely, auto-publishing without approval.",
+    "alternatives_considered": [
+      "Remove orphaned gate code and simplify to 4 gates only",
+      "Keep gates orphaned as 'future enhancement'",
+      "Create separate workflows for each orphaned gate",
+      "Implement webhook-driven gate triggering"
+    ],
+    "reasoning": "User explicitly verified system integrity asking 'did you test everything is working and no conflicts and references match'. This revealed gates existed but weren't wired. Can't have quality control gates that never execute - defeats entire purpose of approval system.",
+    "implementation_notes": {
+      "video_gate_wiring": "Modified lib/pipeline/social-publisher.ts prepareSocialPosts() to: (1) Wait for video completion using kie.waitForVideo() with 5min timeout, (2) Send sendVideoApprovalRequest() BEFORE social approval (proper sequence), (3) Pause pipeline with status 'awaiting_video_approval', (4) Created continueWithSocialApproval() to resume after approval. Video workflow now: Generate → Wait → Approve/Regenerate/Skip → Continue to social.",
+      "facebook_gate_wiring": "Modified lib/pipeline/social-publisher.ts publishSocialPosts() to: (1) Extract hashtags from content using regex match(/#\\w+/g), (2) Fetch post title from WordPress using wp.getPost(), (3) Call sendFacebookApprovalRequest() with content, hashtags, mediaUrl, postTitle, postId, (4) Existing webhook handler publishes via Upload-Post API on approval.",
+      "linkedin_gate_wiring": "Modified lib/pipeline/social-publisher.ts publishSocialPosts() to send sendLinkedInApprovalRequest() with same extracted data as Facebook. Existing webhook handler publishes via Upload-Post API on approval.",
+      "orchestrator_fix": "Updated lib/pipeline/orchestrator.ts line 559 to pass postId parameter to prepareSocialPosts() call (added 6th parameter: draftId).",
+      "breaking_change": "Changed prepareSocialPosts() signature from 5-6 params to 6-7 params (added postId: number). Updated all callers: orchestrator.ts, attachVideoToSocialPosts(), publishSocialWithoutVideo()."
+    },
+    "impact": "high",
+    "made_at": "2026-02-24T04:25:00.000Z",
+    "made_by": "Claude Sonnet 4.5",
+    "verification_performed": [
+      "Comprehensive codebase search for gate method references",
+      "TypeScript compilation check (npx tsc --noEmit) - PASSED",
+      "Full Next.js build (npm run build) - PASSED",
+      "Manual code review of all gate call sites",
+      "Traced complete pipeline execution flow"
+    ],
+    "before_fix": {
+      "wired_gates": "4/7 (Topic, Article, Podcast, Social Combined)",
+      "orphaned_gates": "3/7 (Video Preview, Facebook, LinkedIn)",
+      "quality_issue": "Video, Facebook, LinkedIn could auto-publish without human review"
+    },
+    "after_fix": {
+      "wired_gates": "7/7 (ALL gates now execute in pipeline)",
+      "orphaned_gates": "0/7",
+      "quality_assurance": "Every content type pauses for mandatory human approval before publication"
+    },
+    "commits": [
+      "ec2b13f - Fixed Article gate wiring (previous commit)",
+      "966c663 - Wired Video, Facebook, LinkedIn gates (this commit)"
+    ],
+    "prevention_lesson": "Always verify code is CALLED not just EXISTS. 'Gate code complete' ≠ 'Gate integrated into workflow'. Run comprehensive verification after implementing features, not just during development. Check references, trace execution paths, test end-to-end flows."
   }
 ]
