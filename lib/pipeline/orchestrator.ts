@@ -556,7 +556,8 @@ export class PipelineOrchestrator {
                 title,
                 hebrewLink,
                 englishLink,
-                draftId.toString()
+                draftId.toString(),
+                draftId
             );
 
             pipelineLogger.info("Article pipeline resumed successfully");
