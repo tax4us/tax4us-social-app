@@ -242,11 +242,11 @@ export class PipelineOrchestrator {
             const categoryIds = await this.wp.resolveCategories(article.metadata.categories || []);
             const tagIds = await this.wp.resolveTags(article.metadata.tags || []);
 
-            // 5. Update WordPress Post (Hebrew version)
+            // 5. Update WordPress Draft (Hebrew version) - KEEP AS DRAFT UNTIL APPROVED
             await this.wp.updatePost(draftPostId, {
-                title: article.metadata.title,
+                title: `[AWAITING APPROVAL] ${article.metadata.title}`,
                 content: article.content,
-                status: "publish",
+                status: "draft", // Keep as draft until approved
                 featured_media: mediaId,
                 excerpt: article.metadata.excerpt,
                 categories: categoryIds,
@@ -259,85 +259,23 @@ export class PipelineOrchestrator {
                 }
             } as any);
 
-            const hebrewDraft = await this.wp.getPost(draftPostId);
-            const hebrewLink = hebrewDraft.link;
-
-            // 6. English Translation & Creation (N8N Parity with `mon+thu; 4`)
-            pipelineLogger.agent("Translating content to English...", draftPostId.toString());
-            const englishContent = await this.translator.translateHeToEn(article.content);
-            const englishSeoMeta = await this.contentGenerator.generateArticle({
-                id: `en-${draftPostId}`,
-                topic: topicName,
-                title: topicName,
-                audience: "English Speaking Investors/Expats",
-                language: "en",
-                type: "blog_post",
-                status: "ready"
+            // 6. Send Article for Approval
+            pipelineLogger.info("Sending article for approval...", draftPostId.toString());
+            await this.slack.sendArticleApprovalRequest({
+                title: article.metadata.title,
+                excerpt: article.metadata.excerpt,
+                seoScore: article.seo_score,
+                focusKeyword: article.metadata.focus_keyword,
+                draftUrl: `https://tax4us.co.il/wp-admin/post.php?post=${draftPostId}&action=edit`,
+                wordCount: article.content.split(/\s+/).length,
+                draftId: draftPostId
             });
 
-            pipelineLogger.agent("Creating English translated post...", draftPostId.toString());
-            // Resolve English categories and tags
-            const enCategoryIds = await this.wp.resolveCategories(englishSeoMeta.metadata.categories || ["Business Tax", "English"]);
-            const enTagIds = await this.wp.resolveTags(englishSeoMeta.metadata.tags || []);
-
-            const englishPost = await this.wp.createPost({
-                title: englishSeoMeta.metadata.title,
-                content: englishContent,
-                status: "publish",
-                excerpt: englishSeoMeta.metadata.excerpt,
-                featured_media: article.featured_media || 0,
-                categories: enCategoryIds,
-                tags: enTagIds,
-                meta: {
-                    rank_math_focus_keyword: englishSeoMeta.metadata.focus_keyword,
-                    rank_math_title: englishSeoMeta.metadata.seo_title,
-                    rank_math_description: englishSeoMeta.metadata.seo_description,
-                    rank_math_seo_score: englishSeoMeta.seo_score
-                }
-            });
-
-            // Link them using Polylang parameters
-            await this.wp.updatePost(englishPost.id, {}, {
-                lang: "en",
-                "translations[he]": draftPostId.toString()
-            });
-
-            const englishLink = englishPost.link;
-            pipelineLogger.info(`Dual-Language published: HE: ${hebrewLink} | EN: ${englishLink}`, draftPostId.toString());
-
-            // 7. Repurposing (Wednesday Worker Logic)
-            // 7. Repurposing
-            // Social Media (Runs for every post)
-            pipelineLogger.agent("Preparing social media content...", draftPostId.toString());
-            await this.socialPublisher.prepareSocialPosts(
-                article.content,
-                topicName,
-                hebrewLink,
-                englishLink,
-                draftPostId.toString()
-            );
-
-            // Podcast (The Wednesday Worker Logic)
-            // Mirroring N8N "Wednesday?1" node: only produce podcast if it's currently Wednesday
-            if (new Date().getDay() === 3) {
-                pipelineLogger.agent("Wednesday logic detected: Triggering Podcast production...", draftPostId.toString());
-                const result = await this.podcastProducer.prepareEpisode(article.content, topicName, draftPostId);
-                pipelineLogger.info("Podcast episode prepared (draft). Check Slack for approval.", draftPostId.toString());
-            } else {
-                pipelineLogger.info("Not Wednesday. Skipping legacy podcast production.", draftPostId.toString());
-            }
-
-            // 8. Update AITable (Parity with N8N "mon+thu; 4")
-            if (airtableId) {
-                pipelineLogger.info(`Updating AITable record ${airtableId} to Published...`, draftPostId.toString());
-                await this.airtable.updateRecord("tblq7MDqeogrsdInc", airtableId, {
-                    Status: "Published",
-                    "WP Link": hebrewLink,
-                    "SEO Score": article.seo_score
-                });
-            }
-
-            return { status: "published", postId: draftPostId };
+            // PAUSE HERE - Wait for approval
+            // User clicks approve → webhook triggers publishApprovedArticle()
+            // The rest of the pipeline (English translation, social posts, podcast) happens in publishApprovedArticle()
+            pipelineLogger.info("Pipeline paused. Awaiting article approval...", draftPostId.toString());
+            return { status: "awaiting_article_approval", postId: draftPostId };
 
         } catch (error: any) {
             pipelineLogger.error(`Generation Failed: ${error.message}`, draftPostId.toString());
