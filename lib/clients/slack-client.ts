@@ -494,4 +494,180 @@ export class SlackClient {
 
         return this.sendMessage(`Video Preview: ${params.postTitle}`, blocks);
     }
+
+    async sendFacebookApprovalRequest(params: {
+        content: string;
+        hashtags: string[];
+        mediaUrl?: string;
+        postTitle: string;
+        postId: number;
+    }) {
+        const blocks: any[] = [
+            {
+                type: "header",
+                text: {
+                    type: "plain_text",
+                    text: "📘 Facebook Post Ready",
+                    emoji: true,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Related Post:* ${params.postTitle}\n*Hashtags:* ${params.hashtags.join(" ")}`,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Post Preview:*\n\`\`\`${params.content}\`\`\``,
+                },
+            },
+        ];
+
+        if (params.mediaUrl) {
+            blocks.push({
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Media:* <${params.mediaUrl}|View>`,
+                },
+            });
+        }
+
+        blocks.push({
+            type: "actions",
+            elements: [
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "✅ Approve & Post",
+                        emoji: true,
+                    },
+                    value: JSON.stringify({
+                        action: "approve_facebook",
+                        postId: params.postId,
+                        content: params.content,
+                        mediaUrl: params.mediaUrl
+                    }),
+                    action_id: "approve_facebook",
+                    style: "primary",
+                },
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "✏️ Edit",
+                        emoji: true,
+                    },
+                    action_id: "edit_facebook",
+                    value: JSON.stringify({ action: "edit_facebook", postId: params.postId }),
+                },
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "❌ Cancel",
+                        emoji: true,
+                    },
+                    action_id: "cancel_facebook",
+                    value: JSON.stringify({ action: "cancel_facebook", postId: params.postId }),
+                    style: "danger",
+                },
+            ],
+        });
+
+        return this.sendMessage(`Facebook Post: ${params.postTitle}`, blocks);
+    }
+
+    async sendLinkedInApprovalRequest(params: {
+        content: string;
+        hashtags: string[];
+        mediaUrl?: string;
+        postTitle: string;
+        postId: number;
+    }) {
+        const blocks: any[] = [
+            {
+                type: "header",
+                text: {
+                    type: "plain_text",
+                    text: "💼 LinkedIn Post Ready",
+                    emoji: true,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Related Post:* ${params.postTitle}\n*Hashtags:* ${params.hashtags.join(" ")}`,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Post Preview:*\n\`\`\`${params.content}\`\`\``,
+                },
+            },
+        ];
+
+        if (params.mediaUrl) {
+            blocks.push({
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Media:* <${params.mediaUrl}|View>`,
+                },
+            });
+        }
+
+        blocks.push({
+            type: "actions",
+            elements: [
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "✅ Approve & Post",
+                        emoji: true,
+                    },
+                    value: JSON.stringify({
+                        action: "approve_linkedin",
+                        postId: params.postId,
+                        content: params.content,
+                        mediaUrl: params.mediaUrl
+                    }),
+                    action_id: "approve_linkedin",
+                    style: "primary",
+                },
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "✏️ Edit",
+                        emoji: true,
+                    },
+                    action_id: "edit_linkedin",
+                    value: JSON.stringify({ action: "edit_linkedin", postId: params.postId }),
+                },
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "❌ Cancel",
+                        emoji: true,
+                    },
+                    action_id: "cancel_linkedin",
+                    value: JSON.stringify({ action: "cancel_linkedin", postId: params.postId }),
+                    style: "danger",
+                },
+            ],
+        });
+
+        return this.sendMessage(`LinkedIn Post: ${params.postTitle}`, blocks);
+    }
 }

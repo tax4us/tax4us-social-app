@@ -187,6 +187,86 @@ export async function POST(req: NextRequest) {
             });
         }
 
+        // Facebook handlers
+        if (action.action_id === "approve_facebook") {
+            console.log("📘 Facebook Post Approved: Publishing...", value);
+
+            // Publish to Facebook via Upload-Post API
+            const formData = new FormData();
+            formData.append('title', value.content);
+            formData.append('user', 'tax4us');
+            formData.append('platform[]', 'facebook');
+            if (value.mediaUrl) {
+                formData.append('image_url', value.mediaUrl);
+                formData.append('type', 'image');
+            }
+
+            fetch('https://api.upload-post.com/api/upload_text', {
+                method: 'POST',
+                headers: { 'Authorization': `Apikey ${process.env.UPLOAD_POST_API_KEY}` },
+                body: formData
+            }).catch(e => console.error("Facebook publish failed:", e));
+
+            return NextResponse.json({
+                text: `✅ Facebook post approved! Publishing now.`,
+                replace_original: false
+            });
+        }
+
+        if (action.action_id === "edit_facebook") {
+            return NextResponse.json({
+                text: "✏️ Edit requested. Please provide your changes in a reply.",
+                replace_original: false
+            });
+        }
+
+        if (action.action_id === "cancel_facebook") {
+            return NextResponse.json({
+                text: "❌ Facebook post cancelled.",
+                replace_original: true
+            });
+        }
+
+        // LinkedIn handlers
+        if (action.action_id === "approve_linkedin") {
+            console.log("💼 LinkedIn Post Approved: Publishing...", value);
+
+            // Publish to LinkedIn via Upload-Post API
+            const formData = new FormData();
+            formData.append('title', value.content);
+            formData.append('user', 'tax4us');
+            formData.append('platform[]', 'linkedin');
+            if (value.mediaUrl) {
+                formData.append('image_url', value.mediaUrl);
+                formData.append('type', 'image');
+            }
+
+            fetch('https://api.upload-post.com/api/upload_text', {
+                method: 'POST',
+                headers: { 'Authorization': `Apikey ${process.env.UPLOAD_POST_API_KEY}` },
+                body: formData
+            }).catch(e => console.error("LinkedIn publish failed:", e));
+
+            return NextResponse.json({
+                text: `✅ LinkedIn post approved! Publishing now.`,
+                replace_original: false
+            });
+        }
+
+        if (action.action_id === "edit_linkedin") {
+            return NextResponse.json({
+                text: "✏️ Edit requested. Please provide your changes in a reply.",
+                replace_original: false
+            });
+        }
+
+        if (action.action_id === "cancel_linkedin") {
+            return NextResponse.json({
+                text: "❌ LinkedIn post cancelled.",
+                replace_original: true
+            });
+        }
+
         return NextResponse.json({ message: "Action received" });
 
     } catch (error: any) {
