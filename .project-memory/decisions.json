@@ -454,5 +454,28 @@
     "impact": "high",
     "made_at": "2026-02-24T03:04:52.000Z",
     "made_by": "Claude Sonnet 4.5 via skill-creator"
+  },
+  {
+    "id": "decision_1771902760000",
+    "decision": "Implemented Video Preview approval gate for Kie.ai Sora video integration",
+    "context": "Tax4US had 3/7 approval gates implemented. Video Preview gate was missing, preventing quality control for AI-generated Sora videos before attaching to social posts",
+    "alternatives_considered": [
+      "Auto-attach videos without preview",
+      "Email video links instead of Slack",
+      "Skip video generation entirely",
+      "Manual video review outside pipeline"
+    ],
+    "reasoning": "Kie.ai Sora video generation is expensive and time-consuming (minutes per video). Must provide preview with approve/regenerate/skip options to ensure quality before social media publication",
+    "implementation_notes": {
+      "slack_client_additions": "Added sendVideoApprovalRequest() method to lib/clients/slack-client.ts (lines 413-495). Gate shows: video preview link, duration, Kie.ai task ID, related post title. Three-button layout: Approve & Use (primary), Regenerate, Skip Video (danger)",
+      "webhook_handlers": "Added three handlers to app/api/slack/interactions/route.ts (lines 130-187): approve_video (attaches to social posts), regenerate_video (triggers new generation), skip_video (publishes without video)",
+      "social_publisher_refactor": "Refactored lib/pipeline/social-publisher.ts prepareSocialPosts() to accept optional existingVideoUrl parameter. Added attachVideoToSocialPosts() and publishSocialWithoutVideo() methods for video workflow integration",
+      "type_safety_fixes": "Changed taskId type from string|null to string|undefined to match Slack API expectations. Changed video generation return from null to undefined for consistency",
+      "test_script": "Created scripts/test-video-approval-gate.ts for manual testing without running full pipeline"
+    },
+    "impact": "high",
+    "made_at": "2026-02-24T03:12:40.000Z",
+    "made_by": "Claude Sonnet 4.5 via tax4us-approval-gate-builder skill",
+    "gate_completion_status": "4/7 gates complete (Topic, Article, Video, Social). Remaining: Facebook Post, LinkedIn Post gates"
   }
 ]
