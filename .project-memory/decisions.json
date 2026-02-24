@@ -477,5 +477,38 @@
     "made_at": "2026-02-24T03:12:40.000Z",
     "made_by": "Claude Sonnet 4.5 via tax4us-approval-gate-builder skill",
     "gate_completion_status": "4/7 gates complete (Topic, Article, Video, Social). Remaining: Facebook Post, LinkedIn Post gates"
+  },
+  {
+    "id": "decision_1771903140000",
+    "decision": "Completed full 7-gate approval system: Implemented Facebook & LinkedIn platform-specific gates",
+    "context": "Tax4US had 4/7 approval gates complete after Video Preview implementation. Required platform-specific gates for Facebook and LinkedIn to enable individual post review before publishing",
+    "alternatives_considered": [
+      "Keep combined social gate only without platform-specific approval",
+      "Auto-publish to both platforms without individual review",
+      "Email approval instead of Slack interactive gates",
+      "Manual social media posting outside pipeline"
+    ],
+    "reasoning": "Platform-specific gates enable different content strategies per platform (casual Facebook vs professional LinkedIn tone), allow selective publishing to one platform while skipping another, and provide granular quality control before costly API calls to Upload-Post service",
+    "implementation_notes": {
+      "facebook_gate": "Added sendFacebookApprovalRequest() to lib/clients/slack-client.ts (lines 497-580). Shows post preview, hashtags, media, with Approve & Post, Edit, Cancel buttons. Webhook handler publishes directly to Upload-Post API with platform[] = facebook",
+      "linkedin_gate": "Added sendLinkedInApprovalRequest() to lib/clients/slack-client.ts (lines 582-665). Professional presentation with post preview, hashtags, media. Webhook handler publishes to Upload-Post API with platform[] = linkedin",
+      "webhook_handlers": "Added 6 handlers to app/api/slack/interactions/route.ts (lines 189-277): approve_facebook, edit_facebook, cancel_facebook, approve_linkedin, edit_linkedin, cancel_linkedin",
+      "api_integration": "Direct Upload-Post API calls with FormData: title (content), user (tax4us), platform[] (facebook/linkedin), image_url (if media exists), type (image/text)",
+      "test_scripts": "Created scripts/test-facebook-gate.ts and scripts/test-linkedin-gate.ts with realistic bilingual content examples"
+    },
+    "impact": "high",
+    "made_at": "2026-02-24T03:19:00.000Z",
+    "made_by": "Claude Sonnet 4.5 via tax4us-approval-gate-builder skill",
+    "gate_completion_status": "7/7 gates COMPLETE - Full approval system operational",
+    "all_gates": {
+      "1_topic_proposal": "Slack approval before generating content (existing)",
+      "2_hebrew_article": "Preview generated article before publishing to WordPress",
+      "3_podcast_episode": "Review audio before publishing to Captivate.fm (existing)",
+      "4_video_preview": "Approve/regenerate/skip Kie.ai Sora videos before social posts",
+      "5_social_combined": "Combined Facebook + LinkedIn approval (existing)",
+      "6_facebook_post": "Individual Facebook post approval with Upload-Post API",
+      "7_linkedin_post": "Individual LinkedIn post approval with Upload-Post API"
+    },
+    "automation_quality_control": "Every content type now has mandatory human approval checkpoint before publication, preventing automated mistakes while maintaining 90% time savings vs manual content creation"
   }
 ]
