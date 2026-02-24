@@ -14,55 +14,69 @@ export class SocialPublisher {
         this.slack = new SlackClient();
     }
 
-    async prepareSocialPosts(articleHtml: string, title: string, hebrewUrl: string, englishUrl: string, topicId: string) {
+    async prepareSocialPosts(articleHtml: string, title: string, hebrewUrl: string, englishUrl: string, topicId: string, existingVideoUrl?: string) {
         pipelineLogger.info(`Preparing social posts for: ${title}`);
 
-        // 1. Generate Video (Parallel with text generation)
-        const videoPromise = this.kie.generateVideo({
-            title: title,
-            excerpt: articleHtml.substring(0, 200),
-            style: "documentary"
-        }).catch(err => {
-            pipelineLogger.error(`Video generation failed: ${err.message}`);
-            return null;
-        });
+        let taskId: string | undefined = undefined;
+        let videoUrl: string | undefined = existingVideoUrl;
 
-        // 2. Generate Bilingual Text
-        const textPromise = this.generateBilingualContent(articleHtml, title, hebrewUrl, englishUrl);
+        // 1. Generate Video (only if not provided)
+        if (!existingVideoUrl) {
+            const videoPromise = this.kie.generateVideo({
+                title: title,
+                excerpt: articleHtml.substring(0, 200),
+                style: "documentary"
+            }).catch(err => {
+                pipelineLogger.error(`Video generation failed: ${err.message}`);
+                return undefined;
+            });
 
-        // Wait for both
-        const [taskId, content] = await Promise.all([videoPromise, textPromise]);
+            // 2. Generate Bilingual Text (parallel with video)
+            const textPromise = this.generateBilingualContent(articleHtml, title, hebrewUrl, englishUrl);
 
-        let videoUrl: string | undefined;
-        if (taskId) {
-            try {
-                // Poll for video (giving it some time, or we can send the approval without it and update later? 
-                // For simplicity in this worker, we'll wait a bit or just return the task ID if we had an async flow.
-                // But the n8n flow waits. Let's wait up to 60s for the sake of the demo, or just link the task.
-                // Actually KieClient has waitForVideo. Let's try waiting 30s, if not ready, we send what we have.
-                // Realistically, Sora takes minutes. The n8n flow has a wait loop. 
-                // We will skip the long wait here to avoid timeout and just say "Processing".
-                // ERROR CORRECTION: The n8n flow waits 15s then downloads.
-                // We will try to get the status once.
-                const status = await this.kie.getTask(taskId);
-                if (status.status === 'success') videoUrl = status.videoUrl;
-            } catch (e) {
-                pipelineLogger.warn("Could not retrieve video status immediately.");
+            // Wait for both
+            const [generatedTaskId, content] = await Promise.all([videoPromise, textPromise]);
+            taskId = generatedTaskId;
+
+            if (taskId) {
+                try {
+                    const status = await this.kie.getTask(taskId);
+                    if (status.status === 'success') videoUrl = status.videoUrl;
+                } catch (e) {
+                    pipelineLogger.warn("Could not retrieve video status immediately.");
+                }
             }
-        }
 
-        // 3. Send Approval
-        await this.slack.sendSocialApprovalRequest({
-            hebrewHeadline: content.hebrew_headline,
-            englishHeadline: content.english_headline,
-            hebrewTeaser: content.hebrew_teaser,
-            hebrewUrl: hebrewUrl,
-            englishUrl: englishUrl,
-            facebookPost: content.facebook_post,
-            videoUrl: videoUrl,
-            videoTaskId: taskId,
-            topicId: topicId
-        });
+            // 3. Send Approval
+            await this.slack.sendSocialApprovalRequest({
+                hebrewHeadline: content.hebrew_headline,
+                englishHeadline: content.english_headline,
+                hebrewTeaser: content.hebrew_teaser,
+                hebrewUrl: hebrewUrl,
+                englishUrl: englishUrl,
+                facebookPost: content.facebook_post,
+                videoUrl: videoUrl,
+                videoTaskId: taskId,
+                topicId: topicId
+            });
+        } else {
+            // Video already exists - just generate text and send approval
+            pipelineLogger.info(`Using existing video: ${existingVideoUrl}`);
+            const content = await this.generateBilingualContent(articleHtml, title, hebrewUrl, englishUrl);
+
+            // Send Approval with existing video
+            await this.slack.sendSocialApprovalRequest({
+                hebrewHeadline: content.hebrew_headline,
+                englishHeadline: content.english_headline,
+                hebrewTeaser: content.hebrew_teaser,
+                hebrewUrl: hebrewUrl,
+                englishUrl: englishUrl,
+                facebookPost: content.facebook_post,
+                videoUrl: videoUrl,
+                videoTaskId: taskId,
+                topicId: topicId
+            });
+        }
 
         pipelineLogger.info("Social approval request sent.");
         return { status: "waiting_approval", videoTaskId: taskId };
@@ -132,5 +146,50 @@ export class SocialPublisher {
                 facebook_post: `${title}\n\nRead here: ${englishUrl}`
             };
         }
+    }
+
+    async attachVideoToSocialPosts(postId: number, videoUrl: string) {
+        pipelineLogger.info(`Attaching video to social posts for post ${postId}`);
+
+        // Fetch the post to get its content
+        const { WordPressClient } = require("../clients/wordpress-client");
+        const wp = new WordPressClient();
+        const post = await wp.getPost(postId);
+
+        // Re-trigger social approval with the approved video URL
+        const englishId = post.translations?.en;
+        const englishPost = englishId ? await wp.getPost(parseInt(englishId)) : null;
+
+        await this.prepareSocialPosts(
+            post.content.rendered,
+            post.title.rendered,
+            post.link,
+            englishPost?.link || "",
+            postId.toString(),
+            videoUrl  // Pass the approved video URL
+        );
+
+        pipelineLogger.success("Video attached to social posts");
+    }
+
+    async publishSocialWithoutVideo(postId: number) {
+        pipelineLogger.info(`Publishing social posts without video for post ${postId}`);
+
+        const { WordPressClient } = require("../clients/wordpress-client");
+        const wp = new WordPressClient();
+        const post = await wp.getPost(postId);
+        const englishId = post.translations?.en;
+        const englishPost = englishId ? await wp.getPost(parseInt(englishId)) : null;
+
+        // Generate social posts without video
+        await this.prepareSocialPosts(
+            post.content.rendered,
+            post.title.rendered,
+            post.link,
+            englishPost?.link || "",
+            postId.toString()
+        );
+
+        pipelineLogger.success("Social posts prepared without video");
     }
 }

@@ -409,4 +409,89 @@ export class SlackClient {
 
         return this.sendMessage(`Article Preview: ${params.title}`, blocks);
     }
+
+    async sendVideoApprovalRequest(params: {
+        videoUrl: string;
+        duration: number;
+        thumbnailUrl?: string;
+        taskId: string;
+        relatedPostId: number;
+        postTitle: string;
+    }) {
+        const blocks: any[] = [
+            {
+                type: "header",
+                text: {
+                    type: "plain_text",
+                    text: "🎥 Video Preview Ready",
+                    emoji: true,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Related Post:* ${params.postTitle}\n*Duration:* ${params.duration}s\n*Kie.ai Task:* ${params.taskId}`,
+                },
+            },
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*Video:* <${params.videoUrl}|Watch Preview>`,
+                },
+            },
+            {
+                type: "actions",
+                elements: [
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "✅ Approve & Use",
+                            emoji: true,
+                        },
+                        value: JSON.stringify({
+                            action: "approve_video",
+                            videoUrl: params.videoUrl,
+                            taskId: params.taskId,
+                            postId: params.relatedPostId
+                        }),
+                        action_id: "approve_video",
+                        style: "primary",
+                    },
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "🔄 Regenerate",
+                            emoji: true,
+                        },
+                        value: JSON.stringify({
+                            action: "regenerate_video",
+                            taskId: params.taskId,
+                            postId: params.relatedPostId
+                        }),
+                        action_id: "regenerate_video",
+                    },
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "⏭️ Skip Video",
+                            emoji: true,
+                        },
+                        value: JSON.stringify({
+                            action: "skip_video",
+                            postId: params.relatedPostId
+                        }),
+                        action_id: "skip_video",
+                        style: "danger",
+                    },
+                ],
+            },
+        ];
+
+        return this.sendMessage(`Video Preview: ${params.postTitle}`, blocks);
+    }
 }

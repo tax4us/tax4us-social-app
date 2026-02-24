@@ -128,6 +128,65 @@ export async function POST(req: NextRequest) {
             });
         }
 
+        if (action.action_id === "approve_video") {
+            console.log("🎥 Video Approved: Attaching to social posts...", value);
+
+            const { SocialPublisher } = require("../../../../lib/pipeline/social-publisher");
+            const publisher = new SocialPublisher();
+
+            // Attach video to social posts
+            publisher.attachVideoToSocialPosts(value.postId, value.videoUrl).catch((e: any) =>
+                console.error("Video attachment failed:", e)
+            );
+
+            return NextResponse.json({
+                text: `✅ Video approved! Attaching to social posts for post #${value.postId}`,
+                replace_original: false
+            });
+        }
+
+        if (action.action_id === "regenerate_video") {
+            console.log("🔄 Video Regeneration Requested...", value);
+
+            const { MediaProcessor } = require("../../../../lib/pipeline/media-processor");
+            const { WordPressClient } = require("../../../../lib/clients/wordpress-client");
+
+            const wp = new WordPressClient();
+            const mediaProcessor = new MediaProcessor();
+
+            // Get post title for new video generation
+            wp.getPost(value.postId).then(async (post: any) => {
+                const newTask = await mediaProcessor.generateVideo({
+                    title: post.title.rendered,
+                    excerpt: post.excerpt.rendered,
+                    style: "documentary"
+                });
+                console.log(`New video generation started: ${newTask.taskId}`);
+            }).catch((e: any) => console.error("Video regeneration failed:", e));
+
+            return NextResponse.json({
+                text: "🔄 Regenerating video with new prompt. You'll receive a new preview shortly.",
+                replace_original: true
+            });
+        }
+
+        if (action.action_id === "skip_video") {
+            console.log("⏭️ Video Skipped: Publishing without video...", value);
+
+            const { SocialPublisher } = require("../../../../lib/pipeline/social-publisher");
+            const publisher = new SocialPublisher();
+
+            // Continue social posts without video
+            publisher.publishSocialWithoutVideo(value.postId).catch((e: any) =>
+                console.error("Social publish failed:", e)
+            );
+
+            return NextResponse.json({
+                text: "⏭️ Video skipped. Social posts will publish without video.",
+                replace_original: true
+            });
+        }
+
         return NextResponse.json({ message: "Action received" });
 
     } catch (error: any) {
