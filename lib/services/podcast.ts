@@ -45,49 +45,6 @@ export class PodcastService {
     private authErrorLogged = false;
     private authFailed = false;
     private lastAuthAttempt = 0;
-    /**
-     * Authenticaties with Captivate to get a session token.
-     * Uses 2-step auth: POST /authenticate/token with username (ID) & API Key.
-     */
-    private async getCaptivateToken(): Promise<string | null> {
-        try {
-            const username = process.env.CAPTIVATE_USER_ID; // The ID "655c..."
-            const token = process.env.CAPTIVATE_API_KEY;    // The key "yuli..."
-
-            if (!username || !token) {
-                return null; // Silent fail for missing credentials
-            }
-
-            const params = new URLSearchParams();
-            params.append('username', username);
-            params.append('token', token);
-
-            const response = await fetch(`${CAPTIVATE_API_BASE}/authenticate/token`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: params,
-                next: { revalidate: 3600 } // Cache token for 1 hour
-            });
-
-            if (!response.ok) {
-                this.authFailed = true;
-                this.lastAuthAttempt = Date.now();
-                if (!this.authErrorLogged) {
-                    console.error(`Captivate Auth Failed: ${response.status} ${response.statusText}`);
-                    this.authErrorLogged = true;
-                }
-                return null;
-            }
-
-            const data: CaptivateAuthResponse = await response.json();
-            return data.user.token;
-        } catch (error) {
-            console.error("Error authenticating with Captivate:", error);
-            return null;
-        }
-    }
 
     async fetchPodcastEpisodes(): Promise<PodcastEpisode[]> {
         const items: PodcastEpisode[] = [];
@@ -105,54 +62,8 @@ export class PodcastService {
             return this.getFallbackEpisodes();
         }
 
-        // 1. Fetch from Captivate
-        try {
-            const token = await this.getCaptivateToken();
-            if (token) {
-                const userId = process.env.CAPTIVATE_USER_ID;
-
-                // Get Shows
-                const showsResponse = await fetch(`${CAPTIVATE_API_BASE}/users/${userId}/shows`, {
-                    headers: { "Authorization": `Bearer ${token}` },
-                    next: { revalidate: 300 }
-                });
-
-                if (showsResponse.ok) {
-                    const showsData: CaptivateShowResponse = await showsResponse.json();
-                    const showId = showsData.shows?.[0]?.id;
-
-                    if (showId) {
-                        // Get Episodes
-                        const episodesResponse = await fetch(`${CAPTIVATE_API_BASE}/shows/${showId}/episodes`, {
-                            headers: { "Authorization": `Bearer ${token}` },
-                            next: { revalidate: 300 }
-                        });
-
-                        if (episodesResponse.ok) {
-                            const data = await episodesResponse.json();
-                            const episodes: CaptivateEpisode[] = Array.isArray(data.episodes) ? data.episodes : [];
-
-                            items.push(...episodes.map((ep) => ({
-                                id: `pod-${ep.id}`,
-                                title: ep.title,
-                                status: (ep.status === "published" ? "published" : "scripting"),
-                                episodeNumber: Number(ep.episode_number) || 0,
-                                duration: this.formatDuration(ep.duration),
-                                publishDate: ep.published_date ? new Date(ep.published_date).toLocaleDateString('en-GB') : undefined,
-                                rawDate: ep.published_date || new Date().toISOString(),
-                                platformStatus: {
-                                    elevenLabs: "done",
-                                    captivate: ep.status === "published" ? "done" : "processing",
-                                    wordpress: "done"
-                                }
-                            } as PodcastEpisode)));
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error("Error fetching Captivate episodes:", error);
-        }
+        // 1. Return fallback data since Captivate auth is disabled
+        // Captivate integration disabled - credentials need refresh
 
         // 2. Fetch from ElevenLabs (History)
         try {

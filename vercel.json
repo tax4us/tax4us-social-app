@@ -5,8 +5,12 @@
       "schedule": "0 8 * * 1,4"
     },
     {
-      "path": "/api/pipeline/cron?type=seo",
-      "schedule": "0 9 * * 2,4"
+      "path": "/api/pipeline/cron?type=seo", 
+      "schedule": "0 10 * * 2,5"
+    },
+    {
+      "path": "/api/pipeline/cron?type=podcast",
+      "schedule": "0 14 * * 3"
     }
   ]
 }

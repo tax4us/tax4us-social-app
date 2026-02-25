@@ -1,0 +1,2213 @@
+[
+  {
+    "id": "95yzgo",
+    "timestamp": "2026-02-25T20:09:21.463Z",
+    "level": "info",
+    "message": "No posts published today. Skipping podcast.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "fkr98e",
+    "timestamp": "2026-02-25T20:09:19.204Z",
+    "level": "info",
+    "message": "Wednesday Worker: Running Podcast production flow.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "d6wmqj",
+    "timestamp": "2026-02-25T20:09:19.203Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 3, Hour: 14",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "h7d5d9",
+    "timestamp": "2026-02-25T20:01:15.048Z",
+    "level": "info",
+    "message": "No posts published today. Skipping podcast.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "osz0fk",
+    "timestamp": "2026-02-25T20:01:12.886Z",
+    "level": "info",
+    "message": "Wednesday Worker: Running Podcast production flow.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "ni4bqj",
+    "timestamp": "2026-02-25T20:01:12.885Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 3, Hour: 14",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "f8fw5o",
+    "timestamp": "2026-02-25T18:48:27.840Z",
+    "level": "success",
+    "message": "Podcast AutoPilot complete. Generated 5 episodes.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "x274as",
+    "timestamp": "2026-02-25T18:48:27.191Z",
+    "level": "success",
+    "message": "Draft Episode created. ID: fef8a9d0-e840-4388-aa01-46b9d74608d3",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "vlijf",
+    "timestamp": "2026-02-25T18:48:26.791Z",
+    "level": "agent",
+    "message": "Creating DRAFT episode on Captivate...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "rizihb",
+    "timestamp": "2026-02-25T18:48:26.789Z",
+    "level": "success",
+    "message": "Media uploaded. ID: 0afce0d7-9c32-4611-a3de-02848b2767f4",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "7t1ux",
+    "timestamp": "2026-02-25T18:48:16.090Z",
+    "level": "agent",
+    "message": "Uploading media to Captivate.fm...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "eq83zb",
+    "timestamp": "2026-02-25T18:48:16.088Z",
+    "level": "success",
+    "message": "Audio generation complete. Size: 7.34 MB",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "85go3",
+    "timestamp": "2026-02-25T18:44:55.068Z",
+    "level": "agent",
+    "message": "Generating audio for batch of 13 segments...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "hvg28b",
+    "timestamp": "2026-02-25T18:44:55.066Z",
+    "level": "info",
+    "message": "Parsed script into 23 dialogue segments.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "sc76vk",
+    "timestamp": "2026-02-25T18:44:43.204Z",
+    "level": "agent",
+    "message": "Generating professional dialogue script with character anchors...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "b2xzpx",
+    "timestamp": "2026-02-25T18:44:34.688Z",
+    "level": "agent",
+    "message": "Generating detailed outline...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "tnqphr",
+    "timestamp": "2026-02-25T18:44:34.687Z",
+    "level": "info",
+    "message": "Next Episode Number: 6",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "uh3tep",
+    "timestamp": "2026-02-25T18:44:34.524Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "4qnsz8",
+    "timestamp": "2026-02-25T18:44:34.521Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב...",
+    "topicId": "2699"
+  },
+  {
+    "id": "5511rg",
+    "timestamp": "2026-02-25T18:44:33.883Z",
+    "level": "success",
+    "message": "Draft Episode created. ID: e4336677-eed3-4902-bd11-f47bb457c26e",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "zkzswi",
+    "timestamp": "2026-02-25T18:44:33.555Z",
+    "level": "agent",
+    "message": "Creating DRAFT episode on Captivate...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "r24u2h",
+    "timestamp": "2026-02-25T18:44:33.549Z",
+    "level": "success",
+    "message": "Media uploaded. ID: adccc43e-c51c-4296-a594-c98c5024f94a",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "8862s",
+    "timestamp": "2026-02-25T18:44:22.804Z",
+    "level": "agent",
+    "message": "Uploading media to Captivate.fm...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "ucyr3",
+    "timestamp": "2026-02-25T18:44:22.801Z",
+    "level": "success",
+    "message": "Audio generation complete. Size: 8.10 MB",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "vv99zr",
+    "timestamp": "2026-02-25T18:42:17.167Z",
+    "level": "agent",
+    "message": "Generating audio for batch of 11 segments...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "kxe6im",
+    "timestamp": "2026-02-25T18:40:25.794Z",
+    "level": "agent",
+    "message": "Generating audio for batch of 13 segments...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "oldv7p",
+    "timestamp": "2026-02-25T18:40:25.793Z",
+    "level": "info",
+    "message": "Parsed script into 27 dialogue segments.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "xkrric",
+    "timestamp": "2026-02-25T18:40:11.968Z",
+    "level": "agent",
+    "message": "Generating professional dialogue script with character anchors...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "uvc6i8",
+    "timestamp": "2026-02-25T18:40:07.266Z",
+    "level": "agent",
+    "message": "Generating detailed outline...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "3upm8p",
+    "timestamp": "2026-02-25T18:40:07.265Z",
+    "level": "info",
+    "message": "Next Episode Number: 5",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "x6nm1c",
+    "timestamp": "2026-02-25T18:40:07.158Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"How Are U.S.–Israel Estate Taxes Changing in 2026?\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "rmpk32",
+    "timestamp": "2026-02-25T18:40:07.157Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: How Are U.S.–Israel Estate Taxes Changing in 2026?...",
+    "topicId": "2703"
+  },
+  {
+    "id": "zf2m4",
+    "timestamp": "2026-02-25T18:40:06.554Z",
+    "level": "success",
+    "message": "Draft Episode created. ID: 179e6b66-0ef4-41cb-9baa-f9fc792f9b39",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "szw79q",
+    "timestamp": "2026-02-25T18:40:03.581Z",
+    "level": "agent",
+    "message": "Creating DRAFT episode on Captivate...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "gdrgu7",
+    "timestamp": "2026-02-25T18:40:03.579Z",
+    "level": "success",
+    "message": "Media uploaded. ID: 193449e7-f9ce-46bf-9038-34249c7d4791",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "y7z38k",
+    "timestamp": "2026-02-25T18:39:57.816Z",
+    "level": "agent",
+    "message": "Uploading media to Captivate.fm...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "lswa4k",
+    "timestamp": "2026-02-25T18:39:57.814Z",
+    "level": "success",
+    "message": "Audio generation complete. Size: 6.16 MB",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "4sqqmr",
+    "timestamp": "2026-02-25T18:36:39.838Z",
+    "level": "agent",
+    "message": "Generating audio for batch of 11 segments...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "aw2w7a",
+    "timestamp": "2026-02-25T18:36:39.837Z",
+    "level": "info",
+    "message": "Parsed script into 17 dialogue segments.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "fp6em",
+    "timestamp": "2026-02-25T18:36:30.723Z",
+    "level": "agent",
+    "message": "Generating professional dialogue script with character anchors...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "oi0p27",
+    "timestamp": "2026-02-25T18:36:26.441Z",
+    "level": "agent",
+    "message": "Generating detailed outline...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "8pm81",
+    "timestamp": "2026-02-25T18:36:26.440Z",
+    "level": "info",
+    "message": "Next Episode Number: 4",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "s0p33a",
+    "timestamp": "2026-02-25T18:36:25.988Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "3dkivzl",
+    "timestamp": "2026-02-25T18:36:25.986Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל...",
+    "topicId": "2706"
+  },
+  {
+    "id": "rdoil7",
+    "timestamp": "2026-02-25T18:36:25.135Z",
+    "level": "success",
+    "message": "Draft Episode created. ID: 00202264-7d77-4ae1-8165-1ecf2a98df5b",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "4fp3q",
+    "timestamp": "2026-02-25T18:36:24.338Z",
+    "level": "agent",
+    "message": "Creating DRAFT episode on Captivate...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "mdcli",
+    "timestamp": "2026-02-25T18:36:24.334Z",
+    "level": "success",
+    "message": "Media uploaded. ID: 8efb750d-d097-49e1-825c-ba633c2befa8",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "l768ur",
+    "timestamp": "2026-02-25T18:36:09.641Z",
+    "level": "agent",
+    "message": "Uploading media to Captivate.fm...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "hswnkp",
+    "timestamp": "2026-02-25T18:36:09.639Z",
+    "level": "success",
+    "message": "Audio generation complete. Size: 5.27 MB",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "2d8mdd",
+    "timestamp": "2026-02-25T18:33:37.794Z",
+    "level": "agent",
+    "message": "Generating audio for batch of 18 segments...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "1xidbx",
+    "timestamp": "2026-02-25T18:33:37.793Z",
+    "level": "info",
+    "message": "Parsed script into 24 dialogue segments.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "p43ao",
+    "timestamp": "2026-02-25T18:33:28.249Z",
+    "level": "agent",
+    "message": "Generating professional dialogue script with character anchors...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "d6ymnw",
+    "timestamp": "2026-02-25T18:33:23.855Z",
+    "level": "agent",
+    "message": "Generating detailed outline...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "8l4ajp",
+    "timestamp": "2026-02-25T18:33:23.854Z",
+    "level": "info",
+    "message": "Next Episode Number: 3",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "p8k3j6",
+    "timestamp": "2026-02-25T18:33:23.751Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"The Tax Implications of Remote Work Between the US and Israel\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "d6e5z9",
+    "timestamp": "2026-02-25T18:33:23.748Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: The Tax Implications of Remote Work Between the US and Israel...",
+    "topicId": "2712"
+  },
+  {
+    "id": "l62l2m",
+    "timestamp": "2026-02-25T18:33:22.985Z",
+    "level": "success",
+    "message": "Draft Episode created. ID: 84e720c6-ae67-4f97-9364-18fd029f54ce",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "1m0xu",
+    "timestamp": "2026-02-25T18:33:22.639Z",
+    "level": "agent",
+    "message": "Creating DRAFT episode on Captivate...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "2izdas",
+    "timestamp": "2026-02-25T18:33:22.637Z",
+    "level": "success",
+    "message": "Media uploaded. ID: be66fe92-f892-425c-b439-150118b65fb4",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "afjjtc",
+    "timestamp": "2026-02-25T18:33:13.364Z",
+    "level": "agent",
+    "message": "Uploading media to Captivate.fm...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "axtq5f",
+    "timestamp": "2026-02-25T18:33:13.362Z",
+    "level": "success",
+    "message": "Audio generation complete. Size: 6.24 MB",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "2qvhn4",
+    "timestamp": "2026-02-25T18:30:21.591Z",
+    "level": "agent",
+    "message": "Generating audio for batch of 15 segments...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "z9ybm",
+    "timestamp": "2026-02-25T18:30:21.589Z",
+    "level": "info",
+    "message": "Parsed script into 22 dialogue segments.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "4s7noe",
+    "timestamp": "2026-02-25T18:30:12.669Z",
+    "level": "agent",
+    "message": "Generating professional dialogue script with character anchors...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "f61yc",
+    "timestamp": "2026-02-25T18:30:04.196Z",
+    "level": "agent",
+    "message": "Generating detailed outline...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "rfskn",
+    "timestamp": "2026-02-25T18:30:04.195Z",
+    "level": "info",
+    "message": "Next Episode Number: 2",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "ifrgx",
+    "timestamp": "2026-02-25T18:30:03.725Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "zjlaxh",
+    "timestamp": "2026-02-25T18:30:03.721Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?...",
+    "topicId": "2716"
+  },
+  {
+    "id": "o4qwdh",
+    "timestamp": "2026-02-25T18:30:00.919Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "j817nh",
+    "timestamp": "2026-02-24T18:58:21.683Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\""
+  },
+  {
+    "id": "htoqt",
+    "timestamp": "2026-02-24T18:58:21.681Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\". Starting enhancement.",
+    "topicId": "2699"
+  },
+  {
+    "id": "np0msp",
+    "timestamp": "2026-02-24T18:58:21.680Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\" (Keyword: \"מתנות והירושות בין ישראל וארה\"ב\", Score: 30%)",
+    "topicId": "2699"
+  },
+  {
+    "id": "kcfitp",
+    "timestamp": "2026-02-24T18:58:21.386Z",
+    "level": "info",
+    "message": "Successfully optimized \"How Are U.S.–Israel Estate Taxes Changing in 2026?\". New Score: 45%",
+    "topicId": "2703"
+  },
+  {
+    "id": "q9d0yo",
+    "timestamp": "2026-02-24T18:57:59.351Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"How Are U.S.–Israel Estate Taxes Changing in 2026?\""
+  },
+  {
+    "id": "00lhqg",
+    "timestamp": "2026-02-24T18:57:59.350Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"How Are U.S.–Israel Estate Taxes Changing in 2026?\". Starting enhancement.",
+    "topicId": "2703"
+  },
+  {
+    "id": "apdzch",
+    "timestamp": "2026-02-24T18:57:59.350Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"How Are U.S.–Israel Estate Taxes Changing in 2026?\" (Keyword: \"US Israel estate tax\", Score: 30%)",
+    "topicId": "2703"
+  },
+  {
+    "id": "m9mu0b",
+    "timestamp": "2026-02-24T18:57:59.118Z",
+    "level": "info",
+    "message": "Successfully optimized \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\". New Score: 35%",
+    "topicId": "2706"
+  },
+  {
+    "id": "f8wzp",
+    "timestamp": "2026-02-24T18:57:14.800Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\""
+  },
+  {
+    "id": "rbrvpn",
+    "timestamp": "2026-02-24T18:57:14.800Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\". Starting enhancement.",
+    "topicId": "2706"
+  },
+  {
+    "id": "txzsv",
+    "timestamp": "2026-02-24T18:57:14.799Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\" (Keyword: \"עבודה מרחוק מס\", Score: 30%)",
+    "topicId": "2706"
+  },
+  {
+    "id": "wtt26u",
+    "timestamp": "2026-02-24T18:57:14.533Z",
+    "level": "info",
+    "message": "Successfully optimized \"The Tax Implications of Remote Work Between the US and Israel\". New Score: 60%",
+    "topicId": "2712"
+  },
+  {
+    "id": "d9pudu",
+    "timestamp": "2026-02-24T18:56:55.619Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"The Tax Implications of Remote Work Between the US and Israel\""
+  },
+  {
+    "id": "7tfe7p",
+    "timestamp": "2026-02-24T18:56:55.617Z",
+    "level": "info",
+    "message": "Low SEO score (50%) identified for \"The Tax Implications of Remote Work Between the US and Israel\". Starting enhancement.",
+    "topicId": "2712"
+  },
+  {
+    "id": "qe3le",
+    "timestamp": "2026-02-24T18:56:55.616Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"The Tax Implications of Remote Work Between the US and Israel\" (Keyword: \"remote work tax implications\", Score: 50%)",
+    "topicId": "2712"
+  },
+  {
+    "id": "v5zd0s",
+    "timestamp": "2026-02-24T18:56:55.324Z",
+    "level": "info",
+    "message": "Successfully optimized \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\". New Score: 40%",
+    "topicId": "2716"
+  },
+  {
+    "id": "8289b8",
+    "timestamp": "2026-02-24T18:56:33.055Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\""
+  },
+  {
+    "id": "bkavd7",
+    "timestamp": "2026-02-24T18:56:33.054Z",
+    "level": "info",
+    "message": "Low SEO score (35%) identified for \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\". Starting enhancement.",
+    "topicId": "2716"
+  },
+  {
+    "id": "3zoyo",
+    "timestamp": "2026-02-24T18:56:33.054Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\" (Keyword: \"remote work us-israel tax\", Score: 35%)",
+    "topicId": "2716"
+  },
+  {
+    "id": "ujjybn",
+    "timestamp": "2026-02-24T18:56:29.807Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "yenua6",
+    "timestamp": "2026-02-24T18:50:41.574Z",
+    "level": "info",
+    "message": "Successfully optimized \"Why Most Israelis Ignore Final LLC Closure Obligations in America\". New Score: 60%",
+    "topicId": "2555"
+  },
+  {
+    "id": "7khex5",
+    "timestamp": "2026-02-24T18:50:16.126Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Why Most Israelis Ignore Final LLC Closure Obligations in America\""
+  },
+  {
+    "id": "jdy4m7",
+    "timestamp": "2026-02-24T18:50:16.125Z",
+    "level": "info",
+    "message": "Low SEO score (35%) identified for \"Why Most Israelis Ignore Final LLC Closure Obligations in America\". Starting enhancement.",
+    "topicId": "2555"
+  },
+  {
+    "id": "ffjdta",
+    "timestamp": "2026-02-24T18:50:16.124Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Why Most Israelis Ignore Final LLC Closure Obligations in America\" (Keyword: \"סגירת חברת אל.אל.סי\", Score: 35%)",
+    "topicId": "2555"
+  },
+  {
+    "id": "dlbi9p",
+    "timestamp": "2026-02-24T18:50:15.844Z",
+    "level": "info",
+    "message": "Successfully optimized \"השינויים הנסתרים בחוקי המס 2026 שישפיעו על כל ישראלי-אמריקאי\". New Score: 50%",
+    "topicId": "2558"
+  },
+  {
+    "id": "c20qtm",
+    "timestamp": "2026-02-24T18:49:48.044Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"השינויים הנסתרים בחוקי המס 2026 שישפיעו על כל ישראלי-אמריקאי\""
+  },
+  {
+    "id": "sb7int",
+    "timestamp": "2026-02-24T18:49:48.043Z",
+    "level": "info",
+    "message": "Low SEO score (70%) identified for \"השינויים הנסתרים בחוקי המס 2026 שישפיעו על כל ישראלי-אמריקאי\". Starting enhancement.",
+    "topicId": "2558"
+  },
+  {
+    "id": "zx39ur",
+    "timestamp": "2026-02-24T18:49:48.043Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"השינויים הנסתרים בחוקי המס 2026 שישפיעו על כל ישראלי-אמריקאי\" (Keyword: \"חוקי המס 2026\", Score: 70%)",
+    "topicId": "2558"
+  },
+  {
+    "id": "nu4lsk",
+    "timestamp": "2026-02-24T18:49:47.785Z",
+    "level": "info",
+    "message": "Successfully optimized \"The Hidden Changes in 2026 Tax Laws That Will Affect Every Israeli-American\". New Score: 45%",
+    "topicId": "2562"
+  },
+  {
+    "id": "pe0kzp",
+    "timestamp": "2026-02-24T18:49:17.936Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"The Hidden Changes in 2026 Tax Laws That Will Affect Every Israeli-American\""
+  },
+  {
+    "id": "mo9cro",
+    "timestamp": "2026-02-24T18:49:17.936Z",
+    "level": "info",
+    "message": "Low SEO score (35%) identified for \"The Hidden Changes in 2026 Tax Laws That Will Affect Every Israeli-American\". Starting enhancement.",
+    "topicId": "2562"
+  },
+  {
+    "id": "2h4s3",
+    "timestamp": "2026-02-24T18:49:17.935Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"The Hidden Changes in 2026 Tax Laws That Will Affect Every Israeli-American\" (Keyword: \"חוקי מס לשנת 2026\", Score: 35%)",
+    "topicId": "2562"
+  },
+  {
+    "id": "asnjtr",
+    "timestamp": "2026-02-24T18:49:17.677Z",
+    "level": "info",
+    "message": "Successfully optimized \"מתי הגשת Form 8833 הופכת לחובה ומתי היא רק אופציה?\". New Score: 40%",
+    "topicId": "2565"
+  },
+  {
+    "id": "9eipcj",
+    "timestamp": "2026-02-24T18:48:48.010Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מתי הגשת Form 8833 הופכת לחובה ומתי היא רק אופציה?\""
+  },
+  {
+    "id": "r77eb",
+    "timestamp": "2026-02-24T18:48:48.009Z",
+    "level": "info",
+    "message": "Low SEO score (35%) identified for \"מתי הגשת Form 8833 הופכת לחובה ומתי היא רק אופציה?\". Starting enhancement.",
+    "topicId": "2565"
+  },
+  {
+    "id": "3i41h",
+    "timestamp": "2026-02-24T18:48:48.008Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מתי הגשת Form 8833 הופכת לחובה ומתי היא רק אופציה?\" (Keyword: \"הסכם מס ישראל-ארה\"ב\", Score: 35%)",
+    "topicId": "2565"
+  },
+  {
+    "id": "dplty",
+    "timestamp": "2026-02-24T18:48:47.784Z",
+    "level": "info",
+    "message": "Successfully optimized \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\". New Score: 65%",
+    "topicId": "2569"
+  },
+  {
+    "id": "haier",
+    "timestamp": "2026-02-24T18:48:32.386Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\""
+  },
+  {
+    "id": "ui8hp",
+    "timestamp": "2026-02-24T18:48:32.386Z",
+    "level": "info",
+    "message": "Low SEO score (40%) identified for \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\". Starting enhancement.",
+    "topicId": "2569"
+  },
+  {
+    "id": "i7j8o",
+    "timestamp": "2026-02-24T18:48:32.385Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\" (Keyword: \"אמנת המס ישראל-ארה\"ב\", Score: 40%)",
+    "topicId": "2569"
+  },
+  {
+    "id": "m02w4q",
+    "timestamp": "2026-02-24T18:48:32.118Z",
+    "level": "info",
+    "message": "Successfully optimized \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\". New Score: 45%",
+    "topicId": "2573"
+  },
+  {
+    "id": "qxrlki",
+    "timestamp": "2026-02-24T18:48:06.615Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\""
+  },
+  {
+    "id": "o98pcj",
+    "timestamp": "2026-02-24T18:48:06.614Z",
+    "level": "info",
+    "message": "Low SEO score (40%) identified for \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\". Starting enhancement.",
+    "topicId": "2573"
+  },
+  {
+    "id": "lm25r",
+    "timestamp": "2026-02-24T18:48:06.613Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"When Is Form 8833 Required and When Is It Optional? Israel-US Tax Treaty Guide\" (Keyword: \"אמנת מס ישראל-ארה\"ב\", Score: 40%)",
+    "topicId": "2573"
+  },
+  {
+    "id": "yp6eqp",
+    "timestamp": "2026-02-24T18:48:06.366Z",
+    "level": "info",
+    "message": "Successfully optimized \"Navigating the Complexities of US-Israel Tax Treaties: Key Considerations for Israeli Businesses\". New Score: 60%",
+    "topicId": "2585"
+  },
+  {
+    "id": "h4697bn",
+    "timestamp": "2026-02-24T18:47:38.025Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Navigating the Complexities of US-Israel Tax Treaties: Key Considerations for Israeli Businesses\""
+  },
+  {
+    "id": "l7uewm",
+    "timestamp": "2026-02-24T18:47:38.025Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"Navigating the Complexities of US-Israel Tax Treaties: Key Considerations for Israeli Businesses\". Starting enhancement.",
+    "topicId": "2585"
+  },
+  {
+    "id": "ixzg7k",
+    "timestamp": "2026-02-24T18:47:38.024Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Navigating the Complexities of US-Israel Tax Treaties: Key Considerations for Israeli Businesses\" (Keyword: \"מיסוי ישראלי בארה\"ב\", Score: 30%)",
+    "topicId": "2585"
+  },
+  {
+    "id": "l8cxl",
+    "timestamp": "2026-02-24T18:47:37.744Z",
+    "level": "info",
+    "message": "Successfully optimized \"The Changing Landscape of US-Israel Wealth Management: Navigating New Tax Implications\". New Score: 55%",
+    "topicId": "2587"
+  },
+  {
+    "id": "be88rh",
+    "timestamp": "2026-02-24T18:47:15.560Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"The Changing Landscape of US-Israel Wealth Management: Navigating New Tax Implications\""
+  },
+  {
+    "id": "xqt6qq",
+    "timestamp": "2026-02-24T18:47:15.559Z",
+    "level": "info",
+    "message": "Low SEO score (25%) identified for \"The Changing Landscape of US-Israel Wealth Management: Navigating New Tax Implications\". Starting enhancement.",
+    "topicId": "2587"
+  },
+  {
+    "id": "ck63xo",
+    "timestamp": "2026-02-24T18:47:15.559Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"The Changing Landscape of US-Israel Wealth Management: Navigating New Tax Implications\" (Keyword: \"מיסוי ישראלים בארה\"ב\", Score: 25%)",
+    "topicId": "2587"
+  },
+  {
+    "id": "77g0rt",
+    "timestamp": "2026-02-24T18:47:15.323Z",
+    "level": "info",
+    "message": "Successfully optimized \"The Evolving Landscape of US-Israel Tax Audits: Strategies for Navigating Increased Scrutiny\". New Score: 35%",
+    "topicId": "2589"
+  },
+  {
+    "id": "8hyup6",
+    "timestamp": "2026-02-24T18:46:50.251Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"The Evolving Landscape of US-Israel Tax Audits: Strategies for Navigating Increased Scrutiny\""
+  },
+  {
+    "id": "4cxgvc",
+    "timestamp": "2026-02-24T18:46:50.249Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"The Evolving Landscape of US-Israel Tax Audits: Strategies for Navigating Increased Scrutiny\". Starting enhancement.",
+    "topicId": "2589"
+  },
+  {
+    "id": "t27bg1a",
+    "timestamp": "2026-02-24T18:46:50.249Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"The Evolving Landscape of US-Israel Tax Audits: Strategies for Navigating Increased Scrutiny\" (Keyword: \"מיסים בארהב\", Score: 30%)",
+    "topicId": "2589"
+  },
+  {
+    "id": "vhl4ta",
+    "timestamp": "2026-02-24T18:46:49.994Z",
+    "level": "info",
+    "message": "Successfully optimized \"Navigating the Shifting Sands of US-Israel Expatriate Tax Compliance\". New Score: 55%",
+    "topicId": "2591"
+  },
+  {
+    "id": "o58tiq",
+    "timestamp": "2026-02-24T18:46:23.137Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Navigating the Shifting Sands of US-Israel Expatriate Tax Compliance\""
+  },
+  {
+    "id": "6ny1g6",
+    "timestamp": "2026-02-24T18:46:23.136Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"Navigating the Shifting Sands of US-Israel Expatriate Tax Compliance\". Starting enhancement.",
+    "topicId": "2591"
+  },
+  {
+    "id": "jkjdvk",
+    "timestamp": "2026-02-24T18:46:23.135Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Navigating the Shifting Sands of US-Israel Expatriate Tax Compliance\" (Keyword: \"דיני מס אמריקאים לישראלים\", Score: 30%)",
+    "topicId": "2591"
+  },
+  {
+    "id": "qp58uj",
+    "timestamp": "2026-02-24T18:46:22.840Z",
+    "level": "info",
+    "message": "Successfully optimized \"הקושי הגובר של תושבי חוץ ישראלים בניווט בדיני המס האמריקאיים\". New Score: 45%",
+    "topicId": "2593"
+  },
+  {
+    "id": "4natr8",
+    "timestamp": "2026-02-24T18:45:54.251Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"הקושי הגובר של תושבי חוץ ישראלים בניווט בדיני המס האמריקאיים\""
+  },
+  {
+    "id": "2jc42a",
+    "timestamp": "2026-02-24T18:45:54.249Z",
+    "level": "info",
+    "message": "Low SEO score (55%) identified for \"הקושי הגובר של תושבי חוץ ישראלים בניווט בדיני המס האמריקאיים\". Starting enhancement.",
+    "topicId": "2593"
+  },
+  {
+    "id": "8th5eq",
+    "timestamp": "2026-02-24T18:45:54.249Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"הקושי הגובר של תושבי חוץ ישראלים בניווט בדיני המס האמריקאיים\" (Keyword: \"תושבי חוץ ישראלים\", Score: 55%)",
+    "topicId": "2593"
+  },
+  {
+    "id": "o5gh97",
+    "timestamp": "2026-02-24T18:45:53.995Z",
+    "level": "info",
+    "message": "Successfully optimized \"תכנון פרישה חוצה גבולות: אתגרים והזדמנויות למיסוי ישראלים-אמריקאים\". New Score: 55%",
+    "topicId": "2595"
+  },
+  {
+    "id": "3r7fbu",
+    "timestamp": "2026-02-24T18:45:23.014Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"תכנון פרישה חוצה גבולות: אתגרים והזדמנויות למיסוי ישראלים-אמריקאים\""
+  },
+  {
+    "id": "nakp9",
+    "timestamp": "2026-02-24T18:45:23.013Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"תכנון פרישה חוצה גבולות: אתגרים והזדמנויות למיסוי ישראלים-אמריקאים\". Starting enhancement.",
+    "topicId": "2595"
+  },
+  {
+    "id": "uv9ac6",
+    "timestamp": "2026-02-24T18:45:23.012Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"תכנון פרישה חוצה גבולות: אתגרים והזדמנויות למיסוי ישראלים-אמריקאים\" (Keyword: \"תכנון פרישה חוצה גבולות ישראלים-אמריקאים\", Score: 30%)",
+    "topicId": "2595"
+  },
+  {
+    "id": "jues0h",
+    "timestamp": "2026-02-24T18:45:22.780Z",
+    "level": "info",
+    "message": "Successfully optimized \"Navigating the Complexities of Cross-Border Retirement Planning: Optimizing Tax Strategies for Israeli-Americans\". New Score: 55%",
+    "topicId": "2597"
+  },
+  {
+    "id": "pje7zxf",
+    "timestamp": "2026-02-24T18:44:54.406Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Navigating the Complexities of Cross-Border Retirement Planning: Optimizing Tax Strategies for Israeli-Americans\""
+  },
+  {
+    "id": "ssdvvm",
+    "timestamp": "2026-02-24T18:44:54.406Z",
+    "level": "info",
+    "message": "Low SEO score (45%) identified for \"Navigating the Complexities of Cross-Border Retirement Planning: Optimizing Tax Strategies for Israeli-Americans\". Starting enhancement.",
+    "topicId": "2597"
+  },
+  {
+    "id": "g7ff1o",
+    "timestamp": "2026-02-24T18:44:54.405Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Navigating the Complexities of Cross-Border Retirement Planning: Optimizing Tax Strategies for Israeli-Americans\" (Keyword: \"תכנון פרישה חוצה גבולות\", Score: 45%)",
+    "topicId": "2597"
+  },
+  {
+    "id": "xwd5p",
+    "timestamp": "2026-02-24T18:44:54.019Z",
+    "level": "info",
+    "message": "Successfully optimized \"Navigating the Impact of the 2025 US Tax Reform on Israeli Businesses and Expats\". New Score: 35%",
+    "topicId": "2623"
+  },
+  {
+    "id": "8nx7v6",
+    "timestamp": "2026-02-24T18:44:30.783Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Navigating the Impact of the 2025 US Tax Reform on Israeli Businesses and Expats\""
+  },
+  {
+    "id": "12c69b",
+    "timestamp": "2026-02-24T18:44:30.782Z",
+    "level": "info",
+    "message": "Low SEO score (35%) identified for \"Navigating the Impact of the 2025 US Tax Reform on Israeli Businesses and Expats\". Starting enhancement.",
+    "topicId": "2623"
+  },
+  {
+    "id": "plhpgv",
+    "timestamp": "2026-02-24T18:44:30.782Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Navigating the Impact of the 2025 US Tax Reform on Israeli Businesses and Expats\" (Keyword: \"רפורמת המס של 2025 בארה״ב\", Score: 35%)",
+    "topicId": "2623"
+  },
+  {
+    "id": "r5ayuo",
+    "timestamp": "2026-02-24T18:44:30.547Z",
+    "level": "info",
+    "message": "Successfully optimized \"האם עסקים ישראליים מוכנים לשינויי המס האמריקאים ב-2025?\". New Score: 40%",
+    "topicId": "2625"
+  },
+  {
+    "id": "weu1c6",
+    "timestamp": "2026-02-24T18:43:56.925Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"האם עסקים ישראליים מוכנים לשינויי המס האמריקאים ב-2025?\""
+  },
+  {
+    "id": "17p1jr",
+    "timestamp": "2026-02-24T18:43:56.923Z",
+    "level": "info",
+    "message": "Low SEO score (35%) identified for \"האם עסקים ישראליים מוכנים לשינויי המס האמריקאים ב-2025?\". Starting enhancement.",
+    "topicId": "2625"
+  },
+  {
+    "id": "6y8yy",
+    "timestamp": "2026-02-24T18:43:56.922Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"האם עסקים ישראליים מוכנים לשינויי המס האמריקאים ב-2025?\" (Keyword: \"שינויי מס אמריקאים\", Score: 35%)",
+    "topicId": "2625"
+  },
+  {
+    "id": "mbsvw",
+    "timestamp": "2026-02-24T18:43:56.622Z",
+    "level": "info",
+    "message": "Successfully optimized \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\". New Score: 50%",
+    "topicId": "2699"
+  },
+  {
+    "id": "umnmub",
+    "timestamp": "2026-02-24T18:43:25.480Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\""
+  },
+  {
+    "id": "zul1yi",
+    "timestamp": "2026-02-24T18:43:25.479Z",
+    "level": "info",
+    "message": "Low SEO score (30%) identified for \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\". Starting enhancement.",
+    "topicId": "2699"
+  },
+  {
+    "id": "2oot8n6",
+    "timestamp": "2026-02-24T18:43:25.479Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\" (Keyword: \"מתנות והירושות בין ישראל וארה\"ב\", Score: 30%)",
+    "topicId": "2699"
+  },
+  {
+    "id": "rm85re",
+    "timestamp": "2026-02-24T18:43:25.253Z",
+    "level": "info",
+    "message": "Successfully optimized \"How Are U.S.–Israel Estate Taxes Changing in 2026?\". New Score: 45%",
+    "topicId": "2703"
+  },
+  {
+    "id": "2nnmds",
+    "timestamp": "2026-02-24T18:43:03.907Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"How Are U.S.–Israel Estate Taxes Changing in 2026?\""
+  },
+  {
+    "id": "287019",
+    "timestamp": "2026-02-24T18:43:03.906Z",
+    "level": "info",
+    "message": "Low SEO score (45%) identified for \"How Are U.S.–Israel Estate Taxes Changing in 2026?\". Starting enhancement.",
+    "topicId": "2703"
+  },
+  {
+    "id": "vvsoas",
+    "timestamp": "2026-02-24T18:43:03.905Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"How Are U.S.–Israel Estate Taxes Changing in 2026?\" (Keyword: \"U.S.–Israel estate taxes\", Score: 45%)",
+    "topicId": "2703"
+  },
+  {
+    "id": "2t6x4n",
+    "timestamp": "2026-02-24T18:43:03.618Z",
+    "level": "info",
+    "message": "Successfully optimized \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\". New Score: 30%",
+    "topicId": "2706"
+  },
+  {
+    "id": "nxsbd",
+    "timestamp": "2026-02-24T18:42:29.254Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\""
+  },
+  {
+    "id": "go82tl",
+    "timestamp": "2026-02-24T18:42:29.254Z",
+    "level": "info",
+    "message": "Low SEO score (25%) identified for \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\". Starting enhancement.",
+    "topicId": "2706"
+  },
+  {
+    "id": "umn9kbj",
+    "timestamp": "2026-02-24T18:42:29.253Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-ישראל\" (Keyword: \"עבודה מרחוק מס\", Score: 25%)",
+    "topicId": "2706"
+  },
+  {
+    "id": "319f6r",
+    "timestamp": "2026-02-24T18:42:29.001Z",
+    "level": "info",
+    "message": "Successfully optimized \"The Tax Implications of Remote Work Between the US and Israel\". New Score: 60%",
+    "topicId": "2712"
+  },
+  {
+    "id": "9wny",
+    "timestamp": "2026-02-24T18:42:06.084Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"The Tax Implications of Remote Work Between the US and Israel\""
+  },
+  {
+    "id": "b1fn3p",
+    "timestamp": "2026-02-24T18:42:06.083Z",
+    "level": "info",
+    "message": "Low SEO score (25%) identified for \"The Tax Implications of Remote Work Between the US and Israel\". Starting enhancement.",
+    "topicId": "2712"
+  },
+  {
+    "id": "sax2i9",
+    "timestamp": "2026-02-24T18:42:06.083Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"The Tax Implications of Remote Work Between the US and Israel\" (Keyword: \"remote work tax\", Score: 25%)",
+    "topicId": "2712"
+  },
+  {
+    "id": "9hxzz",
+    "timestamp": "2026-02-24T18:42:05.784Z",
+    "level": "info",
+    "message": "Successfully optimized \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\". New Score: 50%",
+    "topicId": "2716"
+  },
+  {
+    "id": "fa3nii",
+    "timestamp": "2026-02-24T18:41:40.303Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\""
+  },
+  {
+    "id": "p4p05c",
+    "timestamp": "2026-02-24T18:41:40.300Z",
+    "level": "info",
+    "message": "Low SEO score (45%) identified for \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\". Starting enhancement.",
+    "topicId": "2716"
+  },
+  {
+    "id": "35uvd4",
+    "timestamp": "2026-02-24T18:41:40.299Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?\" (Keyword: \"us-israel remote work tax\", Score: 45%)",
+    "topicId": "2716"
+  },
+  {
+    "id": "raj5g",
+    "timestamp": "2026-02-24T18:41:37.077Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "adu42u",
+    "timestamp": "2026-02-24T18:32:23.102Z",
+    "level": "info",
+    "message": "Article ready. Score: 55/100. Keyword: \"עבודה מרחוק מס\" (Hebrew)",
+    "topicId": "test-123"
+  },
+  {
+    "id": "awkcc",
+    "timestamp": "2026-02-24T18:32:18.615Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (Hebrew)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "r93s4y",
+    "timestamp": "2026-02-24T18:32:18.613Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "4y81f",
+    "timestamp": "2026-02-24T18:32:18.612Z",
+    "level": "info",
+    "message": "Draft complete. Length: 616 words.",
+    "topicId": "test-123"
+  },
+  {
+    "id": "be0acm",
+    "timestamp": "2026-02-24T18:32:00.311Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in Hebrew (Sonnet)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "cl9085",
+    "timestamp": "2026-02-24T18:32:00.310Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"השלכות עבודה מרחוק על ציות מס בין ארה\"ב וישראל\"",
+    "topicId": "test-123"
+  },
+  {
+    "id": "203h",
+    "timestamp": "2026-02-24T18:31:37.254Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in Hebrew (Sonnet)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "9q5g9r",
+    "timestamp": "2026-02-24T18:31:37.253Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"השלכות עבודה מרחוק על ציות מס בין ארה\"ב וישראל\"",
+    "topicId": "test-123"
+  },
+  {
+    "id": "syhqbx",
+    "timestamp": "2026-02-24T18:27:34.223Z",
+    "level": "info",
+    "message": "Article ready. Score: 55/100. Keyword: \"עבודה מרחוק מס\" (Hebrew)",
+    "topicId": "test-123"
+  },
+  {
+    "id": "s4hpj5",
+    "timestamp": "2026-02-24T18:27:29.566Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (Hebrew)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "l8yxk4",
+    "timestamp": "2026-02-24T18:27:29.565Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "rn46vn",
+    "timestamp": "2026-02-24T18:27:29.564Z",
+    "level": "info",
+    "message": "Draft complete. Length: 561 words.",
+    "topicId": "test-123"
+  },
+  {
+    "id": "m2cp37",
+    "timestamp": "2026-02-24T18:27:12.226Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in Hebrew (Sonnet)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "qljvh",
+    "timestamp": "2026-02-24T18:27:12.226Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"השלכות עבודה מרחוק על ציות מס בין ארה\"ב וישראל\"",
+    "topicId": "test-123"
+  },
+  {
+    "id": "a15ang",
+    "timestamp": "2026-02-24T18:26:38.518Z",
+    "level": "info",
+    "message": "Article ready. Score: 30/100. Keyword: \"עבודה מרחוק חבות מס ישראל ארה\"ב\" (Hebrew)",
+    "topicId": "test-123"
+  },
+  {
+    "id": "2c02p",
+    "timestamp": "2026-02-24T18:26:35.147Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (Hebrew)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "vu4dyi",
+    "timestamp": "2026-02-24T18:26:35.145Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "y27ve",
+    "timestamp": "2026-02-24T18:26:35.144Z",
+    "level": "info",
+    "message": "Draft complete. Length: 528 words.",
+    "topicId": "test-123"
+  },
+  {
+    "id": "cnnlpq",
+    "timestamp": "2026-02-24T18:26:20.762Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in Hebrew (Sonnet)...",
+    "topicId": "test-123"
+  },
+  {
+    "id": "o1oup5",
+    "timestamp": "2026-02-24T18:26:20.762Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"השלכות עבודה מרחוק על ציות מס בין ארה\"ב וישראל\"",
+    "topicId": "test-123"
+  },
+  {
+    "id": "j9nw0n",
+    "timestamp": "2026-02-24T17:04:50.145Z",
+    "level": "info",
+    "message": "Article pipeline resumed successfully"
+  },
+  {
+    "id": "6vle4h",
+    "timestamp": "2026-02-24T17:04:50.144Z",
+    "level": "info",
+    "message": "Social approval request sent."
+  },
+  {
+    "id": "p2m03",
+    "timestamp": "2026-02-24T17:04:46.225Z",
+    "level": "info",
+    "message": "Generating bilingual social content..."
+  },
+  {
+    "id": "de489",
+    "timestamp": "2026-02-24T17:04:46.225Z",
+    "level": "warn",
+    "message": "Proceeding without video..."
+  },
+  {
+    "id": "vmwuyd",
+    "timestamp": "2026-02-24T17:04:46.220Z",
+    "level": "error",
+    "message": "Video generation timed out or failed: Kie.ai task timed out."
+  },
+  {
+    "id": "bvpnbc",
+    "timestamp": "2026-02-24T16:59:41.541Z",
+    "level": "info",
+    "message": "Video generation started. Task ID: d1abf7d3310cc17c29927843e4c044ed. Waiting for completion..."
+  },
+  {
+    "id": "65qdci",
+    "timestamp": "2026-02-24T16:59:41.540Z",
+    "level": "info",
+    "message": "Task ID: d1abf7d3310cc17c29927843e4c044ed",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "ktpe0l",
+    "timestamp": "2026-02-24T16:59:41.361Z",
+    "level": "info",
+    "message": "Generating video for social posts..."
+  },
+  {
+    "id": "9475hl",
+    "timestamp": "2026-02-24T16:59:41.360Z",
+    "level": "info",
+    "message": "Preparing social posts for: עבודה מרחוק מוגדרת מחדש: כיצד היא משפיעה על חובות המס שלך בין ארה&#8221;ב וישראל?"
+  },
+  {
+    "id": "gdg0un",
+    "timestamp": "2026-02-24T16:59:41.359Z",
+    "level": "success",
+    "message": "English translation published: https://www.tax4us.co.il/how-does-the-redefinition-of-remote-work-impact-your-us-israel-tax-obligations/"
+  },
+  {
+    "id": "ykmtxn",
+    "timestamp": "2026-02-24T16:59:22.786Z",
+    "level": "info",
+    "message": "Article ready. Score: 40/100. Keyword: \"us-israel remote work tax\" (English)",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "ar5jc6",
+    "timestamp": "2026-02-24T16:59:20.540Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (English)...",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "7biqjr",
+    "timestamp": "2026-02-24T16:59:20.539Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "h6ao1c",
+    "timestamp": "2026-02-24T16:59:20.538Z",
+    "level": "info",
+    "message": "Draft complete. Length: 999 words.",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "smi7hw",
+    "timestamp": "2026-02-24T16:59:06.357Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in English (Sonnet)...",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "uafr0n",
+    "timestamp": "2026-02-24T16:59:06.356Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"עבודה מרחוק מוגדרת מחדש: כיצד היא משפיעה על חובות המס שלך בין ארה&#8221;ב וישראל?\"",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "u01ab",
+    "timestamp": "2026-02-24T16:58:39.564Z",
+    "level": "agent",
+    "message": "Translating to English...",
+    "topicId": "2706"
+  },
+  {
+    "id": "omvt9m",
+    "timestamp": "2026-02-24T16:58:39.563Z",
+    "level": "success",
+    "message": "Hebrew article published: https://www.tax4us.co.il/%d7%a2%d7%91%d7%95%d7%93%d7%94-%d7%9e%d7%a8%d7%97%d7%95%d7%a7-%d7%9e%d7%95%d7%92%d7%93%d7%a8%d7%aa-%d7%9e%d7%97%d7%93%d7%a9-%d7%9b%d7%99%d7%a6%d7%93-%d7%94%d7%99%d7%90-%d7%9e%d7%a9%d7%a4%d7%99%d7%a2/"
+  },
+  {
+    "id": "uev3l",
+    "timestamp": "2026-02-24T16:58:35.820Z",
+    "level": "info",
+    "message": "Publishing approved article: 2706"
+  },
+  {
+    "id": "mqueqa",
+    "timestamp": "2026-02-24T09:10:18.605Z",
+    "level": "info",
+    "message": "Article pipeline resumed successfully"
+  },
+  {
+    "id": "nbtymf",
+    "timestamp": "2026-02-24T09:10:18.604Z",
+    "level": "info",
+    "message": "Social approval request sent."
+  },
+  {
+    "id": "c9d8xq",
+    "timestamp": "2026-02-24T09:10:14.662Z",
+    "level": "info",
+    "message": "Generating bilingual social content..."
+  },
+  {
+    "id": "mc25is",
+    "timestamp": "2026-02-24T09:10:14.660Z",
+    "level": "warn",
+    "message": "Proceeding without video..."
+  },
+  {
+    "id": "k32u7h",
+    "timestamp": "2026-02-24T09:10:14.656Z",
+    "level": "error",
+    "message": "Video generation timed out or failed: Kie.ai task timed out."
+  },
+  {
+    "id": "wfs0mi",
+    "timestamp": "2026-02-24T09:05:10.278Z",
+    "level": "info",
+    "message": "Video generation started. Task ID: 51c1aa90182425b15bc42ce9e0d9e388. Waiting for completion..."
+  },
+  {
+    "id": "t1lg1d",
+    "timestamp": "2026-02-24T09:05:10.278Z",
+    "level": "info",
+    "message": "Task ID: 51c1aa90182425b15bc42ce9e0d9e388",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "mtmvd",
+    "timestamp": "2026-02-24T09:05:10.147Z",
+    "level": "info",
+    "message": "Generating video for social posts..."
+  },
+  {
+    "id": "z0zlh",
+    "timestamp": "2026-02-24T09:05:10.146Z",
+    "level": "info",
+    "message": "Preparing social posts for: עבודה מרחוק מוגדרת מחדש: כיצד היא משפיעה על חובות המס שלך בין ארה&#8221;ב וישראל?"
+  },
+  {
+    "id": "8gsg",
+    "timestamp": "2026-02-24T09:05:10.146Z",
+    "level": "success",
+    "message": "English translation published: https://www.tax4us.co.il/how-does-the-redefinition-of-remote-work-affect-your-us-israel-tax-obligations/"
+  },
+  {
+    "id": "beb8f",
+    "timestamp": "2026-02-24T09:04:51.693Z",
+    "level": "info",
+    "message": "Article ready. Score: 45/100. Keyword: \"remote work tax obligations\" (English)",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "d4ptf4",
+    "timestamp": "2026-02-24T09:04:49.881Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (English)...",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "xqsha",
+    "timestamp": "2026-02-24T09:04:49.879Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "vzrr1",
+    "timestamp": "2026-02-24T09:04:49.879Z",
+    "level": "info",
+    "message": "Draft complete. Length: 1262 words.",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "h81ee",
+    "timestamp": "2026-02-24T09:04:36.826Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in English (Sonnet)...",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "x3ivm",
+    "timestamp": "2026-02-24T09:04:36.825Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"עבודה מרחוק מוגדרת מחדש: כיצד היא משפיעה על חובות המס שלך בין ארה&#8221;ב וישראל?\"",
+    "topicId": "en-2706"
+  },
+  {
+    "id": "zb6utj",
+    "timestamp": "2026-02-24T09:04:09.459Z",
+    "level": "agent",
+    "message": "Translating to English...",
+    "topicId": "2706"
+  },
+  {
+    "id": "uhczr",
+    "timestamp": "2026-02-24T09:04:09.458Z",
+    "level": "success",
+    "message": "Hebrew article published: https://www.tax4us.co.il/?p=2706"
+  },
+  {
+    "id": "d7304",
+    "timestamp": "2026-02-24T09:04:06.043Z",
+    "level": "info",
+    "message": "Publishing approved article: 2706"
+  },
+  {
+    "id": "787g58",
+    "timestamp": "2026-02-24T09:03:43.787Z",
+    "level": "info",
+    "message": "Pipeline paused. Awaiting article approval...",
+    "topicId": "2706"
+  },
+  {
+    "id": "dxjymt",
+    "timestamp": "2026-02-24T09:03:43.514Z",
+    "level": "info",
+    "message": "Sending article for approval...",
+    "topicId": "2706"
+  },
+  {
+    "id": "dkumc",
+    "timestamp": "2026-02-24T09:03:31.324Z",
+    "level": "agent",
+    "message": "Resolving categories and tags...",
+    "topicId": "2706"
+  },
+  {
+    "id": "rh7oo4",
+    "timestamp": "2026-02-24T09:00:46.348Z",
+    "level": "info",
+    "message": "Image Task ID: fbe0eab1e3d92fd2816460cd2e980f3e",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "vmf2e7",
+    "timestamp": "2026-02-24T09:00:46.117Z",
+    "level": "agent",
+    "message": "Initiating Image generation for: \"Professional illustration for tax article: The Imp...\"",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "d47bej",
+    "timestamp": "2026-02-24T09:00:46.116Z",
+    "level": "agent",
+    "message": "Generating visual assets...",
+    "topicId": "2706"
+  },
+  {
+    "id": "gip4eb",
+    "timestamp": "2026-02-24T09:00:46.115Z",
+    "level": "info",
+    "message": "Article ready. Score: 45/100. Keyword: \"עבודה מרחוק מס ישראל ארה\"ב\" (Hebrew)",
+    "topicId": "2706"
+  },
+  {
+    "id": "3xuae3",
+    "timestamp": "2026-02-24T09:00:42.591Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (Hebrew)...",
+    "topicId": "2706"
+  },
+  {
+    "id": "qemuy",
+    "timestamp": "2026-02-24T09:00:42.590Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "2706"
+  },
+  {
+    "id": "vksf2",
+    "timestamp": "2026-02-24T09:00:42.590Z",
+    "level": "info",
+    "message": "Draft complete. Length: 1135 words.",
+    "topicId": "2706"
+  },
+  {
+    "id": "7auwt7",
+    "timestamp": "2026-02-24T09:00:30.932Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in Hebrew (Sonnet)...",
+    "topicId": "2706"
+  },
+  {
+    "id": "euwxsk",
+    "timestamp": "2026-02-24T09:00:30.931Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"The Impact of Remote Work on US-Israel Tax Compliance: Navigating the Changing Landscape\"",
+    "topicId": "2706"
+  },
+  {
+    "id": "lbn7rd",
+    "timestamp": "2026-02-24T09:00:28.299Z",
+    "level": "info",
+    "message": "Starting Generation for Draft 2706...",
+    "topicId": "2706"
+  },
+  {
+    "id": "xcym8s",
+    "timestamp": "2026-02-24T08:56:12.908Z",
+    "level": "info",
+    "message": "Topic approval pending for: The Impact of Remote Work on US-Israel Tax Compliance: Navigating the Changing Landscape. Waiting for Ben's response...",
+    "topicId": "2706"
+  },
+  {
+    "id": "7v6son",
+    "timestamp": "2026-02-24T08:56:12.586Z",
+    "level": "info",
+    "message": "Topic Proposed: The Impact of Remote Work on US-Israel Tax Compliance: Navigating the Changing Landscape",
+    "topicId": "2706"
+  },
+  {
+    "id": "8om7l",
+    "timestamp": "2026-02-24T08:56:03.208Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "c3z62o",
+    "timestamp": "2026-02-24T08:42:23.093Z",
+    "level": "info",
+    "message": "Task ID: 5676132a9ab85da1cfc682c15528f848",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "tyo5g",
+    "timestamp": "2026-02-24T08:40:51.975Z",
+    "level": "info",
+    "message": "Image Task ID: 9ac45b8b61d96fd0704cb9f53ee7c6fa",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "y7hjqs",
+    "timestamp": "2026-02-24T08:40:51.627Z",
+    "level": "agent",
+    "message": "Initiating Image generation for: \"Professional tax advisory illustration: Modern min...\"",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "881a5tj",
+    "timestamp": "2026-02-24T08:31:11.432Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Evolving Landscape of US-Israel Tax Reporting: A Guide for Israeli Cryptocurrency Investors. Waiting for Ben's response...",
+    "topicId": "2705"
+  },
+  {
+    "id": "mrnk0q",
+    "timestamp": "2026-02-24T08:31:11.115Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Evolving Landscape of US-Israel Tax Reporting: A Guide for Israeli Cryptocurrency Investors",
+    "topicId": "2705"
+  },
+  {
+    "id": "mfhhxn",
+    "timestamp": "2026-02-24T08:31:01.252Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "k9sppb",
+    "timestamp": "2026-02-24T08:30:09.181Z",
+    "level": "info",
+    "message": "Task ID: a7ee1fbeae3e668da3bbaba8be67a406",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "kx311s",
+    "timestamp": "2026-02-24T08:30:09.087Z",
+    "level": "info",
+    "message": "Image Task ID: 5bb2d41f1b4b8d67adcf925260fd17a7",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "ozsex",
+    "timestamp": "2026-02-24T08:30:08.819Z",
+    "level": "agent",
+    "message": "Initiating Image generation for: \"Professional illustration for tax article: Modern ...\"",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "pjq787",
+    "timestamp": "2026-02-24T07:48:21.215Z",
+    "level": "info",
+    "message": "Article pipeline resumed successfully"
+  },
+  {
+    "id": "wa9es",
+    "timestamp": "2026-02-24T07:48:21.214Z",
+    "level": "info",
+    "message": "Social approval request sent."
+  },
+  {
+    "id": "nbzsbi",
+    "timestamp": "2026-02-24T07:48:16.117Z",
+    "level": "info",
+    "message": "Generating bilingual social content..."
+  },
+  {
+    "id": "4i2tq",
+    "timestamp": "2026-02-24T07:48:16.115Z",
+    "level": "warn",
+    "message": "Proceeding without video..."
+  },
+  {
+    "id": "3km9v",
+    "timestamp": "2026-02-24T07:48:16.111Z",
+    "level": "error",
+    "message": "Video generation timed out or failed: Kie.ai task timed out."
+  },
+  {
+    "id": "q5ji6b",
+    "timestamp": "2026-02-24T07:43:08.852Z",
+    "level": "info",
+    "message": "Video generation started. Task ID: bb7108fc2214faadf3ccc2fe07bdebe2. Waiting for completion..."
+  },
+  {
+    "id": "u8c3j",
+    "timestamp": "2026-02-24T07:43:08.852Z",
+    "level": "info",
+    "message": "Task ID: bb7108fc2214faadf3ccc2fe07bdebe2",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "cuhmxu",
+    "timestamp": "2026-02-24T07:43:08.728Z",
+    "level": "info",
+    "message": "Generating video for social posts..."
+  },
+  {
+    "id": "1lfch8",
+    "timestamp": "2026-02-24T07:43:08.728Z",
+    "level": "info",
+    "message": "Preparing social posts for: השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב"
+  },
+  {
+    "id": "fxksqf",
+    "timestamp": "2026-02-24T07:43:08.727Z",
+    "level": "success",
+    "message": "English translation published: https://www.tax4us.co.il/how-are-u-s-israel-estate-taxes-changing-in-2026/"
+  },
+  {
+    "id": "2m2be5",
+    "timestamp": "2026-02-24T07:42:45.411Z",
+    "level": "info",
+    "message": "Article ready. Score: 65/100. Keyword: \"U.S.–Israel estate taxes\" (English)",
+    "topicId": "en-2699"
+  },
+  {
+    "id": "snei6h",
+    "timestamp": "2026-02-24T07:42:43.196Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (English)...",
+    "topicId": "en-2699"
+  },
+  {
+    "id": "1t9qzl",
+    "timestamp": "2026-02-24T07:42:43.195Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "en-2699"
+  },
+  {
+    "id": "kb13bd",
+    "timestamp": "2026-02-24T07:42:43.194Z",
+    "level": "info",
+    "message": "Draft complete. Length: 652 words.",
+    "topicId": "en-2699"
+  },
+  {
+    "id": "1m286j",
+    "timestamp": "2026-02-24T07:42:35.754Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in English (Sonnet)...",
+    "topicId": "en-2699"
+  },
+  {
+    "id": "vmbxgk",
+    "timestamp": "2026-02-24T07:42:35.754Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"השפעת השינויים בחוקי המס על מתנות והירושות בין ישראל וארה&#8221;ב\"",
+    "topicId": "en-2699"
+  },
+  {
+    "id": "tf7oqh",
+    "timestamp": "2026-02-24T07:42:12.533Z",
+    "level": "agent",
+    "message": "Translating to English...",
+    "topicId": "2699"
+  },
+  {
+    "id": "swho3",
+    "timestamp": "2026-02-24T07:42:12.532Z",
+    "level": "success",
+    "message": "Hebrew article published: https://www.tax4us.co.il/?p=2699"
+  },
+  {
+    "id": "mz9e0h",
+    "timestamp": "2026-02-24T07:42:08.015Z",
+    "level": "info",
+    "message": "Publishing approved article: 2699"
+  },
+  {
+    "id": "o3f3tl6",
+    "timestamp": "2026-02-24T07:37:54.240Z",
+    "level": "info",
+    "message": "Pipeline paused. Awaiting article approval...",
+    "topicId": "2699"
+  },
+  {
+    "id": "2fxjg4",
+    "timestamp": "2026-02-24T07:37:53.959Z",
+    "level": "info",
+    "message": "Sending article for approval...",
+    "topicId": "2699"
+  },
+  {
+    "id": "42y31n",
+    "timestamp": "2026-02-24T07:37:34.260Z",
+    "level": "agent",
+    "message": "Resolving categories and tags...",
+    "topicId": "2699"
+  },
+  {
+    "id": "f19kp",
+    "timestamp": "2026-02-24T07:37:34.260Z",
+    "level": "error",
+    "message": "Media Generation Failed (Non-blocking): Kie.ai did not return a taskId. Response: {\"code\":422,\"msg\":\"The model name you specified is not supported. Please verify your input and use one of the supported models provided by KIE.\",\"data\":null}",
+    "topicId": "2699"
+  },
+  {
+    "id": "hu45nd",
+    "timestamp": "2026-02-24T07:37:34.259Z",
+    "level": "error",
+    "message": "Kie.ai Image Generation Error: Kie.ai did not return a taskId. Response: {\"code\":422,\"msg\":\"The model name you specified is not supported. Please verify your input and use one of the supported models provided by KIE.\",\"data\":null}"
+  },
+  {
+    "id": "iekm0y",
+    "timestamp": "2026-02-24T07:37:34.054Z",
+    "level": "agent",
+    "message": "Initiating Image generation for: \"Professional illustration for tax article: Navigat...\"",
+    "topicId": "KIE_AI"
+  },
+  {
+    "id": "88ntm9",
+    "timestamp": "2026-02-24T07:37:34.054Z",
+    "level": "agent",
+    "message": "Generating visual assets...",
+    "topicId": "2699"
+  },
+  {
+    "id": "7g2xza",
+    "timestamp": "2026-02-24T07:37:34.053Z",
+    "level": "info",
+    "message": "Article ready. Score: 35/100. Keyword: \"מתנות והירושות בין ישראל וארה\"ב\" (Hebrew)",
+    "topicId": "2699"
+  },
+  {
+    "id": "xlsc1a",
+    "timestamp": "2026-02-24T07:37:30.114Z",
+    "level": "agent",
+    "message": "Stage 5: SEO Hardening (Hebrew)...",
+    "topicId": "2699"
+  },
+  {
+    "id": "7ypgq",
+    "timestamp": "2026-02-24T07:37:30.113Z",
+    "level": "agent",
+    "message": "Stage 3: Structural alignment (Gutenberg conversion)...",
+    "topicId": "2699"
+  },
+  {
+    "id": "fg87ht",
+    "timestamp": "2026-02-24T07:37:30.112Z",
+    "level": "info",
+    "message": "Draft complete. Length: 900 words.",
+    "topicId": "2699"
+  },
+  {
+    "id": "entje9e",
+    "timestamp": "2026-02-24T07:37:05.204Z",
+    "level": "agent",
+    "message": "Phase 2.1: Drafting expert content in Hebrew (Sonnet)...",
+    "topicId": "2699"
+  },
+  {
+    "id": "ggt0vj",
+    "timestamp": "2026-02-24T07:37:05.203Z",
+    "level": "agent",
+    "message": "Stage 1: Initializing deep-reasoning loop for \"Navigating the Changing Landscape of US-Israel Estate and Gift Tax Planning\"",
+    "topicId": "2699"
+  },
+  {
+    "id": "9nzf2q",
+    "timestamp": "2026-02-24T07:37:02.491Z",
+    "level": "info",
+    "message": "Starting Generation for Draft 2699...",
+    "topicId": "2699"
+  },
+  {
+    "id": "3o60co",
+    "timestamp": "2026-02-24T07:13:44.356Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Changing Landscape of US-Israel Estate and Gift Tax Planning. Waiting for Ben's response...",
+    "topicId": "2699"
+  },
+  {
+    "id": "auc28",
+    "timestamp": "2026-02-24T07:13:44.030Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Changing Landscape of US-Israel Estate and Gift Tax Planning",
+    "topicId": "2699"
+  },
+  {
+    "id": "3qpday",
+    "timestamp": "2026-02-24T07:13:34.924Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "suolub",
+    "timestamp": "2026-02-19T21:48:38.173Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Unexpected: Mitigating Tax Risks for Israeli Entrepreneurs Expanding to the US Market. Waiting for Ben's response...",
+    "topicId": "2696"
+  },
+  {
+    "id": "tx9b",
+    "timestamp": "2026-02-19T21:48:37.873Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Unexpected: Mitigating Tax Risks for Israeli Entrepreneurs Expanding to the US Market",
+    "topicId": "2696"
+  },
+  {
+    "id": "4k1zm9",
+    "timestamp": "2026-02-19T21:48:29.341Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "pgmgek",
+    "timestamp": "2026-02-19T21:41:32.499Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Impact of the GILTI Tax on Israeli Businesses Expanding into the US Market. Waiting for Ben's response...",
+    "topicId": "2694"
+  },
+  {
+    "id": "iaxe1v",
+    "timestamp": "2026-02-19T21:41:32.191Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Impact of the GILTI Tax on Israeli Businesses Expanding into the US Market",
+    "topicId": "2694"
+  },
+  {
+    "id": "yyq29h",
+    "timestamp": "2026-02-19T21:41:23.440Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "6se78p",
+    "timestamp": "2026-02-19T21:30:36.940Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Evolving Landscape of US-Israel Tax Disputes: Strategies for Successful Resolution. Waiting for Ben's response...",
+    "topicId": "2693"
+  },
+  {
+    "id": "dmf4r",
+    "timestamp": "2026-02-19T21:30:36.595Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Evolving Landscape of US-Israel Tax Disputes: Strategies for Successful Resolution",
+    "topicId": "2693"
+  },
+  {
+    "id": "lbrd1r",
+    "timestamp": "2026-02-19T21:30:28.346Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "yq7navt",
+    "timestamp": "2026-02-19T21:24:10.112Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Maze of Cross-Border Inheritance and Gift Tax Planning for Israeli-Americans. Waiting for Ben's response...",
+    "topicId": "2692"
+  },
+  {
+    "id": "tds3ka",
+    "timestamp": "2026-02-19T21:24:09.768Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Maze of Cross-Border Inheritance and Gift Tax Planning for Israeli-Americans",
+    "topicId": "2692"
+  },
+  {
+    "id": "y8ohek",
+    "timestamp": "2026-02-19T21:24:00.583Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "p1yyx",
+    "timestamp": "2026-02-19T20:46:57.708Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Tax Implications of Crypto-Asset Holdings for Israeli-Americans. Waiting for Ben's response...",
+    "topicId": "2691"
+  },
+  {
+    "id": "61zwuv",
+    "timestamp": "2026-02-19T20:46:57.407Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Tax Implications of Crypto-Asset Holdings for Israeli-Americans",
+    "topicId": "2691"
+  },
+  {
+    "id": "x0mrj",
+    "timestamp": "2026-02-19T20:46:48.441Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "j5s4nh",
+    "timestamp": "2026-02-19T20:41:18.553Z",
+    "level": "info",
+    "message": "Topic approval pending for: Understanding the Intersection of Israel's Innovation Tax Incentives and the US Tax System. Waiting for Ben's response...",
+    "topicId": "2690"
+  },
+  {
+    "id": "9tu81",
+    "timestamp": "2026-02-19T20:41:18.248Z",
+    "level": "info",
+    "message": "Topic Proposed: Understanding the Intersection of Israel's Innovation Tax Incentives and the US Tax System",
+    "topicId": "2690"
+  },
+  {
+    "id": "vh0otg",
+    "timestamp": "2026-02-19T20:41:08.842Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "ie6szl",
+    "timestamp": "2026-02-19T07:52:00.661Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Tax Implications of Remote Work for Israeli-Americans. Waiting for Ben's response...",
+    "topicId": "2689"
+  },
+  {
+    "id": "1ig5m",
+    "timestamp": "2026-02-19T07:52:00.316Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Tax Implications of Remote Work for Israeli-Americans",
+    "topicId": "2689"
+  },
+  {
+    "id": "1vdc16",
+    "timestamp": "2026-02-19T07:51:51.114Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "yxapmg",
+    "timestamp": "2026-02-19T06:50:07.958Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Complexities of Cross-Border Employee Stock Options: Tax Strategies for Israeli Businesses with US Offices. Waiting for Ben's response...",
+    "topicId": "2688"
+  },
+  {
+    "id": "qfi7y",
+    "timestamp": "2026-02-19T06:50:07.657Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Complexities of Cross-Border Employee Stock Options: Tax Strategies for Israeli Businesses with US Offices",
+    "topicId": "2688"
+  },
+  {
+    "id": "m0voj",
+    "timestamp": "2026-02-19T06:49:58.720Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "wrzq8",
+    "timestamp": "2026-02-19T06:47:29.952Z",
+    "level": "info",
+    "message": "Topic approval pending for: Navigating the Shifting Landscape of Cross-Border Philanthropy: Tax Strategies for Israeli-Americans. Waiting for Ben's response...",
+    "topicId": "2687"
+  },
+  {
+    "id": "kshcyr",
+    "timestamp": "2026-02-19T06:47:29.695Z",
+    "level": "info",
+    "message": "Topic Proposed: Navigating the Shifting Landscape of Cross-Border Philanthropy: Tax Strategies for Israeli-Americans",
+    "topicId": "2687"
+  },
+  {
+    "id": "bn4b34",
+    "timestamp": "2026-02-19T06:47:21.195Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "borqq",
+    "timestamp": "2026-02-19T06:39:40.746Z",
+    "level": "info",
+    "message": "Topic approval pending for: The Rise of Crypto and Its Implications for Israeli-American Tax Compliance. Waiting for Ben's response...",
+    "topicId": "2686"
+  },
+  {
+    "id": "99p5ek",
+    "timestamp": "2026-02-19T06:39:40.577Z",
+    "level": "info",
+    "message": "Topic Proposed: The Rise of Crypto and Its Implications for Israeli-American Tax Compliance",
+    "topicId": "2686"
+  },
+  {
+    "id": "zraxu4",
+    "timestamp": "2026-02-19T06:39:30.016Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "dimvhs",
+    "timestamp": "2026-02-19T06:30:39.921Z",
+    "level": "error",
+    "message": "Proposal Failed: WordPress API Error: {\"status\":\"error\",\"error\":\"INVALID_USERNAME\",\"code\":\"400\",\"error_description\":\"Username Does not exist.\"}"
+  },
+  {
+    "id": "kvk3is",
+    "timestamp": "2026-02-19T06:30:38.178Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "txhb9p",
+    "timestamp": "2026-02-19T06:30:19.964Z",
+    "level": "error",
+    "message": "Proposal Failed: WordPress API Error: {\"status\":\"error\",\"error\":\"INVALID_USERNAME\",\"code\":\"400\",\"error_description\":\"Username Does not exist.\"}"
+  },
+  {
+    "id": "whvrn3",
+    "timestamp": "2026-02-19T06:30:17.831Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "0audj",
+    "timestamp": "2026-02-19T02:46:31.289Z",
+    "level": "info",
+    "message": "Wednesday Worker: Running Podcast production flow.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "rk28v",
+    "timestamp": "2026-02-19T02:46:31.289Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 3, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "68de9s",
+    "timestamp": "2026-02-19T02:31:56.217Z",
+    "level": "info",
+    "message": "Wednesday Worker: Running Podcast production flow.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "dkclf",
+    "timestamp": "2026-02-19T02:31:56.217Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 3, Hour: 20",
+    "topicId": "AUTOPILOT"
+  }
+]

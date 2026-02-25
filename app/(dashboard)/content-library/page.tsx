@@ -24,8 +24,10 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  Tag
+  Tag,
+  Play
 } from "lucide-react"
+import { StoryViewer } from "@/components/ui/story-viewer"
 
 interface ContentPiece {
   id: string
@@ -241,6 +243,67 @@ export default function ContentLibraryPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Social Stories Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Play className="w-5 h-5" />
+            Social Stories
+          </CardTitle>
+          <CardDescription>
+            Preview your tax content as engaging social media stories
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            <StoryViewer
+              stories={[
+                {
+                  id: "tax-deadline-2024",
+                  type: "image",
+                  src: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=600&fit=crop",
+                  duration: 5000
+                },
+                {
+                  id: "deduction-tips",
+                  type: "image", 
+                  src: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&h=600&fit=crop",
+                  duration: 4000
+                }
+              ]}
+              username="tax4us_official"
+              avatar="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+              timestamp="3h"
+              onStoryView={(storyId) => console.log("Tax content story viewed:", storyId)}
+              onAllStoriesViewed={() => console.log("All tax stories completed")}
+            />
+            
+            <StoryViewer
+              stories={[
+                {
+                  id: "israeli-tax-guide",
+                  type: "image",
+                  src: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=600&fit=crop",
+                  duration: 6000
+                }
+              ]}
+              username="tax4us_hebrew"
+              avatar="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+              timestamp="1h"
+              onStoryView={(storyId) => console.log("Hebrew tax story viewed:", storyId)}
+            />
+            
+            <div className="flex items-center justify-center min-h-[120px] border-2 border-dashed border-muted-foreground/25 rounded-lg p-4">
+              <div className="text-center">
+                <Play className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">More stories</p>
+                <p className="text-xs text-muted-foreground">coming soon</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Filters */}
       <Card>

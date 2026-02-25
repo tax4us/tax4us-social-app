@@ -12,5 +12,155 @@
     "created_at": "2026-02-18T03:26:47.425Z",
     "updated_at": "2026-02-18T08:22:29.568Z",
     "last_used": "2026-02-18T08:22:29.566Z"
+  },
+  {
+    "title_hebrew": "דרישות הגשת FBAR לישראלים-אמריקאים",
+    "title_english": "FBAR Filing Requirements for Israeli-Americans",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "Israeli Americans",
+      "tax compliance",
+      "foreign accounts"
+    ],
+    "id": "topic_1771458560993_ecb15gz01",
+    "created_at": "2026-02-18T23:49:20.993Z",
+    "updated_at": "2026-02-18T23:49:20.993Z"
+  },
+  {
+    "title_hebrew": "יתרונות והגבלות של אמנת המס בין ארה\"ב וישראל",
+    "title_english": "US-Israel Tax Treaty Benefits and Limitations",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "tax treaty",
+      "double taxation",
+      "Israel US",
+      "tax planning"
+    ],
+    "id": "topic_1771458561005_n8nzwsfh7",
+    "created_at": "2026-02-18T23:49:21.005Z",
+    "updated_at": "2026-02-18T23:49:21.005Z"
+  },
+  {
+    "title_hebrew": "דיווח טופס 3520 למוטבי נאמנות ישראליים",
+    "title_english": "Form 3520 Reporting for Israeli Trust Beneficiaries",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "Form 3520",
+      "trusts",
+      "reporting requirements",
+      "penalties"
+    ],
+    "id": "topic_1771458561017_2nargrf3u",
+    "created_at": "2026-02-18T23:49:21.017Z",
+    "updated_at": "2026-02-18T23:49:21.017Z"
+  },
+  {
+    "title_hebrew": "חובות מס על מטבעות דיגיטליים בישראל וארה\"ב",
+    "title_english": "Cryptocurrency Tax Obligations in Israel and US",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "cryptocurrency",
+      "digital assets",
+      "tax compliance",
+      "dual taxation"
+    ],
+    "id": "topic_1771458561029_0do2x6lxg",
+    "created_at": "2026-02-18T23:49:21.029Z",
+    "updated_at": "2026-02-18T23:49:21.029Z"
+  },
+  {
+    "title_hebrew": "יחס מס לתוכניות פנסיה ישראליות בארה\"ב",
+    "title_english": "Israeli Pension Plan Tax Treatment in the US",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "pension plans",
+      "retirement",
+      "Israeli pensions",
+      "US tax"
+    ],
+    "id": "topic_1771458561042_ubaxy2a65",
+    "created_at": "2026-02-18T23:49:21.042Z",
+    "updated_at": "2026-02-18T23:49:21.042Z"
+  },
+  {
+    "title_hebrew": "חוקי מס יציאה של סעיף 877",
+    "title_english": "Section 877 Expatriation Tax Rules",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "expatriation tax",
+      "exit tax",
+      "green card surrender",
+      "citizenship"
+    ],
+    "id": "topic_1771458561055_fh47hzrze",
+    "created_at": "2026-02-18T23:49:21.056Z",
+    "updated_at": "2026-02-18T23:49:21.056Z"
+  },
+  {
+    "title_hebrew": "עסקאות נדל\"ן בישראל - השפעה על מס אמריקאי",
+    "title_english": "Israeli Real Estate Transactions - US Tax Impact",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "real estate",
+      "property transactions",
+      "capital gains",
+      "Israeli property"
+    ],
+    "id": "topic_1771458561075_phc4woa7d",
+    "created_at": "2026-02-18T23:49:21.075Z",
+    "updated_at": "2026-02-18T23:49:21.075Z"
+  },
+  {
+    "title_hebrew": "חוקי PFIC - חברות השקעה זרות פסיביות",
+    "title_english": "Passive Foreign Investment Company (PFIC) Rules",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "PFIC",
+      "foreign investments",
+      "Israeli mutual funds",
+      "tax complexity"
+    ],
+    "id": "topic_1771458561087_iolou4uxw",
+    "created_at": "2026-02-18T23:49:21.087Z",
+    "updated_at": "2026-02-18T23:49:21.087Z"
+  },
+  {
+    "title_hebrew": "יתרונות הסכם ביטוח לאומי ישראל-ארה\"ב",
+    "title_english": "Social Security Agreement Israel-US Benefits",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "social security",
+      "totalization agreement",
+      "benefits",
+      "retirement"
+    ],
+    "id": "topic_1771458561108_moobvd8l4",
+    "created_at": "2026-02-18T23:49:21.108Z",
+    "updated_at": "2026-02-18T23:49:21.108Z"
+  },
+  {
+    "title_hebrew": "אסטרטגיות אופטימיזציה של זיכוי מס זר",
+    "title_english": "Foreign Tax Credit Optimization Strategies",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "foreign tax credit",
+      "optimization",
+      "tax planning",
+      "dual taxation"
+    ],
+    "id": "topic_1771458561115_bkd43s32w",
+    "created_at": "2026-02-18T23:49:21.115Z",
+    "updated_at": "2026-02-18T23:49:21.115Z"
   }
 ]

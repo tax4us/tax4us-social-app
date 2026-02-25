@@ -9,6 +9,11 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
+    // Exempt Slack callbacks from authentication
+    if (request.nextUrl.pathname.startsWith('/api/slack')) {
+        return NextResponse.next();
+    }
+
     // Check for the authorization header
     const authHeader = request.headers.get('authorization');
 

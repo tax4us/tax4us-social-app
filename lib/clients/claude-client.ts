@@ -14,7 +14,7 @@ export class ClaudeClient {
         this.apiKey = apiKey;
     }
 
-    async generate(prompt: string, model: string = "claude-3-5-sonnet-20241022", system?: string) {
+    async generate(prompt: string, model: string = "claude-3-haiku-20240307", system?: string, maxTokens: number = 4096) {
         const response = await fetch(this.baseUrl, {
             method: "POST",
             headers: {
@@ -24,7 +24,7 @@ export class ClaudeClient {
             },
             body: JSON.stringify({
                 model,
-                max_tokens: 4096,
+                max_tokens: maxTokens,
                 system,
                 messages: [{ role: "user", content: prompt }],
             }),

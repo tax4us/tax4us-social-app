@@ -337,6 +337,46 @@ export class PipelineOrchestrator {
         return { status: "idle" };
     }
 
+    async runPodcastAutoPilot() {
+        pipelineLogger.info("Running Podcast AutoPilot: processing recent content for episodes...", "PODCAST");
+        
+        try {
+            // Fetch posts from the last 2 days (Monday/Thursday content for Wednesday podcast)
+            const twoDaysAgo = new Date();
+            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+            const recentPosts = await this.wp.getPosts({
+                per_page: '5',
+                status: 'publish',
+                after: twoDaysAgo.toISOString()
+            });
+
+            if (recentPosts.length === 0) {
+                pipelineLogger.info("No recent posts found for podcast production.", "PODCAST");
+                await this.slack.sendMessage("📻 *Podcast AutoPilot*: No recent content found. Skipping podcast production.");
+                return { status: "skipped", reason: "no_recent_posts" };
+            }
+
+            let episodeCount = 0;
+            for (const post of recentPosts) {
+                pipelineLogger.agent(`Creating podcast episode for: ${post.title.rendered}...`, post.id.toString());
+                try {
+                    await this.podcastProducer.prepareEpisode(post.content.rendered, post.title.rendered, post.id);
+                    episodeCount++;
+                } catch (error) {
+                    pipelineLogger.error(`Podcast production failed for "${post.title.rendered}": ${error}`, post.id.toString());
+                }
+            }
+
+            pipelineLogger.success(`Podcast AutoPilot complete. Generated ${episodeCount} episodes.`, "PODCAST");
+            return { status: "complete", episodeCount };
+
+        } catch (error: any) {
+            pipelineLogger.error(`Podcast AutoPilot Failed: ${error.message}`);
+            await this.slack.sendErrorNotification("Podcast AutoPilot", error);
+            throw error;
+        }
+    }
+
     async runSEOAutoPilot() {
         pipelineLogger.info("Running SEO AutoPilot: scanning WordPress for low-score posts...");
         try {

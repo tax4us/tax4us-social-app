@@ -1,0 +1,74 @@
+{
+  "id": "decision_20260224_kie_model_fix",
+  "decision": "Fixed Kie.ai API model names for image and video generation",
+  "context": "Pipeline was experiencing 422 errors from Kie.ai API due to incorrect model names. Both image and video generation were failing, causing media assets to be missing from published content.",
+  "alternatives_considered": [
+    "Use different AI media generation service (ElevenLabs, Stability.ai)",
+    "Remove media generation entirely",
+    "Manual media upload workflow"
+  ],
+  "reasoning": "Kie.ai integration was already in place and working in n8n workflows. The issue was simply incorrect model names in the TypeScript client. By referencing the working n8n workflows and Kie.ai documentation, found the correct model names.",
+  "implementation_notes": {
+    "image_generation": {
+      "old_model": "flux-pro-1.1-ultra",
+      "new_model": "nano-banana-pro",
+      "changes": [
+        "Updated model name",
+        "Added resolution: '2K' parameter",
+        "Added output_format: 'png' parameter",
+        "Kept aspect_ratio: '16:9' for blog featured images"
+      ],
+      "test_results": {
+        "generation_time": "~80 seconds",
+        "output_quality": "5/5 - Professional tax advisory illustrations",
+        "output_resolution": "2752x1536 pixels",
+        "test_url": "https://tempfile.aiquickdraw.com/images/1771922534216-ey0yxaulmqk.png"
+      }
+    },
+    "video_generation": {
+      "model": "sora-2-pro-text-to-video",
+      "changes": [
+        "Removed invalid 'upload_method: s3' parameter",
+        "Kept aspect_ratio: 'portrait' for vertical social media",
+        "Kept n_frames: '10' for ~10 second videos",
+        "Kept remove_watermark: true"
+      ],
+      "test_results": {
+        "generation_time": "~4 minutes",
+        "output_quality": "5/5 - Documentary-style professional presenter",
+        "output_specs": "704x1280 portrait, 9.7s duration, 30fps",
+        "test_url": "https://tempfile.aiquickdraw.com/f/5676132a9ab85da1cfc682c15528f848/08b1b27c-3329-4c51-abd2-b2782bdd0fad.mp4"
+      }
+    },
+    "fallback_logic": {
+      "description": "If Sora video fails, automatically falls back to high-quality image generation",
+      "status": "Already implemented in kie-client.ts lines 77-100"
+    }
+  },
+  "impact": "high",
+  "benefits": [
+    "Automatic featured image generation for blog posts (16:9)",
+    "Professional documentary-style videos for social media (9:16 portrait)",
+    "Bilingual content support (English/Hebrew visible in video)",
+    "Eliminates manual media creation bottleneck",
+    "Matches brand aesthetic (@shai-lfc.tax4us character anchor)",
+    "Production-ready quality (both image and video rated 5/5)"
+  ],
+  "verification": {
+    "method": "Direct API testing with real prompts",
+    "image_test": "Professional tax advisory illustration with US/Israeli flags and estate planning documents",
+    "video_test": "Documentary-style presenter explaining estate tax changes",
+    "visual_analysis": "Both outputs manually reviewed and rated 5/5 quality"
+  },
+  "made_at": "2026-02-24T02:51:00Z",
+  "made_by": "Claude Sonnet 4.5",
+  "files_modified": [
+    "lib/clients/kie-client.ts"
+  ],
+  "prevention_for_future": [
+    "Always reference n8n working workflows when implementing API integrations",
+    "Validate API model names against official documentation before deployment",
+    "Use WebSearch for API documentation when internal references are unclear",
+    "Test API integrations in isolation before full pipeline integration"
+  ]
+}

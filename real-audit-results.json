@@ -1,0 +1,1857 @@
+{
+  "total": 122,
+  "byLanguage": {
+    "hebrew": 58,
+    "english": 64,
+    "mixed": 0
+  },
+  "seoScores": {
+    "excellent": 11,
+    "good": 16,
+    "poor": 30,
+    "missing": 65
+  },
+  "content": {
+    "long": 2,
+    "medium": 29,
+    "short": 91
+  },
+  "metadata": {
+    "withCategories": 122,
+    "withTags": 45,
+    "withFocusKeyword": 57,
+    "withFeaturedImage": 42
+  },
+  "issues": {
+    "noFocusKeyword": [
+      {
+        "id": 831,
+        "title": "Foreign Companies Taxation"
+      },
+      {
+        "id": 828,
+        "title": "Real estate investment trust (REIT) Income taxatio"
+      },
+      {
+        "id": 825,
+        "title": "U.S Interest taxation"
+      },
+      {
+        "id": 823,
+        "title": "Capital Gains and Dividend Taxation"
+      },
+      {
+        "id": 817,
+        "title": "Like-Kind Exchange"
+      },
+      {
+        "id": 812,
+        "title": "Taxation in Different States"
+      },
+      {
+        "id": 808,
+        "title": "Types of Incorporations"
+      },
+      {
+        "id": 804,
+        "title": "W9 &amp; W8-BEN &amp; W8-BEN-E &amp; FATCA 8938"
+      },
+      {
+        "id": 801,
+        "title": "FATCA Report – Form 8938"
+      },
+      {
+        "id": 798,
+        "title": "Differences between FBAR and FATCA 8938"
+      },
+      {
+        "id": 792,
+        "title": "Sole foreign proprietor of an LLC in the US? The O"
+      },
+      {
+        "id": 789,
+        "title": "Forming an LLC"
+      },
+      {
+        "id": 786,
+        "title": "Child Tax Credit"
+      },
+      {
+        "id": 782,
+        "title": "FIRPTA"
+      },
+      {
+        "id": 780,
+        "title": "ITIN Application"
+      },
+      {
+        "id": 778,
+        "title": "EIN Application"
+      },
+      {
+        "id": 767,
+        "title": "U.S Income Tax –Form 1040"
+      },
+      {
+        "id": 759,
+        "title": "FBAR – Foreign Bank Accounts Reporting"
+      },
+      {
+        "id": 757,
+        "title": "Gifts and Inheritance"
+      },
+      {
+        "id": 755,
+        "title": "Net Investment Income Tax – What You Should Know"
+      },
+      {
+        "id": 751,
+        "title": "About The Streamlined Foreign Offshore Procedures "
+      },
+      {
+        "id": 749,
+        "title": "The Social Security Administration"
+      },
+      {
+        "id": 747,
+        "title": "Partnership Taxation"
+      },
+      {
+        "id": 638,
+        "title": "הוצאת מספר EIN"
+      },
+      {
+        "id": 636,
+        "title": "הפקת מספר זיהוי ITIN"
+      },
+      {
+        "id": 634,
+        "title": "היכן עובר הגבול המשפטי ב LLC"
+      },
+      {
+        "id": 632,
+        "title": "Series LLC"
+      },
+      {
+        "id": 630,
+        "title": "מיסוי חברות בארה&#8221;ב 1120"
+      },
+      {
+        "id": 628,
+        "title": "בעלים זר יחיד של LLC בארה&#8221;ב? ממשל אובמה השאי"
+      },
+      {
+        "id": 626,
+        "title": "תשלומי אגרה שנתיים ל LLC ודיווחי מדינה"
+      },
+      {
+        "id": 624,
+        "title": "הקמת חברה בארה&#8221;ב LLC"
+      },
+      {
+        "id": 618,
+        "title": "חברת השקעות פסיבית זרה PFIC"
+      },
+      {
+        "id": 616,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In"
+      },
+      {
+        "id": 614,
+        "title": "מיסוי הכנסת ריבית בארצות הברית"
+      },
+      {
+        "id": 612,
+        "title": "מיסוי רווחי הון ודיבידנדים בארצות הברית"
+      },
+      {
+        "id": 602,
+        "title": "הארכות להגשת דו&#8221;חות מס לשותפויות וחברות"
+      },
+      {
+        "id": 600,
+        "title": "מס ירושה בארה&#8221;ב לאזרחים שאינם אמריקאים"
+      },
+      {
+        "id": 598,
+        "title": "שחלוף נכסים בארה&#8221;ב Like Kind Exchange"
+      },
+      {
+        "id": 596,
+        "title": "חוק FIRPTA"
+      },
+      {
+        "id": 594,
+        "title": "מיסוי מדינות בארה&#8221;ב State Tax"
+      },
+      {
+        "id": 590,
+        "title": "מיסוי שותפויות בארה&#8221;ב 1065 &amp; K1"
+      },
+      {
+        "id": 579,
+        "title": "הבדלים בין FBAR ל 8938"
+      },
+      {
+        "id": 577,
+        "title": "דיווח 8938 FATCA"
+      },
+      {
+        "id": 573,
+        "title": "חובת דיווח על חשבונות פיננסים זרים FBAR"
+      },
+      {
+        "id": 567,
+        "title": "מתנות ומס ירושה בארה&#8221;ב"
+      },
+      {
+        "id": 565,
+        "title": "מס הכנסה על השקעה נטו-Net Investment Tax"
+      },
+      {
+        "id": 563,
+        "title": "הליך מהיר לגילוי מרצון Streamline Procedures"
+      },
+      {
+        "id": 561,
+        "title": "הביטוח הלאומי האמריקאי- Social Security Administra"
+      },
+      {
+        "id": 525,
+        "title": "החזרי מס בארצות הברית – ACTC &amp; AOTC"
+      },
+      {
+        "id": 519,
+        "title": "חובת הדיווח ל-IRS דו&#8221;ח המס 1040"
+      },
+      {
+        "id": 479,
+        "title": "The financial information transfer begun to flow b"
+      },
+      {
+        "id": 302,
+        "title": "זרימת המידע הפיננסי בין ממשלות התחילה"
+      },
+      {
+        "id": 480,
+        "title": "Social security payments in Israel on passive inco"
+      },
+      {
+        "id": 300,
+        "title": "תשלומי ביטוח לאומי בישראל על הכנסות פאסיביות מחו&#"
+      },
+      {
+        "id": 482,
+        "title": "How much do you know about The Obama Care?"
+      },
+      {
+        "id": 296,
+        "title": "עד כמה אתם מכירים את אובמה-קר?"
+      },
+      {
+        "id": 483,
+        "title": "USA Citizenship for Children"
+      },
+      {
+        "id": 484,
+        "title": "US citizen and own shares in companies outside the"
+      },
+      {
+        "id": 290,
+        "title": "מה הקשר בין ריבית הבנק המרכזי הפדראלי ומשלמי המיסי"
+      },
+      {
+        "id": 486,
+        "title": "Real estate investment trust (REIT) Income taxatio"
+      },
+      {
+        "id": 288,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In"
+      },
+      {
+        "id": 286,
+        "title": "היכן עובר הגבול המשפטי ב LLC"
+      },
+      {
+        "id": 284,
+        "title": "Series LLC"
+      },
+      {
+        "id": 282,
+        "title": "מה הסיכויים לבדיקה רנדומלית AUDIT?"
+      },
+      {
+        "id": 280,
+        "title": "חברת השקעות פסיבית זרה PFIC"
+      }
+    ],
+    "lowSeoScore": [
+      {
+        "id": 831,
+        "title": "Foreign Companies Taxation",
+        "score": 0
+      },
+      {
+        "id": 828,
+        "title": "Real estate investment trust (REIT) Income taxatio",
+        "score": 0
+      },
+      {
+        "id": 825,
+        "title": "U.S Interest taxation",
+        "score": 0
+      },
+      {
+        "id": 823,
+        "title": "Capital Gains and Dividend Taxation",
+        "score": 0
+      },
+      {
+        "id": 817,
+        "title": "Like-Kind Exchange",
+        "score": 0
+      },
+      {
+        "id": 812,
+        "title": "Taxation in Different States",
+        "score": 0
+      },
+      {
+        "id": 808,
+        "title": "Types of Incorporations",
+        "score": 0
+      },
+      {
+        "id": 804,
+        "title": "W9 &amp; W8-BEN &amp; W8-BEN-E &amp; FATCA 8938",
+        "score": 0
+      },
+      {
+        "id": 801,
+        "title": "FATCA Report – Form 8938",
+        "score": 0
+      },
+      {
+        "id": 798,
+        "title": "Differences between FBAR and FATCA 8938",
+        "score": 0
+      },
+      {
+        "id": 792,
+        "title": "Sole foreign proprietor of an LLC in the US? The O",
+        "score": 0
+      },
+      {
+        "id": 789,
+        "title": "Forming an LLC",
+        "score": 0
+      },
+      {
+        "id": 786,
+        "title": "Child Tax Credit",
+        "score": 0
+      },
+      {
+        "id": 782,
+        "title": "FIRPTA",
+        "score": 0
+      },
+      {
+        "id": 780,
+        "title": "ITIN Application",
+        "score": 0
+      },
+      {
+        "id": 778,
+        "title": "EIN Application",
+        "score": 0
+      },
+      {
+        "id": 767,
+        "title": "U.S Income Tax –Form 1040",
+        "score": 0
+      },
+      {
+        "id": 759,
+        "title": "FBAR – Foreign Bank Accounts Reporting",
+        "score": 0
+      },
+      {
+        "id": 757,
+        "title": "Gifts and Inheritance",
+        "score": 0
+      },
+      {
+        "id": 755,
+        "title": "Net Investment Income Tax – What You Should Know",
+        "score": 0
+      },
+      {
+        "id": 751,
+        "title": "About The Streamlined Foreign Offshore Procedures ",
+        "score": 0
+      },
+      {
+        "id": 749,
+        "title": "The Social Security Administration",
+        "score": 0
+      },
+      {
+        "id": 747,
+        "title": "Partnership Taxation",
+        "score": 0
+      },
+      {
+        "id": 638,
+        "title": "הוצאת מספר EIN",
+        "score": 0
+      },
+      {
+        "id": 636,
+        "title": "הפקת מספר זיהוי ITIN",
+        "score": 0
+      },
+      {
+        "id": 634,
+        "title": "היכן עובר הגבול המשפטי ב LLC",
+        "score": 0
+      },
+      {
+        "id": 632,
+        "title": "Series LLC",
+        "score": 0
+      },
+      {
+        "id": 630,
+        "title": "מיסוי חברות בארה&#8221;ב 1120",
+        "score": 0
+      },
+      {
+        "id": 628,
+        "title": "בעלים זר יחיד של LLC בארה&#8221;ב? ממשל אובמה השאי",
+        "score": 0
+      },
+      {
+        "id": 626,
+        "title": "תשלומי אגרה שנתיים ל LLC ודיווחי מדינה",
+        "score": 0
+      },
+      {
+        "id": 624,
+        "title": "הקמת חברה בארה&#8221;ב LLC",
+        "score": 0
+      },
+      {
+        "id": 618,
+        "title": "חברת השקעות פסיבית זרה PFIC",
+        "score": 0
+      },
+      {
+        "id": 616,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In",
+        "score": 0
+      },
+      {
+        "id": 614,
+        "title": "מיסוי הכנסת ריבית בארצות הברית",
+        "score": 0
+      },
+      {
+        "id": 612,
+        "title": "מיסוי רווחי הון ודיבידנדים בארצות הברית",
+        "score": 0
+      },
+      {
+        "id": 602,
+        "title": "הארכות להגשת דו&#8221;חות מס לשותפויות וחברות",
+        "score": 0
+      },
+      {
+        "id": 600,
+        "title": "מס ירושה בארה&#8221;ב לאזרחים שאינם אמריקאים",
+        "score": 0
+      },
+      {
+        "id": 598,
+        "title": "שחלוף נכסים בארה&#8221;ב Like Kind Exchange",
+        "score": 0
+      },
+      {
+        "id": 596,
+        "title": "חוק FIRPTA",
+        "score": 0
+      },
+      {
+        "id": 594,
+        "title": "מיסוי מדינות בארה&#8221;ב State Tax",
+        "score": 0
+      },
+      {
+        "id": 590,
+        "title": "מיסוי שותפויות בארה&#8221;ב 1065 &amp; K1",
+        "score": 0
+      },
+      {
+        "id": 579,
+        "title": "הבדלים בין FBAR ל 8938",
+        "score": 0
+      },
+      {
+        "id": 577,
+        "title": "דיווח 8938 FATCA",
+        "score": 0
+      },
+      {
+        "id": 573,
+        "title": "חובת דיווח על חשבונות פיננסים זרים FBAR",
+        "score": 0
+      },
+      {
+        "id": 567,
+        "title": "מתנות ומס ירושה בארה&#8221;ב",
+        "score": 0
+      },
+      {
+        "id": 565,
+        "title": "מס הכנסה על השקעה נטו-Net Investment Tax",
+        "score": 0
+      },
+      {
+        "id": 563,
+        "title": "הליך מהיר לגילוי מרצון Streamline Procedures",
+        "score": 0
+      },
+      {
+        "id": 561,
+        "title": "הביטוח הלאומי האמריקאי- Social Security Administra",
+        "score": 0
+      },
+      {
+        "id": 525,
+        "title": "החזרי מס בארצות הברית – ACTC &amp; AOTC",
+        "score": 0
+      },
+      {
+        "id": 519,
+        "title": "חובת הדיווח ל-IRS דו&#8221;ח המס 1040",
+        "score": 0
+      },
+      {
+        "id": 479,
+        "title": "The financial information transfer begun to flow b",
+        "score": 0
+      },
+      {
+        "id": 302,
+        "title": "זרימת המידע הפיננסי בין ממשלות התחילה",
+        "score": 0
+      },
+      {
+        "id": 480,
+        "title": "Social security payments in Israel on passive inco",
+        "score": 0
+      },
+      {
+        "id": 300,
+        "title": "תשלומי ביטוח לאומי בישראל על הכנסות פאסיביות מחו&#",
+        "score": 0
+      },
+      {
+        "id": 482,
+        "title": "How much do you know about The Obama Care?",
+        "score": 0
+      },
+      {
+        "id": 296,
+        "title": "עד כמה אתם מכירים את אובמה-קר?",
+        "score": 0
+      },
+      {
+        "id": 483,
+        "title": "USA Citizenship for Children",
+        "score": 0
+      },
+      {
+        "id": 484,
+        "title": "US citizen and own shares in companies outside the",
+        "score": 0
+      },
+      {
+        "id": 290,
+        "title": "מה הקשר בין ריבית הבנק המרכזי הפדראלי ומשלמי המיסי",
+        "score": 0
+      },
+      {
+        "id": 486,
+        "title": "Real estate investment trust (REIT) Income taxatio",
+        "score": 0
+      },
+      {
+        "id": 288,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In",
+        "score": 0
+      },
+      {
+        "id": 286,
+        "title": "היכן עובר הגבול המשפטי ב LLC",
+        "score": 0
+      },
+      {
+        "id": 284,
+        "title": "Series LLC",
+        "score": 0
+      },
+      {
+        "id": 282,
+        "title": "מה הסיכויים לבדיקה רנדומלית AUDIT?",
+        "score": 0
+      },
+      {
+        "id": 280,
+        "title": "חברת השקעות פסיבית זרה PFIC",
+        "score": 0
+      },
+      {
+        "id": 2535,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "score": 20
+      },
+      {
+        "id": 2371,
+        "title": "פתיחת עונת הדיווחים לשנת המס 2025",
+        "score": 25
+      },
+      {
+        "id": 2706,
+        "title": "השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-י",
+        "score": 30
+      },
+      {
+        "id": 2703,
+        "title": "How Are U.S.–Israel Estate Taxes Changing in 2026?",
+        "score": 30
+      },
+      {
+        "id": 2699,
+        "title": "השפעת השינויים בחוקי המס על מתנות והירושות בין ישר",
+        "score": 30
+      },
+      {
+        "id": 2593,
+        "title": "הקושי הגובר של תושבי חוץ ישראלים בניווט בדיני המס ",
+        "score": 30
+      },
+      {
+        "id": 2589,
+        "title": "The Evolving Landscape of US-Israel Tax Audits: St",
+        "score": 30
+      },
+      {
+        "id": 2585,
+        "title": "Navigating the Complexities of US-Israel Tax Treat",
+        "score": 30
+      },
+      {
+        "id": 2551,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "score": 30
+      },
+      {
+        "id": 592,
+        "title": "מיסוי נדל&#8221;ן בארה&#8221;ב",
+        "score": 30
+      },
+      {
+        "id": 2716,
+        "title": "How Does the Redefinition of Remote Work Impact Yo",
+        "score": 35
+      },
+      {
+        "id": 2625,
+        "title": "האם עסקים ישראליים מוכנים לשינויי המס האמריקאים ב-",
+        "score": 35
+      },
+      {
+        "id": 2623,
+        "title": "Navigating the Impact of the 2025 US Tax Reform on",
+        "score": 35
+      },
+      {
+        "id": 2565,
+        "title": "מתי הגשת Form 8833 הופכת לחובה ומתי היא רק אופציה?",
+        "score": 35
+      },
+      {
+        "id": 2562,
+        "title": "The Hidden Changes in 2026 Tax Laws That Will Affe",
+        "score": 35
+      },
+      {
+        "id": 2558,
+        "title": "השינויים הנסתרים בחוקי המס 2026 שישפיעו על כל ישרא",
+        "score": 35
+      },
+      {
+        "id": 2539,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "score": 35
+      },
+      {
+        "id": 2531,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "score": 35
+      },
+      {
+        "id": 2573,
+        "title": "When Is Form 8833 Required and When Is It Optional",
+        "score": 40
+      },
+      {
+        "id": 2569,
+        "title": "When Is Form 8833 Required and When Is It Optional",
+        "score": 40
+      },
+      {
+        "id": 2543,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "score": 40
+      },
+      {
+        "id": 2527,
+        "title": "למה רוב הישראלים מתעלמים מהחובות הסופיות בסגירת LL",
+        "score": 40
+      },
+      {
+        "id": 2597,
+        "title": "Navigating the Complexities of Cross-Border Retire",
+        "score": 45
+      },
+      {
+        "id": 2591,
+        "title": "Navigating the Shifting Sands of US-Israel Expatri",
+        "score": 45
+      },
+      {
+        "id": 2587,
+        "title": "The Changing Landscape of US-Israel Wealth Managem",
+        "score": 45
+      },
+      {
+        "id": 2555,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "score": 45
+      },
+      {
+        "id": 2512,
+        "title": "מה באמת קורה עם הרפורמה במס אמריקאי 2026?",
+        "score": 45
+      },
+      {
+        "id": 2509,
+        "title": "Why Most Americans in Israel Fail to Pay IRS Tax D",
+        "score": 45
+      },
+      {
+        "id": 2486,
+        "title": "למה אסטרטגיות תכנון המס הקלאסיות כבר לא עובדות לאז",
+        "score": 45
+      },
+      {
+        "id": 2479,
+        "title": "Why Most Israeli Americans Fail at US Real Estate ",
+        "score": 45
+      }
+    ],
+    "shortContent": [
+      {
+        "id": 2531,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "words": 78
+      },
+      {
+        "id": 2587,
+        "title": "The Changing Landscape of US-Israel Wealth Managem",
+        "words": 92
+      },
+      {
+        "id": 2539,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "words": 102
+      },
+      {
+        "id": 759,
+        "title": "FBAR – Foreign Bank Accounts Reporting",
+        "words": 203
+      },
+      {
+        "id": 486,
+        "title": "Real estate investment trust (REIT) Income taxatio",
+        "words": 243
+      },
+      {
+        "id": 812,
+        "title": "Taxation in Different States",
+        "words": 251
+      },
+      {
+        "id": 780,
+        "title": "ITIN Application",
+        "words": 263
+      },
+      {
+        "id": 808,
+        "title": "Types of Incorporations",
+        "words": 290
+      },
+      {
+        "id": 747,
+        "title": "Partnership Taxation",
+        "words": 290
+      },
+      {
+        "id": 284,
+        "title": "Series LLC",
+        "words": 300
+      },
+      {
+        "id": 614,
+        "title": "מיסוי הכנסת ריבית בארצות הברית",
+        "words": 301
+      },
+      {
+        "id": 632,
+        "title": "Series LLC",
+        "words": 305
+      },
+      {
+        "id": 778,
+        "title": "EIN Application",
+        "words": 310
+      },
+      {
+        "id": 786,
+        "title": "Child Tax Credit",
+        "words": 323
+      },
+      {
+        "id": 782,
+        "title": "FIRPTA",
+        "words": 323
+      },
+      {
+        "id": 577,
+        "title": "דיווח 8938 FATCA",
+        "words": 326
+      },
+      {
+        "id": 616,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In",
+        "words": 328
+      },
+      {
+        "id": 2535,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "words": 329
+      },
+      {
+        "id": 282,
+        "title": "מה הסיכויים לבדיקה רנדומלית AUDIT?",
+        "words": 329
+      },
+      {
+        "id": 825,
+        "title": "U.S Interest taxation",
+        "words": 331
+      },
+      {
+        "id": 288,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In",
+        "words": 332
+      },
+      {
+        "id": 2543,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "words": 335
+      },
+      {
+        "id": 767,
+        "title": "U.S Income Tax –Form 1040",
+        "words": 350
+      },
+      {
+        "id": 602,
+        "title": "הארכות להגשת דו&#8221;חות מס לשותפויות וחברות",
+        "words": 354
+      },
+      {
+        "id": 2569,
+        "title": "When Is Form 8833 Required and When Is It Optional",
+        "words": 357
+      },
+      {
+        "id": 2589,
+        "title": "The Evolving Landscape of US-Israel Tax Audits: St",
+        "words": 359
+      },
+      {
+        "id": 751,
+        "title": "About The Streamlined Foreign Offshore Procedures ",
+        "words": 365
+      },
+      {
+        "id": 828,
+        "title": "Real estate investment trust (REIT) Income taxatio",
+        "words": 369
+      },
+      {
+        "id": 789,
+        "title": "Forming an LLC",
+        "words": 373
+      },
+      {
+        "id": 598,
+        "title": "שחלוף נכסים בארה&#8221;ב Like Kind Exchange",
+        "words": 377
+      },
+      {
+        "id": 745,
+        "title": "Taxation of Individuals – Form 1040NR",
+        "words": 379
+      },
+      {
+        "id": 757,
+        "title": "Gifts and Inheritance",
+        "words": 380
+      },
+      {
+        "id": 479,
+        "title": "The financial information transfer begun to flow b",
+        "words": 398
+      },
+      {
+        "id": 831,
+        "title": "Foreign Companies Taxation",
+        "words": 404
+      },
+      {
+        "id": 618,
+        "title": "חברת השקעות פסיבית זרה PFIC",
+        "words": 423
+      },
+      {
+        "id": 2551,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "words": 425
+      },
+      {
+        "id": 280,
+        "title": "חברת השקעות פסיבית זרה PFIC",
+        "words": 427
+      },
+      {
+        "id": 600,
+        "title": "מס ירושה בארה&#8221;ב לאזרחים שאינם אמריקאים",
+        "words": 428
+      },
+      {
+        "id": 2562,
+        "title": "The Hidden Changes in 2026 Tax Laws That Will Affe",
+        "words": 431
+      },
+      {
+        "id": 300,
+        "title": "תשלומי ביטוח לאומי בישראל על הכנסות פאסיביות מחו&#",
+        "words": 433
+      },
+      {
+        "id": 302,
+        "title": "זרימת המידע הפיננסי בין ממשלות התחילה",
+        "words": 434
+      },
+      {
+        "id": 2555,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "words": 437
+      },
+      {
+        "id": 638,
+        "title": "הוצאת מספר EIN",
+        "words": 441
+      },
+      {
+        "id": 817,
+        "title": "Like-Kind Exchange",
+        "words": 447
+      },
+      {
+        "id": 290,
+        "title": "מה הקשר בין ריבית הבנק המרכזי הפדראלי ומשלמי המיסי",
+        "words": 455
+      },
+      {
+        "id": 2595,
+        "title": "תכנון פרישה חוצה גבולות: אתגרים והזדמנויות למיסוי ",
+        "words": 468
+      },
+      {
+        "id": 634,
+        "title": "היכן עובר הגבול המשפטי ב LLC",
+        "words": 469
+      },
+      {
+        "id": 286,
+        "title": "היכן עובר הגבול המשפטי ב LLC",
+        "words": 471
+      },
+      {
+        "id": 628,
+        "title": "בעלים זר יחיד של LLC בארה&#8221;ב? ממשל אובמה השאי",
+        "words": 473
+      },
+      {
+        "id": 2558,
+        "title": "השינויים הנסתרים בחוקי המס 2026 שישפיעו על כל ישרא",
+        "words": 474
+      },
+      {
+        "id": 2527,
+        "title": "למה רוב הישראלים מתעלמים מהחובות הסופיות בסגירת LL",
+        "words": 482
+      },
+      {
+        "id": 2585,
+        "title": "Navigating the Complexities of US-Israel Tax Treat",
+        "words": 484
+      },
+      {
+        "id": 749,
+        "title": "The Social Security Administration",
+        "words": 507
+      },
+      {
+        "id": 579,
+        "title": "הבדלים בין FBAR ל 8938",
+        "words": 508
+      },
+      {
+        "id": 792,
+        "title": "Sole foreign proprietor of an LLC in the US? The O",
+        "words": 509
+      },
+      {
+        "id": 798,
+        "title": "Differences between FBAR and FATCA 8938",
+        "words": 510
+      },
+      {
+        "id": 484,
+        "title": "US citizen and own shares in companies outside the",
+        "words": 518
+      },
+      {
+        "id": 573,
+        "title": "חובת דיווח על חשבונות פיננסים זרים FBAR",
+        "words": 520
+      },
+      {
+        "id": 480,
+        "title": "Social security payments in Israel on passive inco",
+        "words": 521
+      },
+      {
+        "id": 296,
+        "title": "עד כמה אתם מכירים את אובמה-קר?",
+        "words": 524
+      },
+      {
+        "id": 823,
+        "title": "Capital Gains and Dividend Taxation",
+        "words": 528
+      },
+      {
+        "id": 483,
+        "title": "USA Citizenship for Children",
+        "words": 534
+      },
+      {
+        "id": 2623,
+        "title": "Navigating the Impact of the 2025 US Tax Reform on",
+        "words": 545
+      },
+      {
+        "id": 2597,
+        "title": "Navigating the Complexities of Cross-Border Retire",
+        "words": 549
+      },
+      {
+        "id": 2591,
+        "title": "Navigating the Shifting Sands of US-Israel Expatri",
+        "words": 555
+      },
+      {
+        "id": 2573,
+        "title": "When Is Form 8833 Required and When Is It Optional",
+        "words": 557
+      },
+      {
+        "id": 2565,
+        "title": "מתי הגשת Form 8833 הופכת לחובה ומתי היא רק אופציה?",
+        "words": 558
+      },
+      {
+        "id": 594,
+        "title": "מיסוי מדינות בארה&#8221;ב State Tax",
+        "words": 567
+      },
+      {
+        "id": 2593,
+        "title": "הקושי הגובר של תושבי חוץ ישראלים בניווט בדיני המס ",
+        "words": 574
+      },
+      {
+        "id": 2371,
+        "title": "פתיחת עונת הדיווחים לשנת המס 2025",
+        "words": 576
+      },
+      {
+        "id": 596,
+        "title": "חוק FIRPTA",
+        "words": 588
+      },
+      {
+        "id": 565,
+        "title": "מס הכנסה על השקעה נטו-Net Investment Tax",
+        "words": 590
+      },
+      {
+        "id": 801,
+        "title": "FATCA Report – Form 8938",
+        "words": 593
+      },
+      {
+        "id": 612,
+        "title": "מיסוי רווחי הון ודיבידנדים בארצות הברית",
+        "words": 603
+      },
+      {
+        "id": 2547,
+        "title": "Why Most Israelis Ignore Final LLC Closure Obligat",
+        "words": 606
+      },
+      {
+        "id": 590,
+        "title": "מיסוי שותפויות בארה&#8221;ב 1065 &amp; K1",
+        "words": 619
+      },
+      {
+        "id": 563,
+        "title": "הליך מהיר לגילוי מרצון Streamline Procedures",
+        "words": 629
+      },
+      {
+        "id": 804,
+        "title": "W9 &amp; W8-BEN &amp; W8-BEN-E &amp; FATCA 8938",
+        "words": 658
+      },
+      {
+        "id": 567,
+        "title": "מתנות ומס ירושה בארה&#8221;ב",
+        "words": 673
+      },
+      {
+        "id": 592,
+        "title": "מיסוי נדל&#8221;ן בארה&#8221;ב",
+        "words": 678
+      },
+      {
+        "id": 2625,
+        "title": "האם עסקים ישראליים מוכנים לשינויי המס האמריקאים ב-",
+        "words": 684
+      },
+      {
+        "id": 626,
+        "title": "תשלומי אגרה שנתיים ל LLC ודיווחי מדינה",
+        "words": 704
+      },
+      {
+        "id": 482,
+        "title": "How much do you know about The Obama Care?",
+        "words": 707
+      },
+      {
+        "id": 2699,
+        "title": "השפעת השינויים בחוקי המס על מתנות והירושות בין ישר",
+        "words": 794
+      },
+      {
+        "id": 624,
+        "title": "הקמת חברה בארה&#8221;ב LLC",
+        "words": 816
+      },
+      {
+        "id": 630,
+        "title": "מיסוי חברות בארה&#8221;ב 1120",
+        "words": 818
+      },
+      {
+        "id": 636,
+        "title": "הפקת מספר זיהוי ITIN",
+        "words": 878
+      },
+      {
+        "id": 575,
+        "title": "המדריך המלא: 7 דברים חיוניים שכל אמריקאי בישראל חי",
+        "words": 903
+      },
+      {
+        "id": 2706,
+        "title": "השלכות של עבודה מרחוק על ציות מס בין ארה&#8221;ב-י",
+        "words": 913
+      },
+      {
+        "id": 2512,
+        "title": "מה באמת קורה עם הרפורמה במס אמריקאי 2026?",
+        "words": 914
+      },
+      {
+        "id": 2703,
+        "title": "How Are U.S.–Israel Estate Taxes Changing in 2026?",
+        "words": 989
+      }
+    ],
+    "noCategories": [],
+    "noTags": [
+      {
+        "id": 2491,
+        "title": "Why Classic Tax Planning Strategies No Longer Work"
+      },
+      {
+        "id": 2371,
+        "title": "פתיחת עונת הדיווחים לשנת המס 2025"
+      },
+      {
+        "id": 1235,
+        "title": "7 Essential Ways Federal Reserve Interest Rates Im"
+      },
+      {
+        "id": 1144,
+        "title": "המדריך המלא: 5 דרכים חיוניות להארכת דוח מס אמריקאי"
+      },
+      {
+        "id": 831,
+        "title": "Foreign Companies Taxation"
+      },
+      {
+        "id": 828,
+        "title": "Real estate investment trust (REIT) Income taxatio"
+      },
+      {
+        "id": 825,
+        "title": "U.S Interest taxation"
+      },
+      {
+        "id": 823,
+        "title": "Capital Gains and Dividend Taxation"
+      },
+      {
+        "id": 817,
+        "title": "Like-Kind Exchange"
+      },
+      {
+        "id": 812,
+        "title": "Taxation in Different States"
+      },
+      {
+        "id": 808,
+        "title": "Types of Incorporations"
+      },
+      {
+        "id": 804,
+        "title": "W9 &amp; W8-BEN &amp; W8-BEN-E &amp; FATCA 8938"
+      },
+      {
+        "id": 801,
+        "title": "FATCA Report – Form 8938"
+      },
+      {
+        "id": 798,
+        "title": "Differences between FBAR and FATCA 8938"
+      },
+      {
+        "id": 795,
+        "title": "7 Essential FATCA Compliance Requirements Every US"
+      },
+      {
+        "id": 792,
+        "title": "Sole foreign proprietor of an LLC in the US? The O"
+      },
+      {
+        "id": 789,
+        "title": "Forming an LLC"
+      },
+      {
+        "id": 786,
+        "title": "Child Tax Credit"
+      },
+      {
+        "id": 782,
+        "title": "FIRPTA"
+      },
+      {
+        "id": 780,
+        "title": "ITIN Application"
+      },
+      {
+        "id": 778,
+        "title": "EIN Application"
+      },
+      {
+        "id": 767,
+        "title": "U.S Income Tax –Form 1040"
+      },
+      {
+        "id": 759,
+        "title": "FBAR – Foreign Bank Accounts Reporting"
+      },
+      {
+        "id": 757,
+        "title": "Gifts and Inheritance"
+      },
+      {
+        "id": 755,
+        "title": "Net Investment Income Tax – What You Should Know"
+      },
+      {
+        "id": 751,
+        "title": "About The Streamlined Foreign Offshore Procedures "
+      },
+      {
+        "id": 749,
+        "title": "The Social Security Administration"
+      },
+      {
+        "id": 747,
+        "title": "Partnership Taxation"
+      },
+      {
+        "id": 745,
+        "title": "Taxation of Individuals – Form 1040NR"
+      },
+      {
+        "id": 638,
+        "title": "הוצאת מספר EIN"
+      },
+      {
+        "id": 636,
+        "title": "הפקת מספר זיהוי ITIN"
+      },
+      {
+        "id": 634,
+        "title": "היכן עובר הגבול המשפטי ב LLC"
+      },
+      {
+        "id": 632,
+        "title": "Series LLC"
+      },
+      {
+        "id": 630,
+        "title": "מיסוי חברות בארה&#8221;ב 1120"
+      },
+      {
+        "id": 628,
+        "title": "בעלים זר יחיד של LLC בארה&#8221;ב? ממשל אובמה השאי"
+      },
+      {
+        "id": 626,
+        "title": "תשלומי אגרה שנתיים ל LLC ודיווחי מדינה"
+      },
+      {
+        "id": 624,
+        "title": "הקמת חברה בארה&#8221;ב LLC"
+      },
+      {
+        "id": 618,
+        "title": "חברת השקעות פסיבית זרה PFIC"
+      },
+      {
+        "id": 616,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In"
+      },
+      {
+        "id": 614,
+        "title": "מיסוי הכנסת ריבית בארצות הברית"
+      },
+      {
+        "id": 612,
+        "title": "מיסוי רווחי הון ודיבידנדים בארצות הברית"
+      },
+      {
+        "id": 602,
+        "title": "הארכות להגשת דו&#8221;חות מס לשותפויות וחברות"
+      },
+      {
+        "id": 600,
+        "title": "מס ירושה בארה&#8221;ב לאזרחים שאינם אמריקאים"
+      },
+      {
+        "id": 598,
+        "title": "שחלוף נכסים בארה&#8221;ב Like Kind Exchange"
+      },
+      {
+        "id": 596,
+        "title": "חוק FIRPTA"
+      },
+      {
+        "id": 594,
+        "title": "מיסוי מדינות בארה&#8221;ב State Tax"
+      },
+      {
+        "id": 592,
+        "title": "מיסוי נדל&#8221;ן בארה&#8221;ב"
+      },
+      {
+        "id": 590,
+        "title": "מיסוי שותפויות בארה&#8221;ב 1065 &amp; K1"
+      },
+      {
+        "id": 588,
+        "title": "מיסים בארה&#8221;ב ליחידים זרים 1040NR"
+      },
+      {
+        "id": 581,
+        "title": "המדריך המלא ל-3 טפסי מס אמריקאיים חיוניים: W9, W8-"
+      },
+      {
+        "id": 579,
+        "title": "הבדלים בין FBAR ל 8938"
+      },
+      {
+        "id": 577,
+        "title": "דיווח 8938 FATCA"
+      },
+      {
+        "id": 575,
+        "title": "המדריך המלא: 7 דברים חיוניים שכל אמריקאי בישראל חי"
+      },
+      {
+        "id": 573,
+        "title": "חובת דיווח על חשבונות פיננסים זרים FBAR"
+      },
+      {
+        "id": 567,
+        "title": "מתנות ומס ירושה בארה&#8221;ב"
+      },
+      {
+        "id": 565,
+        "title": "מס הכנסה על השקעה נטו-Net Investment Tax"
+      },
+      {
+        "id": 563,
+        "title": "הליך מהיר לגילוי מרצון Streamline Procedures"
+      },
+      {
+        "id": 561,
+        "title": "הביטוח הלאומי האמריקאי- Social Security Administra"
+      },
+      {
+        "id": 525,
+        "title": "החזרי מס בארצות הברית – ACTC &amp; AOTC"
+      },
+      {
+        "id": 519,
+        "title": "חובת הדיווח ל-IRS דו&#8221;ח המס 1040"
+      },
+      {
+        "id": 479,
+        "title": "The financial information transfer begun to flow b"
+      },
+      {
+        "id": 302,
+        "title": "זרימת המידע הפיננסי בין ממשלות התחילה"
+      },
+      {
+        "id": 480,
+        "title": "Social security payments in Israel on passive inco"
+      },
+      {
+        "id": 300,
+        "title": "תשלומי ביטוח לאומי בישראל על הכנסות פאסיביות מחו&#"
+      },
+      {
+        "id": 482,
+        "title": "How much do you know about The Obama Care?"
+      },
+      {
+        "id": 296,
+        "title": "עד כמה אתם מכירים את אובמה-קר?"
+      },
+      {
+        "id": 483,
+        "title": "USA Citizenship for Children"
+      },
+      {
+        "id": 294,
+        "title": "7 דרכים מוכחות לקבלת אזרחות אמריקאית לילדים &#8211"
+      },
+      {
+        "id": 484,
+        "title": "US citizen and own shares in companies outside the"
+      },
+      {
+        "id": 292,
+        "title": "7 שלבים מוכחים להגשת טופס 5471: המדריך המקיף לבעלי"
+      },
+      {
+        "id": 290,
+        "title": "מה הקשר בין ריבית הבנק המרכזי הפדראלי ומשלמי המיסי"
+      },
+      {
+        "id": 486,
+        "title": "Real estate investment trust (REIT) Income taxatio"
+      },
+      {
+        "id": 288,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In"
+      },
+      {
+        "id": 286,
+        "title": "היכן עובר הגבול המשפטי ב LLC"
+      },
+      {
+        "id": 284,
+        "title": "Series LLC"
+      },
+      {
+        "id": 282,
+        "title": "מה הסיכויים לבדיקה רנדומלית AUDIT?"
+      },
+      {
+        "id": 280,
+        "title": "חברת השקעות פסיבית זרה PFIC"
+      }
+    ],
+    "noFeaturedImage": [
+      {
+        "id": 2703,
+        "title": "How Are U.S.–Israel Estate Taxes Changing in 2026?"
+      },
+      {
+        "id": 2699,
+        "title": "השפעת השינויים בחוקי המס על מתנות והירושות בין ישר"
+      },
+      {
+        "id": 2625,
+        "title": "האם עסקים ישראליים מוכנים לשינויי המס האמריקאים ב-"
+      },
+      {
+        "id": 2623,
+        "title": "Navigating the Impact of the 2025 US Tax Reform on"
+      },
+      {
+        "id": 2597,
+        "title": "Navigating the Complexities of Cross-Border Retire"
+      },
+      {
+        "id": 2595,
+        "title": "תכנון פרישה חוצה גבולות: אתגרים והזדמנויות למיסוי "
+      },
+      {
+        "id": 2593,
+        "title": "הקושי הגובר של תושבי חוץ ישראלים בניווט בדיני המס "
+      },
+      {
+        "id": 2591,
+        "title": "Navigating the Shifting Sands of US-Israel Expatri"
+      },
+      {
+        "id": 2589,
+        "title": "The Evolving Landscape of US-Israel Tax Audits: St"
+      },
+      {
+        "id": 2587,
+        "title": "The Changing Landscape of US-Israel Wealth Managem"
+      },
+      {
+        "id": 2585,
+        "title": "Navigating the Complexities of US-Israel Tax Treat"
+      },
+      {
+        "id": 2565,
+        "title": "מתי הגשת Form 8833 הופכת לחובה ומתי היא רק אופציה?"
+      },
+      {
+        "id": 2558,
+        "title": "השינויים הנסתרים בחוקי המס 2026 שישפיעו על כל ישרא"
+      },
+      {
+        "id": 2527,
+        "title": "למה רוב הישראלים מתעלמים מהחובות הסופיות בסגירת LL"
+      },
+      {
+        "id": 2512,
+        "title": "מה באמת קורה עם הרפורמה במס אמריקאי 2026?"
+      },
+      {
+        "id": 2505,
+        "title": "למה רוב האמריקאים בישראל נכשלים בתשלום חובות המס ל"
+      },
+      {
+        "id": 2494,
+        "title": "למה רוב הישראלים מתעלמים מדיווח תוכניות הפנסיה לאר"
+      },
+      {
+        "id": 2486,
+        "title": "למה אסטרטגיות תכנון המס הקלאסיות כבר לא עובדות לאז"
+      },
+      {
+        "id": 2475,
+        "title": "למה רוב הישראלים נכשלים במיסוי עסקאות נדל&#8221;ן "
+      },
+      {
+        "id": 2455,
+        "title": "טופס 1116: למה רוב הישראלים מפסידים אלפי דולרים בז"
+      },
+      {
+        "id": 2446,
+        "title": "מיסוי עסקים מקוונים: האם אתם מדווחים נכון על הכנסו"
+      },
+      {
+        "id": 2388,
+        "title": "מיסוי אופציות לעובדים: 5 המלכודות הקריטיות לאמריקא"
+      },
+      {
+        "id": 2371,
+        "title": "פתיחת עונת הדיווחים לשנת המס 2025"
+      },
+      {
+        "id": 1144,
+        "title": "המדריך המלא: 5 דרכים חיוניות להארכת דוח מס אמריקאי"
+      },
+      {
+        "id": 831,
+        "title": "Foreign Companies Taxation"
+      },
+      {
+        "id": 828,
+        "title": "Real estate investment trust (REIT) Income taxatio"
+      },
+      {
+        "id": 825,
+        "title": "U.S Interest taxation"
+      },
+      {
+        "id": 823,
+        "title": "Capital Gains and Dividend Taxation"
+      },
+      {
+        "id": 817,
+        "title": "Like-Kind Exchange"
+      },
+      {
+        "id": 812,
+        "title": "Taxation in Different States"
+      },
+      {
+        "id": 808,
+        "title": "Types of Incorporations"
+      },
+      {
+        "id": 804,
+        "title": "W9 &amp; W8-BEN &amp; W8-BEN-E &amp; FATCA 8938"
+      },
+      {
+        "id": 801,
+        "title": "FATCA Report – Form 8938"
+      },
+      {
+        "id": 798,
+        "title": "Differences between FBAR and FATCA 8938"
+      },
+      {
+        "id": 795,
+        "title": "7 Essential FATCA Compliance Requirements Every US"
+      },
+      {
+        "id": 792,
+        "title": "Sole foreign proprietor of an LLC in the US? The O"
+      },
+      {
+        "id": 789,
+        "title": "Forming an LLC"
+      },
+      {
+        "id": 786,
+        "title": "Child Tax Credit"
+      },
+      {
+        "id": 782,
+        "title": "FIRPTA"
+      },
+      {
+        "id": 780,
+        "title": "ITIN Application"
+      },
+      {
+        "id": 778,
+        "title": "EIN Application"
+      },
+      {
+        "id": 767,
+        "title": "U.S Income Tax –Form 1040"
+      },
+      {
+        "id": 759,
+        "title": "FBAR – Foreign Bank Accounts Reporting"
+      },
+      {
+        "id": 757,
+        "title": "Gifts and Inheritance"
+      },
+      {
+        "id": 755,
+        "title": "Net Investment Income Tax – What You Should Know"
+      },
+      {
+        "id": 751,
+        "title": "About The Streamlined Foreign Offshore Procedures "
+      },
+      {
+        "id": 749,
+        "title": "The Social Security Administration"
+      },
+      {
+        "id": 747,
+        "title": "Partnership Taxation"
+      },
+      {
+        "id": 745,
+        "title": "Taxation of Individuals – Form 1040NR"
+      },
+      {
+        "id": 638,
+        "title": "הוצאת מספר EIN"
+      },
+      {
+        "id": 636,
+        "title": "הפקת מספר זיהוי ITIN"
+      },
+      {
+        "id": 634,
+        "title": "היכן עובר הגבול המשפטי ב LLC"
+      },
+      {
+        "id": 632,
+        "title": "Series LLC"
+      },
+      {
+        "id": 630,
+        "title": "מיסוי חברות בארה&#8221;ב 1120"
+      },
+      {
+        "id": 628,
+        "title": "בעלים זר יחיד של LLC בארה&#8221;ב? ממשל אובמה השאי"
+      },
+      {
+        "id": 626,
+        "title": "תשלומי אגרה שנתיים ל LLC ודיווחי מדינה"
+      },
+      {
+        "id": 624,
+        "title": "הקמת חברה בארה&#8221;ב LLC"
+      },
+      {
+        "id": 618,
+        "title": "חברת השקעות פסיבית זרה PFIC"
+      },
+      {
+        "id": 616,
+        "title": "מיסוי הכנסות מקרנות מקרקעין – REIT- Real Estate In"
+      },
+      {
+        "id": 614,
+        "title": "מיסוי הכנסת ריבית בארצות הברית"
+      },
+      {
+        "id": 612,
+        "title": "מיסוי רווחי הון ודיבידנדים בארצות הברית"
+      },
+      {
+        "id": 602,
+        "title": "הארכות להגשת דו&#8221;חות מס לשותפויות וחברות"
+      },
+      {
+        "id": 600,
+        "title": "מס ירושה בארה&#8221;ב לאזרחים שאינם אמריקאים"
+      },
+      {
+        "id": 598,
+        "title": "שחלוף נכסים בארה&#8221;ב Like Kind Exchange"
+      },
+      {
+        "id": 596,
+        "title": "חוק FIRPTA"
+      },
+      {
+        "id": 594,
+        "title": "מיסוי מדינות בארה&#8221;ב State Tax"
+      },
+      {
+        "id": 592,
+        "title": "מיסוי נדל&#8221;ן בארה&#8221;ב"
+      },
+      {
+        "id": 590,
+        "title": "מיסוי שותפויות בארה&#8221;ב 1065 &amp; K1"
+      },
+      {
+        "id": 588,
+        "title": "מיסים בארה&#8221;ב ליחידים זרים 1040NR"
+      },
+      {
+        "id": 581,
+        "title": "המדריך המלא ל-3 טפסי מס אמריקאיים חיוניים: W9, W8-"
+      },
+      {
+        "id": 579,
+        "title": "הבדלים בין FBAR ל 8938"
+      },
+      {
+        "id": 577,
+        "title": "דיווח 8938 FATCA"
+      },
+      {
+        "id": 575,
+        "title": "המדריך המלא: 7 דברים חיוניים שכל אמריקאי בישראל חי"
+      },
+      {
+        "id": 573,
+        "title": "חובת דיווח על חשבונות פיננסים זרים FBAR"
+      },
+      {
+        "id": 567,
+        "title": "מתנות ומס ירושה בארה&#8221;ב"
+      },
+      {
+        "id": 565,
+        "title": "מס הכנסה על השקעה נטו-Net Investment Tax"
+      },
+      {
+        "id": 563,
+        "title": "הליך מהיר לגילוי מרצון Streamline Procedures"
+      },
+      {
+        "id": 561,
+        "title": "הביטוח הלאומי האמריקאי- Social Security Administra"
+      },
+      {
+        "id": 525,
+        "title": "החזרי מס בארצות הברית – ACTC &amp; AOTC"
+      },
+      {
+        "id": 519,
+        "title": "חובת הדיווח ל-IRS דו&#8221;ח המס 1040"
+      }
+    ],
+    "translationIssues": []
+  }
+}

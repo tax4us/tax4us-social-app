@@ -13,6 +13,7 @@ import {
     Users,
     TrendingUp,
     Library,
+    Activity,
 } from "lucide-react"
 
 import {
@@ -36,18 +37,13 @@ import {
 const navMain = [
     {
         title: "Executive Center",
-        url: "/executive-center",
+        url: "/",
         icon: LayoutDashboard,
     },
     {
-        title: "Content Generation",
+        title: "Content Generation", 
         url: "/content-generation",
         icon: Video,
-    },
-    {
-        title: "Overview",
-        url: "/",
-        icon: PieChart,
     },
     {
         title: "Topics & Ideas",
@@ -88,6 +84,11 @@ const navMain = [
         title: "Video Studio",
         url: "/video-studio",
         icon: Video,
+    },
+    {
+        title: "System Status",
+        url: "/system-status",
+        icon: Activity,
     },
 ]
 
@@ -131,7 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarGroupContent>
                         <SidebarMenu className="px-2 space-y-1">
                             {navMain.map((item) => {
-                                const isActive = pathname === item.url || (item.url === "/executive-center" && pathname === "/")
+                                const isActive = pathname === item.url
                                 return (
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton

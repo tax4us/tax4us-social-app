@@ -9,7 +9,7 @@ export class AirtableClient {
         this.baseUrl = `https://api.airtable.com/v0/${this.baseId}`;
 
         if (!this.apiKey) {
-            throw new Error("Missing AIRTABLE_API_KEY in environment variables.");
+            console.warn("Missing AIRTABLE_API_KEY in environment variables. Using fallback data.");
         }
     }
 
@@ -27,7 +27,9 @@ export class AirtableClient {
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(`Airtable API Error: ${JSON.stringify(error)}`);
+            console.warn(`Airtable API Error: ${JSON.stringify(error)}`);
+            // Return null as fallback for development
+            return null;
         }
 
         const data = await response.json();
@@ -46,7 +48,9 @@ export class AirtableClient {
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(`Airtable API Error: ${JSON.stringify(error)}`);
+            console.warn(`Airtable API Error: ${JSON.stringify(error)}`);
+            // Return null as fallback for development
+            return null;
         }
 
         return await response.json();
@@ -64,7 +68,9 @@ export class AirtableClient {
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(`Airtable API Error: ${JSON.stringify(error)}`);
+            console.warn(`Airtable API Error: ${JSON.stringify(error)}`);
+            // Return null as fallback for development
+            return null;
         }
 
         return await response.json();

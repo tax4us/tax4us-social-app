@@ -1,28 +1,30 @@
 [
   {
-    "trigger_type": "manual",
+    "trigger_type": "cron",
     "pipeline_type": "content_creation",
-    "status": "running",
-    "current_stage": "hebrew_content_generation",
+    "status": "completed",
+    "current_stage": "completed",
     "stages_completed": [
-      "topic_selection"
+      "initialization",
+      "execution"
     ],
     "stages_failed": [],
+    "started_at": "2026-02-25T20:09:19.197Z",
     "logs": [
       {
-        "timestamp": "2026-02-18T08:22:29.565Z",
+        "timestamp": "2026-02-25T20:09:19.197Z",
         "level": "info",
-        "stage": "topic_selection",
-        "message": "Starting stage: topic_selection"
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      },
+      {
+        "timestamp": "2026-02-25T20:09:21.466Z",
+        "level": "success",
+        "message": "Pipeline content completed successfully",
+        "stage": "completed"
       }
     ],
-    "started_at": "2026-02-18T08:22:29.565Z",
-    "id": "run_1771402949565_8odq5zn81"
-  }
-] "Selected topic: Test Topic"
-      }
-    ],
-    "started_at": "2026-02-18T08:22:29.565Z",
-    "id": "run_1771402949565_8odq5zn81"
+    "id": "run_1772050159199_e2frsemc8",
+    "completed_at": "2026-02-25T20:09:21.465Z"
   }
 ]

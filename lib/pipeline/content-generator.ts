@@ -92,18 +92,26 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
       KEYWORDS: ${topic.keywords?.join(", ")}
       CURRENT YEAR: ${new Date().getFullYear()}
       
-      CRITICAL INSTRUCTIONS:
-      1. TITLE RULES: Use a PROVOCATIVE QUESTION or INSIGHT that includes the main keyword naturally.
-      2. STRUCTURE: 6-10 H2 sections. Narrative flow, not a manual.
-      3. LENGTH: 2000+ words. Deep dive.
-      4. FORMAT: Markdown with proper links, bold, tables.
-      5. LINKS: You MUST include at least 3 internal links to tax4us.co.il pages and 2 external links to IRS.gov/FinCEN.gov/etc.
-      6. TABLES: Include at least 1 comparison or data table using markdown syntax.
+      CRITICAL REQUIREMENTS (MUST FOLLOW EXACTLY):
+      
+      PRIMARY FOCUS KEYWORD: "${topic.keywords?.[0] || topic.topic}"
+      
+      1. CONTENT LENGTH: Target 1500-2000 words minimum. Write comprehensive, detailed content with examples.
+      2. FOCUS KEYWORD INTEGRATION (CRITICAL FOR SEO):
+         - Use the PRIMARY FOCUS KEYWORD exactly "${topic.keywords?.[0] || topic.topic}" 15-20 times throughout
+         - MUST appear in title (beginning preferred)  
+         - MUST appear in first paragraph (first 100 words)
+         - MUST appear in 2-3 H2/H3 headings
+         - Target 1.2-1.5% keyword density for optimal SEO score
+      3. TITLE: Ben's professional style - descriptive, authoritative, NO numbers. MUST include "${topic.keywords?.[0] || topic.topic}"
+      4. STRUCTURE: 8-12 H2 sections, comprehensive coverage
+      5. LINKS: MANDATORY - 4+ internal tax4us.co.il links, 3+ external authoritative links (IRS.gov, FinCEN.gov)
+      6. FORMAT: Rich markdown with tables, lists, proper formatting for 90-100 SEO score
       
       Start directly with the content. No preamble.
     `;
 
-    const generatedContent = await this.claude.generate(draftPrompt, "claude-3-haiku-20240307", systemPrompt);
+    const generatedContent = await this.claude.generate(draftPrompt, "claude-3-haiku-20240307", systemPrompt, 4000); // Use Haiku with max tokens
     pipelineLogger.info(`Draft complete. Length: ${generatedContent.split(/\s+/).length} words.`, topic.id);
 
     // 2. Convert to Gutenberg
@@ -128,10 +136,10 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
       }
       
       Rules:
-      - title: 50–70 chars, in ${keywordLanguage}.
-      - focus_keyword: 2-4 words in ${keywordLanguage}. Must appear in the title and article content.
-      - seo_title: Start with focus keyword. 50-60 chars.
-      - seo_description: Include focus keyword. 150-160 chars.
+      - title: 50–70 chars, in ${keywordLanguage}. Professional style, NO clickbait numbers. MUST include focus keyword.
+      - focus_keyword: Use "${topic.keywords?.[0] || topic.topic}" (must appear 15-20 times in article for 1.2-1.5% density).
+      - seo_title: Start with focus keyword. 50-60 chars. Ben's professional style.
+      - seo_description: Include focus keyword naturally. 150-160 chars. Compelling but professional.
       - categories: 2-5 relevant categories from this list: ${isHebrew
         ? '["מס הכנסה", "מס נדל\\"ן", "מס עסקים", "FBAR", "FATCA", "ביטוח לאומי", "תכנון מס", "דיווח", "כללי"]'
         : '["Business Tax", "Estate Tax", "Real Estate Tax", "FBAR", "FATCA", "IRS", "Investment Tax", "Penalties", "Reporting", "Retirement", "Tax Planning", "Form 1040", "Form 1116", "Form 8938"]'}

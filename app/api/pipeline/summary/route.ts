@@ -13,12 +13,15 @@ export async function GET() {
             maxRecords: 20
         });
 
+        // Handle null return from airtable client
+        const safeRecords = records || [];
+        
         const stats = {
-            total: records.length,
-            published: records.filter((r: any) => r.fields.Status === 'Published').length,
-            ready: records.filter((r: any) => r.fields.Status === 'Ready').length,
-            errors: records.filter((r: any) => r.fields.Status === 'Error').length,
-            recentTopics: records.slice(0, 5).map((r: any) => r.fields.topic).join(", ")
+            total: safeRecords.length,
+            published: safeRecords.filter((r: any) => r.fields?.Status === 'Published').length,
+            ready: safeRecords.filter((r: any) => r.fields?.Status === 'Ready').length,
+            errors: safeRecords.filter((r: any) => r.fields?.Status === 'Error').length,
+            recentTopics: safeRecords.slice(0, 5).map((r: any) => r.fields?.topic || 'Untitled').join(", ")
         };
 
         const prompt = `
@@ -34,7 +37,7 @@ export async function GET() {
         Focus on what's active and what's next. Do not use bullets.
         `;
 
-        const summary = await claude.generate(prompt, "claude-3-5-haiku-20241022", "You are a professional Israeli business analyst.");
+        const summary = await claude.generate(prompt, "claude-3-haiku-20240307", "You are a professional Israeli business analyst.");
 
         return NextResponse.json({ summary });
     } catch (error) {

@@ -30,6 +30,7 @@ import { LogConsole } from "@/components/dashboard/LogConsole"
 import { LiveFeed } from "@/components/dashboard/LiveFeed"
 import { CostMonitor } from "@/components/dashboard/CostMonitor"
 import { AudienceInsights } from "@/components/dashboard/AudienceInsights"
+import { PodcastAnalytics } from "@/components/dashboard/PodcastAnalytics"
 import type { CostSummary } from "@/lib/services/api-costs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -343,6 +344,8 @@ export default function Dashboard({
                 {/* Business Feeds & Performance */}
                 <div className="col-span-3 space-y-4">
                     <AudienceInsights insights={insights} />
+
+                    <PodcastAnalytics />
 
                     <Card className="border-primary/10 shadow-lg bg-card/40 backdrop-blur-md">
                         <CardHeader className="pb-3 px-6">
