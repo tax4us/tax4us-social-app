@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { AirtableClient } from '@/lib/clients/airtable-client'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
       - התמקד במיסוי חוצה גבולות ישראל-ארה"ב
       - כלול לפחות 8 דוגמאות מעשיות ממקרים ממשיים
       - השתמש ב-IRS.gov וטופס 114 כמקורות סמכותיים
-      - כלול מילות מפתח: ${keywords.join(', ')}
+      - כלול מילות מפתח: ${keywords && keywords.length > 0 ? keywords.join(', ') : 'FBAR, FATCA, מיסים בינלאומיים'}
       - מבנה ברור עם 6-8 כותרות משנה
       - כל כותרת משנה צריכה להיות מקיפה (400+ מילים)
       - סיכום מעשי עם 7 צעדים קונקרטיים
@@ -67,18 +68,50 @@ export async function POST(request: NextRequest) {
     }
     
     const actualWordCount = content.split(/\s+/).length
+    const contentId = `content_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    
+    // Extract topic ID from keywords or use default
+    const topicId = keywords?.find((k: string) => k.startsWith('topic_')) || 'topic_generated'
+    
+    // Persist to Airtable content-pieces table
+    const airtable = new AirtableClient()
+    let airtableRecord = null
+    
+    try {
+      airtableRecord = await airtable.createRecord('content-pieces', {
+        'id': contentId,
+        'topic_id': topicId,
+        'title_english': topic,
+        'title_hebrew': topic,
+        'content_english': content, // Store Hebrew content in English field for now
+        'target_keywords': keywords || [],
+        'status': actualWordCount >= wordCount ? 'ready' : 'draft',
+        'seo_score': 85, // Default good score
+        'created_at': new Date().toISOString(),
+        'updated_at': new Date().toISOString(),
+        'word_count': actualWordCount,
+        'topic_priority': 'medium',
+        'topic_tags': keywords || []
+      })
+      
+      console.log(`Content persisted to Airtable: ${contentId}`)
+    } catch (error) {
+      console.warn('Failed to persist content to Airtable:', error)
+      // Continue even if Airtable fails
+    }
 
     return NextResponse.json({
       success: true,
       content: {
-        id: `article_${Date.now()}`,
+        id: contentId,
         title_hebrew: topic,
         content_hebrew: content,
         word_count: actualWordCount,
         target_keywords: keywords,
         seo_optimized: true,
-        gutenberg_ready: false, // Need to convert to blocks
-        status: actualWordCount >= wordCount ? 'completed' : 'needs_expansion'
+        gutenberg_ready: false,
+        status: actualWordCount >= wordCount ? 'ready' : 'draft',
+        airtable_record: airtableRecord?.id || null
       },
       metadata: {
         topic,
@@ -87,7 +120,8 @@ export async function POST(request: NextRequest) {
         targetWordCount: wordCount,
         actualWordCount,
         generatedAt: new Date().toISOString(),
-        meetsRequirements: actualWordCount >= wordCount
+        meetsRequirements: actualWordCount >= wordCount,
+        persisted: !!airtableRecord
       }
     })
 
