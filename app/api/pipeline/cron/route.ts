@@ -70,7 +70,7 @@ export async function GET(request: Request) {
 
             await db.addPipelineLog(pipelineRun.id, {
                 timestamp: new Date().toISOString(),
-                level: 'success',
+                level: 'info',
                 message: `Pipeline ${type} completed successfully`,
                 stage: 'completed'
             });
