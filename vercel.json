@@ -1,15 +1,15 @@
 {
   "crons": [
     {
-      "path": "/api/pipeline/cron?type=content",
+      "path": "/api/cron/content-pipeline",
       "schedule": "0 8 * * 1,4"
     },
     {
-      "path": "/api/pipeline/cron?type=seo", 
+      "path": "/api/cron/seo-optimizer", 
       "schedule": "0 10 * * 2,5"
     },
     {
-      "path": "/api/pipeline/cron?type=podcast",
+      "path": "/api/test-podcast-cron",
       "schedule": "0 14 * * 3"
     }
   ]
