@@ -37,7 +37,7 @@ import {
 const navMain = [
     {
         title: "Executive Center",
-        url: "/",
+        url: "/executive-center",
         icon: LayoutDashboard,
     },
     {
