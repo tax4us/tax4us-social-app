@@ -57,7 +57,7 @@ export class MediaProcessor {
             task_ids: []
         };
 
-        pipelineLogger.stage('Media Generation Pipeline Started', { hebrew_title, english_title });
+        pipelineLogger.info('Media Generation Pipeline Started', 'MEDIA', { hebrew_title, english_title });
 
         try {
             // 1. Generate Hebrew featured image
@@ -110,7 +110,7 @@ export class MediaProcessor {
             }
 
             result.success = (result.hebrew_image_id || result.english_image_id) ? true : false;
-            pipelineLogger.success('Media generation completed', {
+            pipelineLogger.success('Media generation completed', 'MEDIA', {
                 hebrew_image: !!result.hebrew_image_id,
                 english_image: !!result.english_image_id,
                 video_tasks: result.task_ids.length

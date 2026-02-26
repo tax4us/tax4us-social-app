@@ -118,8 +118,8 @@ export async function POST(request: NextRequest) {
           contentData.content.title_hebrew
         )
         
-        if (mediaResult?.wordpress_id) {
-          featuredImageId = mediaResult.wordpress_id
+        if (mediaResult?.id) {
+          featuredImageId = mediaResult.id
           
           // Set featured image on post
           await wp.updatePost(wordPressPost.id, {
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
           
           await db.addPipelineLog(pipelineRun.id, {
             timestamp: new Date().toISOString(),
-            level: 'success',
+            level: 'info',
             message: `Featured image uploaded (ID: ${featuredImageId})`,
             stage: 'media_generation'
           })
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
 
       await db.addPipelineLog(pipelineRun.id, {
         timestamp: new Date().toISOString(),
-        level: 'success',
+        level: 'info',
         message: `Content published successfully! Post ID: ${wordPressPost.id}`,
         stage: 'completed'
       })

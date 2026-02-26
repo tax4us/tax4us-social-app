@@ -72,7 +72,7 @@ export class VideoStudio {
       processing_time: 0
     };
 
-    pipelineLogger.stage(`Video production started: ${request.title}`, request.post_id.toString());
+    pipelineLogger.info(`Video production started: ${request.title}`, request.post_id.toString());
 
     try {
       // 1. Generate optimized video prompt
@@ -262,7 +262,7 @@ export class VideoStudio {
         attempt++;
         
       } catch (error: any) {
-        pipelineLogger.warning(`Video polling error: ${error.message}`, 'KIE');
+        pipelineLogger.warn(`Video polling error: ${error.message}`, 'KIE');
         await new Promise(resolve => setTimeout(resolve, pollInterval));
       }
     }
@@ -274,7 +274,7 @@ export class VideoStudio {
    * Generate thumbnail image for video
    */
   private async generateVideoThumbnail(request: VideoProductionRequest): Promise<string> {
-    const thumbnailPrompt = `Professional thumbnail for "${request.title}". `;
+    let thumbnailPrompt = `Professional thumbnail for "${request.title}". `;
     thumbnailPrompt += `Visual style: Clean, attention-grabbing, suitable for social media. `;
     thumbnailPrompt += `Theme: ${request.focus_keyword} visualization. `;
     thumbnailPrompt += `Format: 16:9 thumbnail optimized for video platforms. `;
@@ -363,7 +363,7 @@ export class VideoStudio {
     // Placeholder for social media publishing
     // In full implementation, this would integrate with social platform APIs
     
-    const socialPosts = [];
+    const socialPosts: any[] = [];
     
     try {
       // Example: Instagram post
