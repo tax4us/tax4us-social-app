@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Loader2, Video, Image, Mic, Upload, CheckCircle2, AlertCircle, FileText } from "lucide-react"
 import { ContentGenerationResponse } from '@/lib/services/content-generation'
+import { PageWrapper } from "@/components/layout/PageWrapper"
+import { PageHeader } from "@/components/layout/PageHeader"
+import { LoadingButton } from "@/components/ui/loading"
 
 const CONTENT_TYPES = [
   { value: 'article', label: 'Tax Article (Bilingual)', icon: FileText },
