@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -156,17 +155,18 @@ export default function ContentGenerationPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Tax4US Content Factory</h1>
-        <p className="text-gray-600 mt-2">AI-powered bilingual content generation for cross-border tax education and client acquisition</p>
-        <div className="flex gap-4 mt-3 text-sm text-gray-500">
+    <PageWrapper>
+      <PageHeader 
+        title="Tax4US Content Factory" 
+        description="AI-powered bilingual content generation for cross-border tax education and client acquisition"
+      >
+        <div className="flex gap-4 text-sm text-muted-foreground">
           <span>📊 Target: 4 articles/week</span>
           <span>📱 4 social posts/week</span>
           <span>🎙️ 2 podcast episodes/week</span>
           <span>🎥 6+ video assets/week</span>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Content Generation Section */}
       <Card>
@@ -267,20 +267,14 @@ export default function ContentGenerationPage() {
             </div>
           </div>
 
-          <Button 
+          <LoadingButton 
             onClick={handleGenerate}
-            disabled={!contentType || !prompt || isGenerating}
+            disabled={!contentType || !prompt}
+            loading={isGenerating}
             className="w-full"
           >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              'Generate Content'
-            )}
-          </Button>
+            Generate Content
+          </LoadingButton>
 
           {/* Generation Result */}
           {generationResult && (
@@ -367,20 +361,14 @@ export default function ContentGenerationPage() {
               </div>
             </div>
 
-            <Button 
+            <LoadingButton 
               onClick={handleUpload}
-              disabled={!title || !user || selectedPlatforms.length === 0 || isUploading}
+              disabled={!title || !user || selectedPlatforms.length === 0}
+              loading={isUploading}
               className="w-full"
             >
-              {isUploading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Uploading...
-                </>
-              ) : (
-                'Upload to Social Media'
-              )}
-            </Button>
+              Upload to Social Media
+            </LoadingButton>
 
             {/* Upload Result */}
             {uploadResult && (
@@ -405,6 +393,6 @@ export default function ContentGenerationPage() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </PageWrapper>
   )
 }

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
 import { 
   Search, 
   Filter, 
@@ -20,7 +19,6 @@ import {
   Eye,
   Edit,
   Languages,
-  TrendingUp,
   AlertCircle,
   CheckCircle2,
   Clock,
@@ -28,6 +26,10 @@ import {
   Play
 } from "lucide-react"
 import { StoryViewer } from "@/components/ui/story-viewer"
+import { PageWrapper } from "@/components/layout/PageWrapper"
+import { PageHeader } from "@/components/layout/PageHeader"
+import { MetricCard } from "@/components/ui/metric-card"
+import { LoadingSpinner } from "@/components/ui/loading"
 
 interface ContentPiece {
   id: string
@@ -172,76 +174,46 @@ export default function ContentLibraryPage() {
   }
 
   return (
-    <div className="flex-1 space-y-6 p-8 pt-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Content Library</h2>
-          <p className="text-muted-foreground">
-            Search and manage all your generated content across languages and formats
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={fetchData} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          <Button>
-            <Download className="w-4 h-4 mr-2" />
-            Export All
-          </Button>
-        </div>
-      </div>
+    <PageWrapper>
+      <PageHeader 
+        title="Content Library" 
+        description="Search and manage all your generated content across languages and formats"
+      >
+        <Button variant="outline" onClick={fetchData} disabled={loading}>
+          <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+        <Button>
+          <Download className="w-4 h-4 mr-2" />
+          Export All
+        </Button>
+      </PageHeader>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Content</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-              <FileText className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="Total Content"
+          value={stats.total}
+          icon={FileText}
+        />
         
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Published</p>
-                <p className="text-2xl font-bold">{stats.published}</p>
-              </div>
-              <CheckCircle2 className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="Published"
+          value={stats.published}
+          icon={CheckCircle2}
+        />
         
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Avg SEO Score</p>
-                <p className="text-2xl font-bold">{stats.avgSeoScore}</p>
-              </div>
-              <BarChart3 className="h-8 w-8 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="Avg SEO Score"
+          value={stats.avgSeoScore}
+          icon={BarChart3}
+        />
         
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">With Media</p>
-                <p className="text-2xl font-bold">{stats.withMedia}</p>
-              </div>
-              <Globe className="h-8 w-8 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="With Media"
+          value={stats.withMedia}
+          icon={Globe}
+        />
       </div>
 
       {/* Social Stories Section */}
@@ -403,10 +375,7 @@ export default function ContentLibraryPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <RefreshCw className="w-8 h-8 animate-spin text-muted-foreground" />
-            <span className="ml-2 text-muted-foreground">Loading content library...</span>
-          </div>
+          <LoadingSpinner text="Loading content library..." />
         ) : filteredContent.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
@@ -527,6 +496,6 @@ export default function ContentLibraryPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageWrapper>
   )
 }

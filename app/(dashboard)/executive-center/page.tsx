@@ -18,6 +18,10 @@ import {
   Target,
   Zap
 } from "lucide-react";
+import { PageWrapper } from "@/components/layout/PageWrapper";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { MetricCard } from "@/components/ui/metric-card";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 interface ExecutiveMetrics {
   revenue: {
@@ -148,59 +152,41 @@ export default function ExecutiveCenterPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Executive Center</h2>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Loading...</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-8 bg-gray-200 rounded animate-pulse" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+      <PageWrapper>
+        <PageHeader title="Executive Center" />
+        <LoadingSpinner text="Loading executive data..." />
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Executive Center</h2>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
-            <Calendar className="mr-2 h-4 w-4" />
-            Last 30 Days
-          </Button>
-        </div>
-      </div>
+    <PageWrapper>
+      <PageHeader title="Executive Center">
+        <Button variant="outline" size="sm">
+          <Calendar className="mr-2 h-4 w-4" />
+          Last 30 Days
+        </Button>
+      </PageHeader>
 
       {/* Key Performance Indicators */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((kpi) => (
-          <Card key={kpi.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-              {getStatusIcon(kpi.status)}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{kpi.value}</div>
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">
-                  Target: {kpi.target}
-                </p>
-                <Badge className={getStatusColor(kpi.status)}>
-                  +{kpi.change}%
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {kpis.map((kpi) => {
+          const IconComponent = kpi.status === 'ahead' ? CheckCircle2 : 
+                               kpi.status === 'on-track' ? Target : 
+                               AlertCircle;
+          
+          return (
+            <MetricCard
+              key={kpi.id}
+              title={kpi.title}
+              value={kpi.value}
+              change={kpi.change}
+              trend={kpi.change > 0 ? 'up' : 'down'}
+              icon={IconComponent}
+              description={`Target: ${kpi.target}`}
+            />
+          );
+        })}
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
@@ -415,6 +401,6 @@ export default function ExecutiveCenterPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageWrapper>
   );
 }
