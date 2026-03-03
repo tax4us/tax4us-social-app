@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
         'title_hebrew': topic,
         'content_english': content, // Store Hebrew content in English field for now
         'target_keywords': keywords || [],
-        'status': actualWordCount >= wordCount ? 'ready' : 'draft',
+        'status': actualWordCount >= wordCount ? 'pending_approval' : 'draft',
         'seo_score': 85, // Default good score
         'created_at': new Date().toISOString(),
         'updated_at': new Date().toISOString(),
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         target_keywords: keywords,
         seo_optimized: true,
         gutenberg_ready: false,
-        status: actualWordCount >= wordCount ? 'ready' : 'draft',
+        status: actualWordCount >= wordCount ? 'pending_approval' : 'draft',
         airtable_record: airtableRecord?.id || null
       },
       metadata: {

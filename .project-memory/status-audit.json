@@ -1,0 +1,307 @@
+{
+  "audit_id": "status_audit_20260302",
+  "generated_at": "2026-03-02T00:00:00.000Z",
+  "generated_by": "Claude Sonnet 4.6",
+  "summary": {
+    "total_status_domains": 18,
+    "critical_issues": 3,
+    "moderate_issues": 3,
+    "minor_issues": 2,
+    "consistent_domains": 10
+  },
+  "status_domains": {
+    "ContentPiece_status": {
+      "severity": "CRITICAL",
+      "description": "ContentPiece.status has THREE conflicting definitions",
+      "definitions": {
+        "lib/services/database.ts (ContentPiece interface)": ["draft", "pending_approval", "approved", "published"],
+        "lib/types/pipeline.ts (ContentPiece interface)": ["draft", "published", "processing"],
+        "app/api/content-generation/route.ts (runtime usage)": ["ready", "draft"]
+      },
+      "issues": [
+        "'ready' is set in app/api/content-generation/route.ts:88,113 but does NOT exist in either type definition",
+        "'processing' exists in lib/types/pipeline.ts but NOT in lib/services/database.ts",
+        "'pending_approval' and 'approved' exist in lib/services/database.ts but NOT in lib/types/pipeline.ts",
+        "app/api/content/library/route.ts:33 filters for 'approved' — works with DB type but not pipeline type",
+        "app/api/pipeline/process-drafts/route.ts:103 sets 'processing' — valid in pipeline type but NOT in DB type"
+      ],
+      "used_in_data": ["draft"],
+      "recommendation": "Unify to single canonical definition: 'draft' | 'pending_approval' | 'approved' | 'published' | 'processing'. Remove 'ready' (use 'approved' or 'pending_approval' instead). Update lib/types/pipeline.ts to match lib/services/database.ts."
+    },
+    "PodcastEpisode_status": {
+      "severity": "CRITICAL",
+      "description": "PodcastEpisode.status has THREE conflicting definitions across the codebase",
+      "definitions": {
+        "lib/pipeline-data.ts (UI PodcastEpisode)": ["scripting", "synthesis", "concatenating", "uploading", "published"],
+        "lib/services/podcast-producer.ts (service PodcastEpisode)": ["generating", "ready", "published", "failed"],
+        "lib/types/pipeline.ts (types PodcastEpisode)": ["published", "draft"]
+      },
+      "issues": [
+        "Three different interfaces named PodcastEpisode with incompatible status values",
+        "lib/pipeline-data.ts:303 maps Captivate 'Published' -> 'synthesis' (never uses 'scripting', 'concatenating', 'uploading')",
+        "'draft' status (lib/types/pipeline.ts) is never produced or consumed in any code path",
+        "No single source of truth for podcast episode lifecycle"
+      ],
+      "recommendation": "Consolidate into one PodcastEpisode interface with status: 'generating' | 'ready' | 'published' | 'failed'. The pipeline-data.ts granular stages (scripting/synthesis/concatenating/uploading) are never actually set in code — simplify or implement properly."
+    },
+    "Topic_status": {
+      "severity": "CRITICAL",
+      "description": "Topic.status defined in types but MISSING from the database schema",
+      "definitions": {
+        "lib/types/pipeline.ts (Topic interface)": ["draft", "ready", "published", "rejected", "processing", "proposing"],
+        "lib/services/database.ts (Topic interface)": "NO status field"
+      },
+      "issues": [
+        "lib/services/database.ts Topic has no status field — topics have no tracked lifecycle state in DB",
+        "lib/pipeline/topic-manager.ts:20 reads Airtable {Status}='Ready' — external source, not local DB",
+        "app/api/admin/seed-database/route.ts:61 seeds with status:'ready' but Topic DB interface has no such field",
+        "app/api/topics/approval/route.ts uses 'approval_status' field (not 'status') for topic approval tracking — separate concept"
+      ],
+      "recommendation": "Add 'status' field to database.ts Topic interface: 'available' | 'in_use' | 'published' | 'rejected'. Current 'last_used' field partially covers this but does not capture rejection or publication state."
+    },
+    "Approval_status": {
+      "severity": "MODERATE",
+      "description": "Approval.status has an unused value 'changes_requested'",
+      "definitions": {
+        "lib/services/database.ts (Approval interface)": ["pending", "approved", "rejected", "changes_requested"]
+      },
+      "issues": [
+        "'changes_requested' is defined but never set or checked anywhere in the codebase",
+        "Slack approval response route (app/api/slack/approval-response/route.ts:55) only produces 'approved' or 'rejected'"
+      ],
+      "recommendation": "Either implement the 'changes_requested' flow with a corresponding Slack button action, or remove it from the type to reduce confusion."
+    },
+    "Integration_check_status": {
+      "severity": "MODERATE",
+      "description": "Integration status values are inconsistent with SystemService type",
+      "definitions": {
+        "lib/pipeline-data.ts (SystemService interface)": ["operational", "degraded", "outage"],
+        "app/api/integrations/status/route.ts (runtime)": ["checking", "operational", "failed"]
+      },
+      "issues": [
+        "'checking' is used as a transient initial value but not in the SystemService type",
+        "'failed' is returned by the API but not in the SystemService type (which has 'outage')",
+        "'degraded' and 'outage' from SystemService type are never produced by the route"
+      ],
+      "recommendation": "Align the integration status type to: 'checking' | 'operational' | 'degraded' | 'failed'. Add 'checking' as a valid type. Replace 'outage' with 'failed' or make 'failed' map to 'outage'."
+    },
+    "Video_status": {
+      "severity": "MODERATE",
+      "description": "Video task status naming is inconsistent between KIE API and internal API",
+      "definitions": {
+        "lib/clients/kie-client.ts (KIE external API)": ["success", "failed", "(processing implied by polling)"],
+        "app/api/video/generate/route.ts (internal mapping)": ["completed", "processing", "failed"],
+        "app/api/video/generate/route.ts internal task store": ["processing", "completed"]
+      },
+      "issues": [
+        "KIE external API returns 'success' but internal tasks use 'completed'",
+        "app/api/video/generate/route.ts:87 checks task.status === 'in_progress' to map to 'processing', but tasks are stored as 'processing' (not 'in_progress')",
+        "The 'in_progress' check will never be true — likely a bug"
+      ],
+      "recommendation": "Standardize internal video task status to: 'pending' | 'processing' | 'completed' | 'failed'. Remove the dead 'in_progress' branch or implement it correctly."
+    },
+    "PipelineRun_status": {
+      "severity": "NONE",
+      "description": "Consistent across all usages",
+      "definitions": {
+        "lib/services/database.ts (PipelineRun interface)": ["running", "completed", "failed", "paused"]
+      },
+      "issues": [],
+      "usage_confirmed": [
+        "lib/services/pipeline.ts: starts as 'running', pauses to 'paused', completes to 'completed', fails to 'failed'",
+        "app/api/pipeline/status/route.ts: filters for 'completed' and 'failed'",
+        "lib/services/database.ts getActiveRuns(): filters 'running' or 'paused'"
+      ]
+    },
+    "Worker_status": {
+      "severity": "NONE",
+      "description": "Consistent and well-implemented",
+      "definitions": {
+        "app/api/pipeline/workers/route.ts (WorkerStatus interface)": ["idle", "active", "scheduled"]
+      },
+      "issues": [],
+      "note": "Logic correctly computes status based on current day vs worker schedule days"
+    },
+    "PipelineItem_status": {
+      "severity": "NONE",
+      "description": "UI-only type, consistent within pipeline-data.ts",
+      "definitions": {
+        "lib/pipeline-data.ts (Status type)": ["pending", "in-progress", "completed", "failed", "waiting-approval"]
+      },
+      "issues": [],
+      "note": "This is only used to render Kanban board status. Maps from Airtable/WP statuses correctly."
+    },
+    "ContentGeneration_status": {
+      "severity": "NONE",
+      "description": "External content generation task status, consistent",
+      "definitions": {
+        "lib/services/content-generation.ts (ContentGenerationResponse)": ["pending", "processing", "completed", "failed"]
+      },
+      "issues": []
+    },
+    "Apify_status": {
+      "severity": "NONE",
+      "description": "External API statuses, UPPERCASE convention — consistent",
+      "definitions": {
+        "lib/services/apify-integration.ts (ApifyRunResult)": ["READY", "RUNNING", "SUCCEEDED", "FAILED"]
+      },
+      "issues": [],
+      "note": "These mirror the Apify API response format. Convention difference (uppercase) is intentional."
+    },
+    "ElevenLabs_status": {
+      "severity": "NONE",
+      "description": "External API response status, consistent within its use",
+      "definitions": {
+        "lib/services/podcast-producer.ts (ElevenLabsResponse)": ["processing", "completed", "failed"]
+      },
+      "issues": []
+    },
+    "SEO_status": {
+      "severity": "NONE",
+      "description": "SEO score quality classification, consistent",
+      "definitions": {
+        "lib/pipeline-data.ts (SeoMetric)": ["good", "ok", "bad"]
+      },
+      "issues": []
+    },
+    "InventoryItem_status": {
+      "severity": "NONE",
+      "description": "WordPress post lifecycle for inventory display, consistent",
+      "definitions": {
+        "lib/pipeline-data.ts (InventoryItem)": ["published", "draft", "scheduled"]
+      },
+      "issues": []
+    },
+    "SystemService_status": {
+      "severity": "NONE",
+      "description": "Service health status (see Integration_check_status for discrepancy)",
+      "definitions": {
+        "lib/pipeline-data.ts (SystemService)": ["operational", "degraded", "outage"]
+      },
+      "issues": []
+    },
+    "MediaGeneration_status": {
+      "severity": "NONE",
+      "description": "Media generation progress status, consistent",
+      "definitions": {
+        "lib/pipeline-data.ts (MediaGeneration)": ["generating", "completed", "failed"]
+      },
+      "issues": []
+    },
+    "PlatformStatus": {
+      "severity": "NONE",
+      "description": "Per-platform publish status for podcast episodes, consistent",
+      "definitions": {
+        "lib/pipeline-data.ts (PodcastEpisode.platformStatus)": ["done", "processing", "pending"]
+      },
+      "issues": []
+    },
+    "TranslationStatus": {
+      "severity": "NONE",
+      "description": "Hebrew<->English translation link state, consistent",
+      "definitions": {
+        "lib/pipeline-data.ts (InventoryItem.translationStatus)": ["linked", "missing", "pending"]
+      },
+      "issues": []
+    }
+  },
+  "wordpress_status_note": {
+    "severity": "MINOR",
+    "description": "WordPress 'publish' status has multiple defensive variants in code",
+    "values_found": ["publish", "published", "Published"],
+    "locations": [
+      "lib/pipeline-data.ts:168 — checks all three variants from Airtable",
+      "lib/pipeline-data.ts:203 — checks post.status === 'publish' (correct WP API value)",
+      "lib/pipeline-data.ts:255 — checks 'publish' and 'future'"
+    ],
+    "note": "WordPress REST API returns 'publish' (not 'published'). The extra 'published'/'Published' checks are defensive guards for Airtable data which uses different casing."
+  },
+  "dead_status_values": [
+    {
+      "value": "changes_requested",
+      "entity": "Approval",
+      "defined_in": "lib/services/database.ts",
+      "used_in": "nowhere"
+    },
+    {
+      "value": "ready",
+      "entity": "ContentPiece",
+      "defined_in": "nowhere (no TypeScript type)",
+      "used_in": "app/api/content-generation/route.ts:88,113"
+    },
+    {
+      "value": "in_progress",
+      "entity": "Video task",
+      "defined_in": "nowhere",
+      "used_in": "app/api/video/generate/route.ts:87 (dead branch — tasks are stored as 'processing', not 'in_progress')"
+    },
+    {
+      "value": "scripting",
+      "entity": "PodcastEpisode",
+      "defined_in": "lib/pipeline-data.ts",
+      "used_in": "nowhere (only 'synthesis' and 'published' are actually produced)"
+    },
+    {
+      "value": "concatenating",
+      "entity": "PodcastEpisode",
+      "defined_in": "lib/pipeline-data.ts",
+      "used_in": "nowhere"
+    },
+    {
+      "value": "uploading",
+      "entity": "PodcastEpisode",
+      "defined_in": "lib/pipeline-data.ts",
+      "used_in": "nowhere"
+    },
+    {
+      "value": "draft",
+      "entity": "PodcastEpisode",
+      "defined_in": "lib/types/pipeline.ts",
+      "used_in": "nowhere"
+    },
+    {
+      "value": "degraded",
+      "entity": "SystemService",
+      "defined_in": "lib/pipeline-data.ts",
+      "used_in": "nowhere (integration route uses 'failed' instead)"
+    },
+    {
+      "value": "outage",
+      "entity": "SystemService",
+      "defined_in": "lib/pipeline-data.ts",
+      "used_in": "nowhere (integration route uses 'failed' instead)"
+    }
+  ],
+  "recommended_fixes": [
+    {
+      "priority": 1,
+      "title": "Unify ContentPiece.status",
+      "action": "Update lib/types/pipeline.ts ContentPiece.status to match lib/services/database.ts: 'draft' | 'pending_approval' | 'approved' | 'published' | 'processing'. Replace 'ready' usage in app/api/content-generation/route.ts with 'pending_approval'."
+    },
+    {
+      "priority": 2,
+      "title": "Unify PodcastEpisode.status",
+      "action": "Create single PodcastEpisode interface. Use 'generating' | 'ready' | 'published' | 'failed'. Update lib/pipeline-data.ts, lib/types/pipeline.ts to align with lib/services/podcast-producer.ts definition."
+    },
+    {
+      "priority": 3,
+      "title": "Add status to Topic DB interface",
+      "action": "Add 'status' field to Topic interface in lib/services/database.ts: 'available' | 'in_use' | 'published' | 'rejected'. Update seed script and topic creation logic."
+    },
+    {
+      "priority": 4,
+      "title": "Fix dead video 'in_progress' branch",
+      "action": "In app/api/video/generate/route.ts:87, change check from task.status === 'in_progress' to task.status === 'processing' to match the actual stored value."
+    },
+    {
+      "priority": 5,
+      "title": "Align SystemService/Integration status",
+      "action": "Update SystemService.status type in lib/pipeline-data.ts to: 'checking' | 'operational' | 'degraded' | 'failed'. Or update integration route to use 'outage' consistently with SystemService type."
+    },
+    {
+      "priority": 6,
+      "title": "Implement or remove 'changes_requested' approval status",
+      "action": "Either add a 'Request Changes' Slack button that sets status to 'changes_requested' with a feedback flow, or remove the status from the Approval type definition."
+    }
+  ]
+}

@@ -43,7 +43,7 @@ export interface ContentPiece {
     title_hebrew: string;
     title_english: string;
     target_keywords: string[];
-    status: 'draft' | 'published' | 'processing';
+    status: 'draft' | 'pending_approval' | 'approved' | 'published' | 'processing';
     created_at: string;
     updated_at: string;
     media_urls: {
@@ -77,5 +77,5 @@ export interface PodcastEpisode {
     audioUrl: string;
     duration: number;
     publishDate: string;
-    status: 'published' | 'draft';
+    status: 'generating' | 'ready' | 'published' | 'failed';
 }

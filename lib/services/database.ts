@@ -7,6 +7,7 @@ export interface Topic {
   title_english: string
   title_hebrew: string
   priority: 'high' | 'medium' | 'low'
+  status?: 'available' | 'in_use' | 'published' | 'rejected'
   seasonal_relevance: string
   tags: string[]
   last_used?: string
@@ -41,7 +42,7 @@ export interface Approval {
   type: 'topic_selection' | 'content_review' | 'media_approval' | 'pre_publish'
   related_id: string // topic_id or content_piece_id
   related_title?: string
-  status: 'pending' | 'approved' | 'rejected' | 'changes_requested'
+  status: 'pending' | 'approved' | 'rejected'
   slack_message_ts?: string
   slack_channel?: string
   response_user_id?: string

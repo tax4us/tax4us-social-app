@@ -79,7 +79,7 @@ export interface PodcastEpisode {
     id: string;
     episodeNumber: number;
     title: string;
-    status: "scripting" | "synthesis" | "concatenating" | "uploading" | "published";
+    status: "generating" | "ready" | "published" | "failed";
     duration: string;
     publishDate?: string;
     rawDate: string; // ISO string for sorting
@@ -98,7 +98,7 @@ export interface PodcastEpisode {
 export interface SystemService {
     id: string;
     name: string;
-    status: "operational" | "degraded" | "outage";
+    status: "checking" | "operational" | "degraded" | "failed";
     latency: number;
     uptime: number;
 }
@@ -132,7 +132,7 @@ export const mockSeoMetrics: SeoMetric[] = [
 ];
 
 export const mockPodcasts: PodcastEpisode[] = [
-    { id: "pod-1", episodeNumber: 42, title: "Navigating Filing Season", status: "published", duration: "14:20", publishDate: "Feb 5, 2025", rawDate: "2025-02-05", platformStatus: { elevenLabs: "done", captivate: "done", wordpress: "done" } }
+    { id: "pod-1", episodeNumber: 42, title: "Navigating Filing Season", status: "published" as const, duration: "14:20", publishDate: "Feb 5, 2025", rawDate: "2025-02-05", platformStatus: { elevenLabs: "done", captivate: "done", wordpress: "done" } }
 ];
 
 export const mockServices: SystemService[] = [
@@ -300,7 +300,7 @@ export async function fetchPodcasts(): Promise<PodcastEpisode[]> {
             id: ep.id,
             episodeNumber: ep.episode_number,
             title: ep.title,
-            status: ep.status === 'Published' ? 'published' : 'synthesis',
+            status: ep.status === 'Published' ? 'published' : 'generating',
             duration: ep.duration || "0:00",
             publishDate: ep.date ? new Date(ep.date).toLocaleDateString('en-GB') : undefined,
             rawDate: ep.date || new Date().toISOString(),
