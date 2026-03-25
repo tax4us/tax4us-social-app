@@ -137,8 +137,11 @@ export class WordPressClient {
       const existing = await this.request("/categories?per_page=100");
       const ids: number[] = [];
 
+      // Ensure existing is an array
+      const categories = Array.isArray(existing) ? existing : [];
+
       for (const name of names) {
-        const found = existing.find((c: WordPressCategory) =>
+        const found = categories.find((c: WordPressCategory) =>
           c.name.toLowerCase() === name.toLowerCase() ||
           c.slug === name.toLowerCase().replace(/\s+/g, '-')
         );

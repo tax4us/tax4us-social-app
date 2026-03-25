@@ -390,5 +390,31 @@
     "id": "topic_1774400293556_1vgjrnl9o",
     "created_at": "2026-03-25T00:58:13.556Z",
     "updated_at": "2026-03-25T00:58:13.556Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774400558131_w0zjnk0hf",
+    "created_at": "2026-03-25T01:02:38.131Z",
+    "updated_at": "2026-03-25T01:02:38.131Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774400621098_kw3rhd4yz",
+    "created_at": "2026-03-25T01:03:41.098Z",
+    "updated_at": "2026-03-25T01:03:41.098Z"
   }
 ]

@@ -29,6 +29,8 @@ describe('API Routes Tests', () => {
     resetMocks()
   })
 
+  // NOTE: /api/test-podcast-cron route was removed - commenting out tests
+  /*
   describe('/api/test-podcast-cron', () => {
     it('should test podcast cron functionality', async () => {
       const { GET } = await import('@/app/api/test-podcast-cron/route')
@@ -69,6 +71,7 @@ describe('API Routes Tests', () => {
       expect(data.testEpisode).toBeDefined()
     })
   })
+  */
 
   describe('/api/cron/content-pipeline (GET with Bearer token)', () => {
     it('should reject requests with wrong token', async () => {
@@ -229,10 +232,11 @@ describe('API Routes Tests', () => {
       expect(response.status).toBe(200)
     })
 
-    it('should report elevenlabs failure when API key is missing', async () => {
+    it.skip('should report elevenlabs failure when API key is missing', async () => {
       delete process.env.ELEVENLABS_API_KEY
 
-      const { GET } = await import('@/app/api/test-podcast-cron/route')
+      // NOTE: test-podcast-cron route was removed
+      // const { GET } = await import('@/app/api/test-podcast-cron/route')
 
       ;(global as any).fetch = jest.fn().mockImplementation((url: any) => {
         if (url.includes('elevenlabs.io')) {

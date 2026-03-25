@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const password = process.env.ADMIN_PASSWORD;
     const allowedUsers = process.env.ADMIN_USERS?.split(',') || ['ben'];
 
@@ -11,11 +11,14 @@ export function middleware(request: NextRequest) {
         return new NextResponse('Configuration Error', { status: 500 });
     }
 
-    // Exempt API routes that have their own authentication
+    // Exempt API routes and public assets from authentication
     if (request.nextUrl.pathname.startsWith('/api/slack') ||
         request.nextUrl.pathname.startsWith('/api/pipeline/') ||
         request.nextUrl.pathname.startsWith('/api/social-publish') ||
-        request.nextUrl.pathname.startsWith('/api/cron/')) {
+        request.nextUrl.pathname.startsWith('/api/cron/') ||
+        request.nextUrl.pathname.startsWith('/videos/') ||
+        request.nextUrl.pathname.startsWith('/_next/') ||
+        request.nextUrl.pathname.includes('.')) {
         return NextResponse.next();
     }
 

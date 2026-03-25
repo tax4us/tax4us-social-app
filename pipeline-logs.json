@@ -1,5 +1,1474 @@
 [
   {
+    "id": "vxbzlsl",
+    "timestamp": "2026-03-25T02:13:00.397Z",
+    "level": "info",
+    "message": "No recent posts found for podcast production.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "ygxytm",
+    "timestamp": "2026-03-25T02:12:59.007Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "0sggv",
+    "timestamp": "2026-03-25T02:12:50.671Z",
+    "level": "error",
+    "message": "SEO AutoPilot Failed: Claude API Error: {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"Overloaded\"},\"request_id\":\"req_011CZNzKeP4VEHvjmVa6dCKs\"}"
+  },
+  {
+    "id": "et22mc",
+    "timestamp": "2026-03-25T02:12:49.652Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "my8n26",
+    "timestamp": "2026-03-25T02:12:49.651Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2783"
+  },
+  {
+    "id": "nr8ifa",
+    "timestamp": "2026-03-25T02:12:49.650Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"מיסוי אופציות לעובדים\", Score: 75%)",
+    "topicId": "2783"
+  },
+  {
+    "id": "oxg4tu",
+    "timestamp": "2026-03-25T02:12:49.348Z",
+    "level": "info",
+    "message": "Successfully optimized \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". New Score: 75%",
+    "topicId": "2784"
+  },
+  {
+    "id": "sfvsuq",
+    "timestamp": "2026-03-25T02:12:32.566Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "53q2jeb",
+    "timestamp": "2026-03-25T02:12:32.565Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2784"
+  },
+  {
+    "id": "kb02y",
+    "timestamp": "2026-03-25T02:12:32.564Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"employee stock options\", Score: 75%)",
+    "topicId": "2784"
+  },
+  {
+    "id": "rzpk3k",
+    "timestamp": "2026-03-25T02:12:32.048Z",
+    "level": "info",
+    "message": "Successfully optimized \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\". New Score: 75%",
+    "topicId": "2792"
+  },
+  {
+    "id": "zsg0c",
+    "timestamp": "2026-03-25T02:12:14.059Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\""
+  },
+  {
+    "id": "aakty",
+    "timestamp": "2026-03-25T02:12:14.058Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\". Starting enhancement.",
+    "topicId": "2792"
+  },
+  {
+    "id": "1ju93h",
+    "timestamp": "2026-03-25T02:12:14.056Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\" (Keyword: \"cross-border inheritance\", Score: 75%)",
+    "topicId": "2792"
+  },
+  {
+    "id": "oq30x",
+    "timestamp": "2026-03-25T02:12:13.714Z",
+    "level": "info",
+    "message": "Successfully optimized \"דרישות הגשת FBAR לישראלים-אמריקאים\". New Score: 75%",
+    "topicId": "2822"
+  },
+  {
+    "id": "9quzv",
+    "timestamp": "2026-03-25T02:11:57.839Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"דרישות הגשת FBAR לישראלים-אמריקאים\""
+  },
+  {
+    "id": "6hm7cq",
+    "timestamp": "2026-03-25T02:11:57.838Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"דרישות הגשת FBAR לישראלים-אמריקאים\". Starting enhancement.",
+    "topicId": "2822"
+  },
+  {
+    "id": "eecmt",
+    "timestamp": "2026-03-25T02:11:57.838Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"דרישות הגשת FBAR לישראלים-אמריקאים\" (Keyword: \"דיווח FBAR עבור ישראלים-אמריקאים\", Score: 75%)",
+    "topicId": "2822"
+  },
+  {
+    "id": "s0cy9",
+    "timestamp": "2026-03-25T02:11:52.843Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "vpo5dc",
+    "timestamp": "2026-03-25T02:06:43.465Z",
+    "level": "info",
+    "message": "Successfully optimized \"מועדי הגשת FBAR 2026 &#8211; מידע קריטי לישראלים-אמריקאים\". New Score: 75%",
+    "topicId": "2767"
+  },
+  {
+    "id": "3he943",
+    "timestamp": "2026-03-25T02:06:24.470Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מועדי הגשת FBAR 2026 &#8211; מידע קריטי לישראלים-אמריקאים\""
+  },
+  {
+    "id": "n5ewi",
+    "timestamp": "2026-03-25T02:06:24.469Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מועדי הגשת FBAR 2026 &#8211; מידע קריטי לישראלים-אמריקאים\". Starting enhancement.",
+    "topicId": "2767"
+  },
+  {
+    "id": "vo9r",
+    "timestamp": "2026-03-25T02:06:24.468Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מועדי הגשת FBAR 2026 &#8211; מידע קריטי לישראלים-אמריקאים\" (Keyword: \"מועדי הגשת FBAR\", Score: 75%)",
+    "topicId": "2767"
+  },
+  {
+    "id": "pek6uc",
+    "timestamp": "2026-03-25T02:06:24.179Z",
+    "level": "info",
+    "message": "Successfully optimized \"2026 FBAR Filing Deadlines &#8211; Critical Information for Israeli-Americans\". New Score: 75%",
+    "topicId": "2768"
+  },
+  {
+    "id": "uop0e8h",
+    "timestamp": "2026-03-25T02:06:10.514Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"2026 FBAR Filing Deadlines &#8211; Critical Information for Israeli-Americans\""
+  },
+  {
+    "id": "va5he",
+    "timestamp": "2026-03-25T02:06:10.513Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"2026 FBAR Filing Deadlines &#8211; Critical Information for Israeli-Americans\". Starting enhancement.",
+    "topicId": "2768"
+  },
+  {
+    "id": "ptomrx",
+    "timestamp": "2026-03-25T02:06:10.512Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"2026 FBAR Filing Deadlines &#8211; Critical Information for Israeli-Americans\" (Keyword: \"FBAR filing deadlines\", Score: 75%)",
+    "topicId": "2768"
+  },
+  {
+    "id": "0bpezj",
+    "timestamp": "2026-03-25T02:06:10.181Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\". New Score: 75%",
+    "topicId": "2769"
+  },
+  {
+    "id": "csi5nm",
+    "timestamp": "2026-03-25T02:05:47.950Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\""
+  },
+  {
+    "id": "yl9w9d",
+    "timestamp": "2026-03-25T02:05:47.950Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\". Starting enhancement.",
+    "topicId": "2769"
+  },
+  {
+    "id": "omtwjg",
+    "timestamp": "2026-03-25T02:05:47.948Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\" (Keyword: \"מיסוי קריפטו ישראלים אמריקאים\", Score: 75%)",
+    "topicId": "2769"
+  },
+  {
+    "id": "9cj5nr",
+    "timestamp": "2026-03-25T02:05:47.653Z",
+    "level": "info",
+    "message": "Successfully optimized \"Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\". New Score: 75%",
+    "topicId": "2770"
+  },
+  {
+    "id": "vyeaps",
+    "timestamp": "2026-03-25T02:05:29.427Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\""
+  },
+  {
+    "id": "ok6ufa",
+    "timestamp": "2026-03-25T02:05:29.424Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\". Starting enhancement.",
+    "topicId": "2770"
+  },
+  {
+    "id": "phr5a3",
+    "timestamp": "2026-03-25T02:05:29.422Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Cryptocurrency Tax Guide: Bitcoin Trading and Mining for Israeli Americans\" (Keyword: \"cryptocurrency tax guide\", Score: 75%)",
+    "topicId": "2770"
+  },
+  {
+    "id": "egho6m",
+    "timestamp": "2026-03-25T02:05:29.122Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". New Score: 75%",
+    "topicId": "2771"
+  },
+  {
+    "id": "b5h6og",
+    "timestamp": "2026-03-25T02:05:07.990Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "9ggpyf",
+    "timestamp": "2026-03-25T02:05:07.989Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2771"
+  },
+  {
+    "id": "0nc70r",
+    "timestamp": "2026-03-25T02:05:07.988Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"אופציות מניות עובדים\", Score: 75%)",
+    "topicId": "2771"
+  },
+  {
+    "id": "wxpa9e",
+    "timestamp": "2026-03-25T02:05:07.646Z",
+    "level": "info",
+    "message": "Successfully optimized \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". New Score: 75%",
+    "topicId": "2772"
+  },
+  {
+    "id": "cvpmh4",
+    "timestamp": "2026-03-25T02:04:42.224Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "oaegs9",
+    "timestamp": "2026-03-25T02:04:42.222Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2772"
+  },
+  {
+    "id": "4awd2",
+    "timestamp": "2026-03-25T02:04:42.220Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"employee stock options\", Score: 75%)",
+    "topicId": "2772"
+  },
+  {
+    "id": "nr4zat",
+    "timestamp": "2026-03-25T02:04:41.915Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: Estate Tax Planning for Israeli-American Dual Citizens\". New Score: 75%",
+    "topicId": "2773"
+  },
+  {
+    "id": "hyv0gd",
+    "timestamp": "2026-03-25T02:04:15.908Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: Estate Tax Planning for Israeli-American Dual Citizens\""
+  },
+  {
+    "id": "xl5e7",
+    "timestamp": "2026-03-25T02:04:15.906Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: Estate Tax Planning for Israeli-American Dual Citizens\". Starting enhancement.",
+    "topicId": "2773"
+  },
+  {
+    "id": "b3j3v8",
+    "timestamp": "2026-03-25T02:04:15.904Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: Estate Tax Planning for Israeli-American Dual Citizens\" (Keyword: \"תכנון מס עיזבון\", Score: 75%)",
+    "topicId": "2773"
+  },
+  {
+    "id": "1jpny2",
+    "timestamp": "2026-03-25T02:04:15.565Z",
+    "level": "info",
+    "message": "Successfully optimized \"Estate Tax Planning for Israeli-American Dual Citizens\". New Score: 75%",
+    "topicId": "2774"
+  },
+  {
+    "id": "tjz2gc",
+    "timestamp": "2026-03-25T02:03:59.422Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Estate Tax Planning for Israeli-American Dual Citizens\""
+  },
+  {
+    "id": "j96q6b",
+    "timestamp": "2026-03-25T02:03:59.420Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Estate Tax Planning for Israeli-American Dual Citizens\". Starting enhancement.",
+    "topicId": "2774"
+  },
+  {
+    "id": "tvneof",
+    "timestamp": "2026-03-25T02:03:59.418Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Estate Tax Planning for Israeli-American Dual Citizens\" (Keyword: \"estate tax planning\", Score: 75%)",
+    "topicId": "2774"
+  },
+  {
+    "id": "rscc7d",
+    "timestamp": "2026-03-25T02:03:59.108Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". New Score: 75%",
+    "topicId": "2775"
+  },
+  {
+    "id": "rlimrp",
+    "timestamp": "2026-03-25T02:03:33.192Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "cm8rnm",
+    "timestamp": "2026-03-25T02:03:33.190Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2775"
+  },
+  {
+    "id": "krc7c8",
+    "timestamp": "2026-03-25T02:03:33.188Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"אופציות מניות עובדים\", Score: 75%)",
+    "topicId": "2775"
+  },
+  {
+    "id": "w98kbp",
+    "timestamp": "2026-03-25T02:03:32.885Z",
+    "level": "info",
+    "message": "Successfully optimized \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". New Score: 75%",
+    "topicId": "2776"
+  },
+  {
+    "id": "2zkyek",
+    "timestamp": "2026-03-25T02:03:16.661Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "9fc18",
+    "timestamp": "2026-03-25T02:03:16.659Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2776"
+  },
+  {
+    "id": "qni6g8",
+    "timestamp": "2026-03-25T02:03:16.657Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"employee stock options israel\", Score: 75%)",
+    "topicId": "2776"
+  },
+  {
+    "id": "kt4zuc",
+    "timestamp": "2026-03-25T02:03:16.306Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\". New Score: 75%",
+    "topicId": "2777"
+  },
+  {
+    "id": "3ltu25",
+    "timestamp": "2026-03-25T02:02:51.734Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\""
+  },
+  {
+    "id": "cq643",
+    "timestamp": "2026-03-25T02:02:51.734Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\". Starting enhancement.",
+    "topicId": "2777"
+  },
+  {
+    "id": "yqxcmb",
+    "timestamp": "2026-03-25T02:02:51.733Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\" (Keyword: \"דיווח מס על השקעות בקריפטו\", Score: 75%)",
+    "topicId": "2777"
+  },
+  {
+    "id": "xzu3is",
+    "timestamp": "2026-03-25T02:02:51.427Z",
+    "level": "info",
+    "message": "Successfully optimized \"Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\". New Score: 75%",
+    "topicId": "2778"
+  },
+  {
+    "id": "27ipma",
+    "timestamp": "2026-03-25T02:02:36.714Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\""
+  },
+  {
+    "id": "l4jnw9",
+    "timestamp": "2026-03-25T02:02:36.713Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\". Starting enhancement.",
+    "topicId": "2778"
+  },
+  {
+    "id": "p77vx",
+    "timestamp": "2026-03-25T02:02:36.712Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Cryptocurrency Tax Reporting for Israeli-American Digital Asset Investors\" (Keyword: \"cryptocurrency tax reporting\", Score: 75%)",
+    "topicId": "2778"
+  },
+  {
+    "id": "3s6di",
+    "timestamp": "2026-03-25T02:02:36.418Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: US Real Estate Owned by Israeli Investors: Tax Planning Strategies\". New Score: 75%",
+    "topicId": "2779"
+  },
+  {
+    "id": "cpwda",
+    "timestamp": "2026-03-25T02:02:13.570Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: US Real Estate Owned by Israeli Investors: Tax Planning Strategies\""
+  },
+  {
+    "id": "zm858u",
+    "timestamp": "2026-03-25T02:02:13.569Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: US Real Estate Owned by Israeli Investors: Tax Planning Strategies\". Starting enhancement.",
+    "topicId": "2779"
+  },
+  {
+    "id": "2kkixn",
+    "timestamp": "2026-03-25T02:02:13.567Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: US Real Estate Owned by Israeli Investors: Tax Planning Strategies\" (Keyword: \"מיסוי נדל״ן בארה״ב\", Score: 75%)",
+    "topicId": "2779"
+  },
+  {
+    "id": "kqikkfp",
+    "timestamp": "2026-03-25T02:02:13.225Z",
+    "level": "info",
+    "message": "Successfully optimized \"US Real Estate Owned by Israeli Investors: Tax Planning Strategies\". New Score: 75%",
+    "topicId": "2780"
+  },
+  {
+    "id": "v69mm9",
+    "timestamp": "2026-03-25T02:01:52.526Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"US Real Estate Owned by Israeli Investors: Tax Planning Strategies\""
+  },
+  {
+    "id": "1xcnjr",
+    "timestamp": "2026-03-25T02:01:52.524Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"US Real Estate Owned by Israeli Investors: Tax Planning Strategies\". Starting enhancement.",
+    "topicId": "2780"
+  },
+  {
+    "id": "szfbdo",
+    "timestamp": "2026-03-25T02:01:52.522Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"US Real Estate Owned by Israeli Investors: Tax Planning Strategies\" (Keyword: \"Israeli investors in US real estate\", Score: 75%)",
+    "topicId": "2780"
+  },
+  {
+    "id": "uz2n3p",
+    "timestamp": "2026-03-25T02:01:52.222Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: LLC Taxation Guide for Israeli Business Owners in the US\". New Score: 75%",
+    "topicId": "2781"
+  },
+  {
+    "id": "gsg8ka",
+    "timestamp": "2026-03-25T02:01:20.408Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: LLC Taxation Guide for Israeli Business Owners in the US\""
+  },
+  {
+    "id": "bnj5l",
+    "timestamp": "2026-03-25T02:01:20.402Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: LLC Taxation Guide for Israeli Business Owners in the US\". Starting enhancement.",
+    "topicId": "2781"
+  },
+  {
+    "id": "h6cp5",
+    "timestamp": "2026-03-25T02:01:20.398Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: LLC Taxation Guide for Israeli Business Owners in the US\" (Keyword: \"חיובי מס על LLC\", Score: 75%)",
+    "topicId": "2781"
+  },
+  {
+    "id": "1zkixw",
+    "timestamp": "2026-03-25T02:01:20.064Z",
+    "level": "info",
+    "message": "Successfully optimized \"LLC Taxation Guide for Israeli Business Owners in the US\". New Score: 75%",
+    "topicId": "2782"
+  },
+  {
+    "id": "zjr9xi",
+    "timestamp": "2026-03-25T02:00:58.275Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"LLC Taxation Guide for Israeli Business Owners in the US\""
+  },
+  {
+    "id": "qxherq",
+    "timestamp": "2026-03-25T02:00:58.274Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"LLC Taxation Guide for Israeli Business Owners in the US\". Starting enhancement.",
+    "topicId": "2782"
+  },
+  {
+    "id": "4b28wh9",
+    "timestamp": "2026-03-25T02:00:58.273Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"LLC Taxation Guide for Israeli Business Owners in the US\" (Keyword: \"LLC taxation Israeli-Americans\", Score: 75%)",
+    "topicId": "2782"
+  },
+  {
+    "id": "dpi0r",
+    "timestamp": "2026-03-25T02:00:57.964Z",
+    "level": "info",
+    "message": "Successfully optimized \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". New Score: 75%",
+    "topicId": "2783"
+  },
+  {
+    "id": "gq6sr5",
+    "timestamp": "2026-03-25T02:00:28.671Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "8g759d",
+    "timestamp": "2026-03-25T02:00:28.670Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2783"
+  },
+  {
+    "id": "sphszi",
+    "timestamp": "2026-03-25T02:00:28.669Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"מדריך: Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"מיסוי אופציות לעובדים\", Score: 75%)",
+    "topicId": "2783"
+  },
+  {
+    "id": "2xbp1s",
+    "timestamp": "2026-03-25T02:00:28.367Z",
+    "level": "info",
+    "message": "Successfully optimized \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". New Score: 75%",
+    "topicId": "2784"
+  },
+  {
+    "id": "dqrmcm",
+    "timestamp": "2026-03-25T02:00:12.810Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\""
+  },
+  {
+    "id": "qn156r",
+    "timestamp": "2026-03-25T02:00:12.808Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\". Starting enhancement.",
+    "topicId": "2784"
+  },
+  {
+    "id": "pof5b",
+    "timestamp": "2026-03-25T02:00:12.807Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Employee Stock Options Tax Guide: RSU and ISO for Israeli Tech Workers\" (Keyword: \"employee stock options tax\", Score: 75%)",
+    "topicId": "2784"
+  },
+  {
+    "id": "wpo2ba",
+    "timestamp": "2026-03-25T02:00:12.428Z",
+    "level": "info",
+    "message": "Successfully optimized \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\". New Score: 75%",
+    "topicId": "2792"
+  },
+  {
+    "id": "yvgzth",
+    "timestamp": "2026-03-25T01:59:51.626Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\""
+  },
+  {
+    "id": "gg2mkm",
+    "timestamp": "2026-03-25T01:59:51.625Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\". Starting enhancement.",
+    "topicId": "2792"
+  },
+  {
+    "id": "xiuuk4",
+    "timestamp": "2026-03-25T01:59:51.624Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"ניווט במורכבות של ירושה וניהול נכסים חוצי גבולות עבור ישראלים-אמריקאים | Navigating the Complexities of Cross-Border Inheritance and Asset Management for Israeli-Americans\" (Keyword: \"Cross-border inheritance and gifting\", Score: 75%)",
+    "topicId": "2792"
+  },
+  {
+    "id": "k9i6qx",
+    "timestamp": "2026-03-25T01:59:51.299Z",
+    "level": "info",
+    "message": "Successfully optimized \"דרישות הגשת FBAR לישראלים-אמריקאים\". New Score: 75%",
+    "topicId": "2822"
+  },
+  {
+    "id": "11wk1j",
+    "timestamp": "2026-03-25T01:59:35.002Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"דרישות הגשת FBAR לישראלים-אמריקאים\""
+  },
+  {
+    "id": "8n6x7c",
+    "timestamp": "2026-03-25T01:59:35.001Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"דרישות הגשת FBAR לישראלים-אמריקאים\". Starting enhancement.",
+    "topicId": "2822"
+  },
+  {
+    "id": "by5q3k",
+    "timestamp": "2026-03-25T01:59:35.001Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"דרישות הגשת FBAR לישראלים-אמריקאים\" (Keyword: \"דיווח FBAR לישראלים-אמריקאים\", Score: 75%)",
+    "topicId": "2822"
+  },
+  {
+    "id": "bokwvp",
+    "timestamp": "2026-03-25T01:59:29.908Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "10pu9e",
+    "timestamp": "2026-03-25T01:59:29.907Z",
+    "level": "info",
+    "message": "Tuesday/Friday Worker: Running SEO Audit scan.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "vuexja",
+    "timestamp": "2026-03-25T01:59:29.906Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 2, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "bpkbs5",
+    "timestamp": "2026-03-25T01:03:41.399Z",
+    "level": "error",
+    "message": "Heal failed for 12345: WordPress API Error: {\"error\":\"Service error\"}"
+  },
+  {
+    "id": "u038l",
+    "timestamp": "2026-03-25T01:03:41.399Z",
+    "level": "error",
+    "message": "Podcast AutoPilot Failed: WordPress API Error: {\"error\":\"Service error\"}"
+  },
+  {
+    "id": "wh3x9i",
+    "timestamp": "2026-03-25T01:03:41.398Z",
+    "level": "info",
+    "message": "Healing requested for Post 12345",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "ky6oyc",
+    "timestamp": "2026-03-25T01:03:41.397Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "eztbrd",
+    "timestamp": "2026-03-25T01:03:41.397Z",
+    "level": "info",
+    "message": "No recent posts found for podcast production.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "bg02tk",
+    "timestamp": "2026-03-25T01:03:41.397Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "3mjncp",
+    "timestamp": "2026-03-25T01:03:41.396Z",
+    "level": "info",
+    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
+    "topicId": "12345"
+  },
+  {
+    "id": "inhwpb",
+    "timestamp": "2026-03-25T01:03:41.396Z",
+    "level": "info",
+    "message": "Topic Proposed: FBAR 2026",
+    "topicId": "12345"
+  },
+  {
+    "id": "z5kxrr",
+    "timestamp": "2026-03-25T01:03:41.395Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "gd2eus",
+    "timestamp": "2026-03-25T01:03:41.395Z",
+    "level": "success",
+    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
+  },
+  {
+    "id": "4np1jl",
+    "timestamp": "2026-03-25T01:03:41.394Z",
+    "level": "agent",
+    "message": "Healing Translation for 12345...",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "70a9qx",
+    "timestamp": "2026-03-25T01:03:41.394Z",
+    "level": "info",
+    "message": "Healing requested for Post 12345",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "zqow3i",
+    "timestamp": "2026-03-25T01:03:41.393Z",
+    "level": "info",
+    "message": "Successfully optimized \"Short post\". New Score: 75%",
+    "topicId": "123"
+  },
+  {
+    "id": "zmiles",
+    "timestamp": "2026-03-25T01:03:41.391Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Short post\""
+  },
+  {
+    "id": "gt505f",
+    "timestamp": "2026-03-25T01:03:41.390Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Short post\". Starting enhancement.",
+    "topicId": "123"
+  },
+  {
+    "id": "2gzmkc",
+    "timestamp": "2026-03-25T01:03:41.390Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Short post\" (Keyword: \"\", Score: 75%)",
+    "topicId": "123"
+  },
+  {
+    "id": "hmrfz",
+    "timestamp": "2026-03-25T01:03:41.386Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "ojxu2c",
+    "timestamp": "2026-03-25T01:03:41.385Z",
+    "level": "success",
+    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "e6hvmc",
+    "timestamp": "2026-03-25T01:03:41.385Z",
+    "level": "error",
+    "message": "Podcast production failed for \"Remote Work Tax Obligations for Israeli-Americans\": TypeError: response.text is not a function",
+    "topicId": "12345"
+  },
+  {
+    "id": "u8a1q",
+    "timestamp": "2026-03-25T01:03:41.384Z",
+    "level": "error",
+    "message": "Podcast preparation failed for \"Remote Work Tax Obligations for Israeli-Americans\"",
+    "topicId": {}
+  },
+  {
+    "id": "qk5a1q",
+    "timestamp": "2026-03-25T01:03:41.380Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"Remote Work Tax Obligations for Israeli-Americans\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "8126or",
+    "timestamp": "2026-03-25T01:03:41.380Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: Remote Work Tax Obligations for Israeli-Americans...",
+    "topicId": "12345"
+  },
+  {
+    "id": "r2bc3a",
+    "timestamp": "2026-03-25T01:03:41.379Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "lly618",
+    "timestamp": "2026-03-25T01:03:41.379Z",
+    "level": "info",
+    "message": "No recent posts found for podcast production.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "mjx75o",
+    "timestamp": "2026-03-25T01:03:41.378Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "lwkdxc",
+    "timestamp": "2026-03-25T01:03:41.377Z",
+    "level": "info",
+    "message": "Revised topic proposed: FBAR 2026",
+    "topicId": "12345"
+  },
+  {
+    "id": "44blz",
+    "timestamp": "2026-03-25T01:03:41.376Z",
+    "level": "info",
+    "message": "Generating new topic based on feedback: Focus on FATCA reporting for dual citizens..."
+  },
+  {
+    "id": "x3mmco",
+    "timestamp": "2026-03-25T01:03:41.375Z",
+    "level": "info",
+    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
+    "topicId": "12345"
+  },
+  {
+    "id": "e66myq",
+    "timestamp": "2026-03-25T01:03:41.374Z",
+    "level": "info",
+    "message": "Topic Proposed: FBAR 2026",
+    "topicId": "12345"
+  },
+  {
+    "id": "2pg8et",
+    "timestamp": "2026-03-25T01:03:41.371Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "48kwen",
+    "timestamp": "2026-03-25T01:03:41.351Z",
+    "level": "error",
+    "message": "Heal failed for 99999: WordPress API Error: {\"message\":\"Not Found\"}"
+  },
+  {
+    "id": "nnne8h",
+    "timestamp": "2026-03-25T01:03:41.351Z",
+    "level": "info",
+    "message": "Healing requested for Post 99999",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "tgojzr",
+    "timestamp": "2026-03-25T01:03:41.350Z",
+    "level": "success",
+    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
+  },
+  {
+    "id": "aefvqv",
+    "timestamp": "2026-03-25T01:03:41.350Z",
+    "level": "agent",
+    "message": "Healing Translation for 12345...",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "ydh02",
+    "timestamp": "2026-03-25T01:03:41.349Z",
+    "level": "info",
+    "message": "Healing requested for Post 12345",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "hy266",
+    "timestamp": "2026-03-25T01:03:41.348Z",
+    "level": "success",
+    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "j68jr",
+    "timestamp": "2026-03-25T01:03:41.348Z",
+    "level": "error",
+    "message": "Podcast production failed for \"FBAR 2026 Guide\": TypeError: response.text is not a function",
+    "topicId": "123"
+  },
+  {
+    "id": "yhiyk",
+    "timestamp": "2026-03-25T01:03:41.348Z",
+    "level": "error",
+    "message": "Podcast preparation failed for \"FBAR 2026 Guide\"",
+    "topicId": {}
+  },
+  {
+    "id": "myctm4",
+    "timestamp": "2026-03-25T01:03:41.328Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"FBAR 2026 Guide\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "osoj7m",
+    "timestamp": "2026-03-25T01:03:41.327Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: FBAR 2026 Guide...",
+    "topicId": "123"
+  },
+  {
+    "id": "qqyqk5",
+    "timestamp": "2026-03-25T01:03:41.327Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "zik2zr",
+    "timestamp": "2026-03-25T01:03:41.326Z",
+    "level": "info",
+    "message": "No recent posts found for podcast production.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "irtpml",
+    "timestamp": "2026-03-25T01:03:41.321Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "y9hnk8",
+    "timestamp": "2026-03-25T01:03:41.321Z",
+    "level": "info",
+    "message": "No posts published today. Skipping podcast.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "9lm91v",
+    "timestamp": "2026-03-25T01:03:41.320Z",
+    "level": "info",
+    "message": "Wednesday Worker: Running Podcast production flow.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "yjd6c",
+    "timestamp": "2026-03-25T01:03:41.320Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 3, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "w4bcr",
+    "timestamp": "2026-03-25T01:03:41.319Z",
+    "level": "info",
+    "message": "No tasks scheduled for today.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "etgd6u",
+    "timestamp": "2026-03-25T01:03:41.318Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 0, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "nznyy",
+    "timestamp": "2026-03-25T01:03:41.317Z",
+    "level": "info",
+    "message": "Revised topic proposed: Revised FBAR Topic",
+    "topicId": "10000"
+  },
+  {
+    "id": "qwyph",
+    "timestamp": "2026-03-25T01:03:41.316Z",
+    "level": "info",
+    "message": "Generating new topic based on feedback: Please focus on FATCA requirements..."
+  },
+  {
+    "id": "vabwjd",
+    "timestamp": "2026-03-25T01:03:41.305Z",
+    "level": "error",
+    "message": "Proposal Failed: WordPress API Error: {\"message\":\"Internal Server Error\"}"
+  },
+  {
+    "id": "2owrv",
+    "timestamp": "2026-03-25T01:03:41.304Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "zkurpo",
+    "timestamp": "2026-03-25T01:03:41.303Z",
+    "level": "info",
+    "message": "Topic approval pending for: FBAR 2026 Deadlines. Waiting for Ben's response...",
+    "topicId": "9999"
+  },
+  {
+    "id": "spfnvr",
+    "timestamp": "2026-03-25T01:03:41.302Z",
+    "level": "info",
+    "message": "Topic Proposed: FBAR 2026 Deadlines",
+    "topicId": "9999"
+  },
+  {
+    "id": "c7hts",
+    "timestamp": "2026-03-25T01:03:41.296Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "qlia24",
+    "timestamp": "2026-03-25T01:03:41.077Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "acymv8",
+    "timestamp": "2026-03-25T01:03:41.077Z",
+    "level": "info",
+    "message": "Tuesday/Friday Worker: Running SEO Audit scan.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "3mgbgp",
+    "timestamp": "2026-03-25T01:03:41.076Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 2, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "u7bv",
+    "timestamp": "2026-03-25T01:02:38.403Z",
+    "level": "error",
+    "message": "Heal failed for 12345: WordPress API Error: {\"error\":\"Service error\"}"
+  },
+  {
+    "id": "xd1h6",
+    "timestamp": "2026-03-25T01:02:38.402Z",
+    "level": "error",
+    "message": "Podcast AutoPilot Failed: WordPress API Error: {\"error\":\"Service error\"}"
+  },
+  {
+    "id": "85h4m9",
+    "timestamp": "2026-03-25T01:02:38.402Z",
+    "level": "info",
+    "message": "Healing requested for Post 12345",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "vwmy5s",
+    "timestamp": "2026-03-25T01:02:38.402Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "tb4z0i",
+    "timestamp": "2026-03-25T01:02:38.399Z",
+    "level": "info",
+    "message": "No recent posts found for podcast production.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "6ta99",
+    "timestamp": "2026-03-25T01:02:38.398Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "7obse",
+    "timestamp": "2026-03-25T01:02:38.398Z",
+    "level": "info",
+    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
+    "topicId": "12345"
+  },
+  {
+    "id": "7sbryi",
+    "timestamp": "2026-03-25T01:02:38.398Z",
+    "level": "info",
+    "message": "Topic Proposed: FBAR 2026",
+    "topicId": "12345"
+  },
+  {
+    "id": "2u3b1k",
+    "timestamp": "2026-03-25T01:02:38.397Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "de8a0l",
+    "timestamp": "2026-03-25T01:02:38.397Z",
+    "level": "success",
+    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
+  },
+  {
+    "id": "uanmdc",
+    "timestamp": "2026-03-25T01:02:38.396Z",
+    "level": "agent",
+    "message": "Healing Translation for 12345...",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "ob12t",
+    "timestamp": "2026-03-25T01:02:38.396Z",
+    "level": "info",
+    "message": "Healing requested for Post 12345",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "h3z1zu",
+    "timestamp": "2026-03-25T01:02:38.395Z",
+    "level": "info",
+    "message": "Successfully optimized \"Short post\". New Score: 75%",
+    "topicId": "123"
+  },
+  {
+    "id": "c8a0hk",
+    "timestamp": "2026-03-25T01:02:38.394Z",
+    "level": "agent",
+    "message": "Initializing SEO enhancement for: \"Short post\""
+  },
+  {
+    "id": "a0yv8",
+    "timestamp": "2026-03-25T01:02:38.393Z",
+    "level": "info",
+    "message": "Low SEO score (75%) identified for \"Short post\". Starting enhancement.",
+    "topicId": "123"
+  },
+  {
+    "id": "mpqjzt",
+    "timestamp": "2026-03-25T01:02:38.393Z",
+    "level": "agent",
+    "message": "Analyzing SEO for: \"Short post\" (Keyword: \"\", Score: 75%)",
+    "topicId": "123"
+  },
+  {
+    "id": "5na95t",
+    "timestamp": "2026-03-25T01:02:38.393Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "9wjsr",
+    "timestamp": "2026-03-25T01:02:38.392Z",
+    "level": "success",
+    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "b8tmtq",
+    "timestamp": "2026-03-25T01:02:38.392Z",
+    "level": "error",
+    "message": "Podcast production failed for \"Remote Work Tax Obligations for Israeli-Americans\": TypeError: response.text is not a function",
+    "topicId": "12345"
+  },
+  {
+    "id": "sqlig8",
+    "timestamp": "2026-03-25T01:02:38.391Z",
+    "level": "error",
+    "message": "Podcast preparation failed for \"Remote Work Tax Obligations for Israeli-Americans\"",
+    "topicId": {}
+  },
+  {
+    "id": "gy8www",
+    "timestamp": "2026-03-25T01:02:38.387Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"Remote Work Tax Obligations for Israeli-Americans\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "6sz08b",
+    "timestamp": "2026-03-25T01:02:38.386Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: Remote Work Tax Obligations for Israeli-Americans...",
+    "topicId": "12345"
+  },
+  {
+    "id": "uzfbil",
+    "timestamp": "2026-03-25T01:02:38.386Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "cu9czx",
+    "timestamp": "2026-03-25T01:02:38.385Z",
+    "level": "info",
+    "message": "No recent posts found for podcast production.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "i0ssik",
+    "timestamp": "2026-03-25T01:02:38.385Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "jg9nhd",
+    "timestamp": "2026-03-25T01:02:38.384Z",
+    "level": "info",
+    "message": "Revised topic proposed: FBAR 2026",
+    "topicId": "12345"
+  },
+  {
+    "id": "pd3d4u",
+    "timestamp": "2026-03-25T01:02:38.384Z",
+    "level": "info",
+    "message": "Generating new topic based on feedback: Focus on FATCA reporting for dual citizens..."
+  },
+  {
+    "id": "v2to9",
+    "timestamp": "2026-03-25T01:02:38.382Z",
+    "level": "info",
+    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
+    "topicId": "12345"
+  },
+  {
+    "id": "zbxdy",
+    "timestamp": "2026-03-25T01:02:38.382Z",
+    "level": "info",
+    "message": "Topic Proposed: FBAR 2026",
+    "topicId": "12345"
+  },
+  {
+    "id": "hy8gpa",
+    "timestamp": "2026-03-25T01:02:38.380Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "koytls",
+    "timestamp": "2026-03-25T01:02:38.361Z",
+    "level": "error",
+    "message": "Heal failed for 99999: WordPress API Error: {\"message\":\"Not Found\"}"
+  },
+  {
+    "id": "kynqye",
+    "timestamp": "2026-03-25T01:02:38.360Z",
+    "level": "info",
+    "message": "Healing requested for Post 99999",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "vet20j",
+    "timestamp": "2026-03-25T01:02:38.360Z",
+    "level": "success",
+    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
+  },
+  {
+    "id": "tr36bn",
+    "timestamp": "2026-03-25T01:02:38.359Z",
+    "level": "agent",
+    "message": "Healing Translation for 12345...",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "tbszbm",
+    "timestamp": "2026-03-25T01:02:38.359Z",
+    "level": "info",
+    "message": "Healing requested for Post 12345",
+    "topicId": "HEAL"
+  },
+  {
+    "id": "nnvv5",
+    "timestamp": "2026-03-25T01:02:38.358Z",
+    "level": "success",
+    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "cxpz8i",
+    "timestamp": "2026-03-25T01:02:38.358Z",
+    "level": "error",
+    "message": "Podcast production failed for \"FBAR 2026 Guide\": TypeError: response.text is not a function",
+    "topicId": "123"
+  },
+  {
+    "id": "fqg9gs",
+    "timestamp": "2026-03-25T01:02:38.357Z",
+    "level": "error",
+    "message": "Podcast preparation failed for \"FBAR 2026 Guide\"",
+    "topicId": {}
+  },
+  {
+    "id": "ywq598",
+    "timestamp": "2026-03-25T01:02:38.334Z",
+    "level": "info",
+    "message": "Starting podcast preparation for: \"FBAR 2026 Guide\"",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "rjy72k",
+    "timestamp": "2026-03-25T01:02:38.333Z",
+    "level": "agent",
+    "message": "Creating podcast episode for: FBAR 2026 Guide...",
+    "topicId": "123"
+  },
+  {
+    "id": "2rltmj",
+    "timestamp": "2026-03-25T01:02:38.333Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "3pq9bo",
+    "timestamp": "2026-03-25T01:02:38.332Z",
+    "level": "info",
+    "message": "No recent posts found for podcast production.",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "8yljti",
+    "timestamp": "2026-03-25T01:02:38.332Z",
+    "level": "info",
+    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
+    "topicId": "PODCAST"
+  },
+  {
+    "id": "gyhk1",
+    "timestamp": "2026-03-25T01:02:38.331Z",
+    "level": "info",
+    "message": "No posts published today. Skipping podcast.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "sixjx",
+    "timestamp": "2026-03-25T01:02:38.331Z",
+    "level": "info",
+    "message": "Wednesday Worker: Running Podcast production flow.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "tk9ade",
+    "timestamp": "2026-03-25T01:02:38.331Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 3, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "mgvxy4",
+    "timestamp": "2026-03-25T01:02:38.330Z",
+    "level": "info",
+    "message": "No tasks scheduled for today.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "us20uf",
+    "timestamp": "2026-03-25T01:02:38.330Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 0, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "dg4s2f",
+    "timestamp": "2026-03-25T01:02:38.329Z",
+    "level": "info",
+    "message": "Revised topic proposed: Revised FBAR Topic",
+    "topicId": "10000"
+  },
+  {
+    "id": "g2n1b",
+    "timestamp": "2026-03-25T01:02:38.327Z",
+    "level": "info",
+    "message": "Generating new topic based on feedback: Please focus on FATCA requirements..."
+  },
+  {
+    "id": "38fq9",
+    "timestamp": "2026-03-25T01:02:38.317Z",
+    "level": "error",
+    "message": "Proposal Failed: WordPress API Error: {\"message\":\"Internal Server Error\"}"
+  },
+  {
+    "id": "gfzsta",
+    "timestamp": "2026-03-25T01:02:38.317Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "4izpk",
+    "timestamp": "2026-03-25T01:02:38.316Z",
+    "level": "info",
+    "message": "Topic approval pending for: FBAR 2026 Deadlines. Waiting for Ben's response...",
+    "topicId": "9999"
+  },
+  {
+    "id": "dx08we",
+    "timestamp": "2026-03-25T01:02:38.316Z",
+    "level": "info",
+    "message": "Topic Proposed: FBAR 2026 Deadlines",
+    "topicId": "9999"
+  },
+  {
+    "id": "q3xxgh",
+    "timestamp": "2026-03-25T01:02:38.313Z",
+    "level": "info",
+    "message": "Starting Topic Proposal Phase..."
+  },
+  {
+    "id": "rf4bad",
+    "timestamp": "2026-03-25T01:02:38.110Z",
+    "level": "info",
+    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
+  },
+  {
+    "id": "k9j4ql",
+    "timestamp": "2026-03-25T01:02:38.110Z",
+    "level": "info",
+    "message": "Tuesday/Friday Worker: Running SEO Audit scan.",
+    "topicId": "AUTOPILOT"
+  },
+  {
+    "id": "ohs73a",
+    "timestamp": "2026-03-25T01:02:38.109Z",
+    "level": "info",
+    "message": "AutoPilot triggered. Day index: 2, Hour: 20",
+    "topicId": "AUTOPILOT"
+  },
+  {
     "id": "0b97te",
     "timestamp": "2026-03-25T00:58:13.928Z",
     "level": "error",
@@ -1902,1204 +3371,5 @@
     "level": "info",
     "message": "Revised topic proposed: FBAR 2026",
     "topicId": "12345"
-  },
-  {
-    "id": "417b8g",
-    "timestamp": "2026-03-21T00:05:43.323Z",
-    "level": "info",
-    "message": "Generating new topic based on feedback: Focus on FATCA reporting for dual citizens..."
-  },
-  {
-    "id": "inx23",
-    "timestamp": "2026-03-21T00:05:43.321Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
-    "topicId": "12345"
-  },
-  {
-    "id": "jzrskk",
-    "timestamp": "2026-03-21T00:05:43.320Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "ab92sq",
-    "timestamp": "2026-03-21T00:05:43.319Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "i539hk",
-    "timestamp": "2026-03-20T23:50:04.399Z",
-    "level": "error",
-    "message": "Heal failed for 99999: WordPress API Error: {\"message\":\"Not Found\"}"
-  },
-  {
-    "id": "81njq",
-    "timestamp": "2026-03-20T23:50:04.398Z",
-    "level": "info",
-    "message": "Healing requested for Post 99999",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "accjo9",
-    "timestamp": "2026-03-20T23:50:04.398Z",
-    "level": "success",
-    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
-  },
-  {
-    "id": "h3g19",
-    "timestamp": "2026-03-20T23:50:04.397Z",
-    "level": "agent",
-    "message": "Healing Translation for 12345...",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "ck7i2",
-    "timestamp": "2026-03-20T23:50:04.395Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "zwi21",
-    "timestamp": "2026-03-20T23:50:04.394Z",
-    "level": "success",
-    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "yjgo69",
-    "timestamp": "2026-03-20T23:50:04.394Z",
-    "level": "error",
-    "message": "Podcast production failed for \"FBAR 2026 Guide\": TypeError: response.text is not a function",
-    "topicId": "123"
-  },
-  {
-    "id": "kl8bo",
-    "timestamp": "2026-03-20T23:50:04.394Z",
-    "level": "error",
-    "message": "Podcast preparation failed for \"FBAR 2026 Guide\"",
-    "topicId": {}
-  },
-  {
-    "id": "sq4b2i",
-    "timestamp": "2026-03-20T23:50:04.389Z",
-    "level": "info",
-    "message": "Starting podcast preparation for: \"FBAR 2026 Guide\"",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "iby9q8",
-    "timestamp": "2026-03-20T23:50:04.389Z",
-    "level": "agent",
-    "message": "Creating podcast episode for: FBAR 2026 Guide...",
-    "topicId": "123"
-  },
-  {
-    "id": "2tk5fs",
-    "timestamp": "2026-03-20T23:50:04.389Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "qh7vws",
-    "timestamp": "2026-03-20T23:50:04.388Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "7fe14",
-    "timestamp": "2026-03-20T23:50:04.388Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "sp461l",
-    "timestamp": "2026-03-20T23:50:04.387Z",
-    "level": "info",
-    "message": "No posts published today. Skipping podcast.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "wdl73q",
-    "timestamp": "2026-03-20T23:50:04.387Z",
-    "level": "info",
-    "message": "Wednesday Worker: Running Podcast production flow.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "aseyai",
-    "timestamp": "2026-03-20T23:50:04.387Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 3, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "h83bzn",
-    "timestamp": "2026-03-20T23:50:04.385Z",
-    "level": "info",
-    "message": "No tasks scheduled for today.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "yf7ezl",
-    "timestamp": "2026-03-20T23:50:04.385Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 0, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "f66pnz",
-    "timestamp": "2026-03-20T23:50:04.384Z",
-    "level": "info",
-    "message": "Revised topic proposed: Revised FBAR Topic",
-    "topicId": "10000"
-  },
-  {
-    "id": "0u8dt5",
-    "timestamp": "2026-03-20T23:50:04.383Z",
-    "level": "info",
-    "message": "Generating new topic based on feedback: Please focus on FATCA requirements..."
-  },
-  {
-    "id": "20r7qg",
-    "timestamp": "2026-03-20T23:50:04.373Z",
-    "level": "error",
-    "message": "Proposal Failed: WordPress API Error: {\"message\":\"Internal Server Error\"}"
-  },
-  {
-    "id": "7ppgb",
-    "timestamp": "2026-03-20T23:50:04.372Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "xlctue",
-    "timestamp": "2026-03-20T23:50:04.372Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026 Deadlines. Waiting for Ben's response...",
-    "topicId": "9999"
-  },
-  {
-    "id": "zmwa7s9",
-    "timestamp": "2026-03-20T23:50:04.371Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026 Deadlines",
-    "topicId": "9999"
-  },
-  {
-    "id": "ln00i",
-    "timestamp": "2026-03-20T23:50:04.371Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "jjfiq",
-    "timestamp": "2026-03-20T23:50:04.334Z",
-    "level": "info",
-    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
-  },
-  {
-    "id": "a1503g",
-    "timestamp": "2026-03-20T23:50:04.334Z",
-    "level": "info",
-    "message": "Tuesday/Friday Worker: Running SEO Audit scan.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "6sut3j",
-    "timestamp": "2026-03-20T23:50:04.333Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 5, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "fl9jd9",
-    "timestamp": "2026-03-20T23:50:04.106Z",
-    "level": "error",
-    "message": "Heal failed for 12345: WordPress API Error: {\"error\":\"Service error\"}"
-  },
-  {
-    "id": "rhhjlf",
-    "timestamp": "2026-03-20T23:50:04.106Z",
-    "level": "error",
-    "message": "Podcast AutoPilot Failed: WordPress API Error: {\"error\":\"Service error\"}"
-  },
-  {
-    "id": "fb13sm",
-    "timestamp": "2026-03-20T23:50:04.105Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "sqop6",
-    "timestamp": "2026-03-20T23:50:04.103Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "jgjco",
-    "timestamp": "2026-03-20T23:50:04.102Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "6294q",
-    "timestamp": "2026-03-20T23:50:04.101Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "ubchoj",
-    "timestamp": "2026-03-20T23:50:04.101Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
-    "topicId": "12345"
-  },
-  {
-    "id": "7uwobk",
-    "timestamp": "2026-03-20T23:50:04.101Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "g30cowq",
-    "timestamp": "2026-03-20T23:50:04.101Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "i3j75w",
-    "timestamp": "2026-03-20T23:50:04.100Z",
-    "level": "success",
-    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
-  },
-  {
-    "id": "g8jjk4",
-    "timestamp": "2026-03-20T23:50:04.099Z",
-    "level": "agent",
-    "message": "Healing Translation for 12345...",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "ifbygd",
-    "timestamp": "2026-03-20T23:50:04.099Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "sc4l3a",
-    "timestamp": "2026-03-20T23:50:04.098Z",
-    "level": "info",
-    "message": "Successfully optimized \"Short post\". New Score: 6.045%",
-    "topicId": "123"
-  },
-  {
-    "id": "3o66q6",
-    "timestamp": "2026-03-20T23:50:04.087Z",
-    "level": "agent",
-    "message": "Initializing SEO enhancement for: \"Short post\""
-  },
-  {
-    "id": "bvebdd",
-    "timestamp": "2026-03-20T23:50:04.086Z",
-    "level": "info",
-    "message": "Low SEO score (6.01%) identified for \"Short post\". Starting enhancement.",
-    "topicId": "123"
-  },
-  {
-    "id": "mbegkq",
-    "timestamp": "2026-03-20T23:50:04.086Z",
-    "level": "agent",
-    "message": "Analyzing SEO for: \"Short post\" (Keyword: \"\", Score: 6.01%)",
-    "topicId": "123"
-  },
-  {
-    "id": "ncts4k",
-    "timestamp": "2026-03-20T23:50:04.085Z",
-    "level": "info",
-    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
-  },
-  {
-    "id": "fw5sc5",
-    "timestamp": "2026-03-20T23:50:04.084Z",
-    "level": "success",
-    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "mzyjz",
-    "timestamp": "2026-03-20T23:50:04.084Z",
-    "level": "error",
-    "message": "Podcast production failed for \"Remote Work Tax Obligations for Israeli-Americans\": TypeError: response.text is not a function",
-    "topicId": "12345"
-  },
-  {
-    "id": "f1jz6p",
-    "timestamp": "2026-03-20T23:50:04.083Z",
-    "level": "error",
-    "message": "Podcast preparation failed for \"Remote Work Tax Obligations for Israeli-Americans\"",
-    "topicId": {}
-  },
-  {
-    "id": "jd11ej",
-    "timestamp": "2026-03-20T23:50:04.060Z",
-    "level": "info",
-    "message": "Starting podcast preparation for: \"Remote Work Tax Obligations for Israeli-Americans\"",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "77mgoc",
-    "timestamp": "2026-03-20T23:50:04.060Z",
-    "level": "agent",
-    "message": "Creating podcast episode for: Remote Work Tax Obligations for Israeli-Americans...",
-    "topicId": "12345"
-  },
-  {
-    "id": "eh1qfo",
-    "timestamp": "2026-03-20T23:50:04.060Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "6ek3y6",
-    "timestamp": "2026-03-20T23:50:04.059Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "6xs0jr",
-    "timestamp": "2026-03-20T23:50:04.057Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "qfo0w",
-    "timestamp": "2026-03-20T23:50:04.056Z",
-    "level": "info",
-    "message": "Revised topic proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "bcx2v",
-    "timestamp": "2026-03-20T23:50:04.055Z",
-    "level": "info",
-    "message": "Generating new topic based on feedback: Focus on FATCA reporting for dual citizens..."
-  },
-  {
-    "id": "z6ttd",
-    "timestamp": "2026-03-20T23:50:04.053Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
-    "topicId": "12345"
-  },
-  {
-    "id": "4opqa",
-    "timestamp": "2026-03-20T23:50:04.053Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "j72gtn",
-    "timestamp": "2026-03-20T23:50:04.051Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "e57sf",
-    "timestamp": "2026-03-20T23:43:30.732Z",
-    "level": "error",
-    "message": "Heal failed for 99999: WordPress API Error: {\"message\":\"Not Found\"}"
-  },
-  {
-    "id": "hybwya",
-    "timestamp": "2026-03-20T23:43:30.732Z",
-    "level": "info",
-    "message": "Healing requested for Post 99999",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "fmqixg",
-    "timestamp": "2026-03-20T23:43:30.729Z",
-    "level": "success",
-    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
-  },
-  {
-    "id": "noi8la",
-    "timestamp": "2026-03-20T23:43:30.729Z",
-    "level": "agent",
-    "message": "Healing Translation for 12345...",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "xirsq",
-    "timestamp": "2026-03-20T23:43:30.729Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "i4b2ro",
-    "timestamp": "2026-03-20T23:43:30.728Z",
-    "level": "success",
-    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "8u2dw9",
-    "timestamp": "2026-03-20T23:43:30.728Z",
-    "level": "error",
-    "message": "Podcast production failed for \"FBAR 2026 Guide\": TypeError: response.text is not a function",
-    "topicId": "123"
-  },
-  {
-    "id": "fkvnfj",
-    "timestamp": "2026-03-20T23:43:30.728Z",
-    "level": "error",
-    "message": "Podcast preparation failed for \"FBAR 2026 Guide\"",
-    "topicId": {}
-  },
-  {
-    "id": "evxev",
-    "timestamp": "2026-03-20T23:43:30.724Z",
-    "level": "info",
-    "message": "Starting podcast preparation for: \"FBAR 2026 Guide\"",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "dthr9r",
-    "timestamp": "2026-03-20T23:43:30.724Z",
-    "level": "agent",
-    "message": "Creating podcast episode for: FBAR 2026 Guide...",
-    "topicId": "123"
-  },
-  {
-    "id": "dv3g7s",
-    "timestamp": "2026-03-20T23:43:30.724Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "psckoc",
-    "timestamp": "2026-03-20T23:43:30.723Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "kg0a15",
-    "timestamp": "2026-03-20T23:43:30.723Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "11wq6d",
-    "timestamp": "2026-03-20T23:43:30.722Z",
-    "level": "info",
-    "message": "No posts published today. Skipping podcast.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "2r6g5",
-    "timestamp": "2026-03-20T23:43:30.722Z",
-    "level": "info",
-    "message": "Wednesday Worker: Running Podcast production flow.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "9tjn67",
-    "timestamp": "2026-03-20T23:43:30.722Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 3, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "gfboup",
-    "timestamp": "2026-03-20T23:43:30.721Z",
-    "level": "info",
-    "message": "No tasks scheduled for today.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "pv13bd",
-    "timestamp": "2026-03-20T23:43:30.721Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 0, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "icz0aj",
-    "timestamp": "2026-03-20T23:43:30.721Z",
-    "level": "info",
-    "message": "Revised topic proposed: Revised FBAR Topic",
-    "topicId": "10000"
-  },
-  {
-    "id": "c9cfs",
-    "timestamp": "2026-03-20T23:43:30.720Z",
-    "level": "info",
-    "message": "Generating new topic based on feedback: Please focus on FATCA requirements..."
-  },
-  {
-    "id": "p3tft2",
-    "timestamp": "2026-03-20T23:43:30.712Z",
-    "level": "error",
-    "message": "Proposal Failed: WordPress API Error: {\"message\":\"Internal Server Error\"}"
-  },
-  {
-    "id": "qtfo8n",
-    "timestamp": "2026-03-20T23:43:30.712Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "gwcedc",
-    "timestamp": "2026-03-20T23:43:30.711Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026 Deadlines. Waiting for Ben's response...",
-    "topicId": "9999"
-  },
-  {
-    "id": "fh4yih",
-    "timestamp": "2026-03-20T23:43:30.710Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026 Deadlines",
-    "topicId": "9999"
-  },
-  {
-    "id": "t6j2f",
-    "timestamp": "2026-03-20T23:43:30.710Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "kpx04r",
-    "timestamp": "2026-03-20T23:43:30.677Z",
-    "level": "info",
-    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
-  },
-  {
-    "id": "hgmwm",
-    "timestamp": "2026-03-20T23:43:30.677Z",
-    "level": "info",
-    "message": "Tuesday/Friday Worker: Running SEO Audit scan.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "itpxxc",
-    "timestamp": "2026-03-20T23:43:30.676Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 5, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "4mvfa",
-    "timestamp": "2026-03-20T23:43:30.454Z",
-    "level": "error",
-    "message": "Heal failed for 12345: WordPress API Error: {\"error\":\"Service error\"}"
-  },
-  {
-    "id": "aciyxm",
-    "timestamp": "2026-03-20T23:43:30.453Z",
-    "level": "error",
-    "message": "Podcast AutoPilot Failed: WordPress API Error: {\"error\":\"Service error\"}"
-  },
-  {
-    "id": "7tfgng",
-    "timestamp": "2026-03-20T23:43:30.453Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "gx342h",
-    "timestamp": "2026-03-20T23:43:30.453Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "htdb5i",
-    "timestamp": "2026-03-20T23:43:30.452Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "qzt1fn",
-    "timestamp": "2026-03-20T23:43:30.452Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "m3b9it",
-    "timestamp": "2026-03-20T23:43:30.452Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
-    "topicId": "12345"
-  },
-  {
-    "id": "40rjdj",
-    "timestamp": "2026-03-20T23:43:30.451Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "fwnmpf",
-    "timestamp": "2026-03-20T23:43:30.451Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "vjlet2",
-    "timestamp": "2026-03-20T23:43:30.450Z",
-    "level": "success",
-    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
-  },
-  {
-    "id": "4uve6b",
-    "timestamp": "2026-03-20T23:43:30.450Z",
-    "level": "agent",
-    "message": "Healing Translation for 12345...",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "zdojdi",
-    "timestamp": "2026-03-20T23:43:30.450Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "w48y4d",
-    "timestamp": "2026-03-20T23:43:30.448Z",
-    "level": "info",
-    "message": "Successfully optimized \"Short post\". New Score: 6.045%",
-    "topicId": "123"
-  },
-  {
-    "id": "gzp90r",
-    "timestamp": "2026-03-20T23:43:30.435Z",
-    "level": "agent",
-    "message": "Initializing SEO enhancement for: \"Short post\""
-  },
-  {
-    "id": "w9f4s",
-    "timestamp": "2026-03-20T23:43:30.434Z",
-    "level": "info",
-    "message": "Low SEO score (6.01%) identified for \"Short post\". Starting enhancement.",
-    "topicId": "123"
-  },
-  {
-    "id": "ujlfwk",
-    "timestamp": "2026-03-20T23:43:30.434Z",
-    "level": "agent",
-    "message": "Analyzing SEO for: \"Short post\" (Keyword: \"\", Score: 6.01%)",
-    "topicId": "123"
-  },
-  {
-    "id": "aejzpk",
-    "timestamp": "2026-03-20T23:43:30.433Z",
-    "level": "info",
-    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
-  },
-  {
-    "id": "4uw9ar",
-    "timestamp": "2026-03-20T23:43:30.432Z",
-    "level": "success",
-    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "tat3sr",
-    "timestamp": "2026-03-20T23:43:30.432Z",
-    "level": "error",
-    "message": "Podcast production failed for \"Remote Work Tax Obligations for Israeli-Americans\": TypeError: response.text is not a function",
-    "topicId": "12345"
-  },
-  {
-    "id": "4xg10h",
-    "timestamp": "2026-03-20T23:43:30.431Z",
-    "level": "error",
-    "message": "Podcast preparation failed for \"Remote Work Tax Obligations for Israeli-Americans\"",
-    "topicId": {}
-  },
-  {
-    "id": "26uanp",
-    "timestamp": "2026-03-20T23:43:30.406Z",
-    "level": "info",
-    "message": "Starting podcast preparation for: \"Remote Work Tax Obligations for Israeli-Americans\"",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "ro4o2i",
-    "timestamp": "2026-03-20T23:43:30.406Z",
-    "level": "agent",
-    "message": "Creating podcast episode for: Remote Work Tax Obligations for Israeli-Americans...",
-    "topicId": "12345"
-  },
-  {
-    "id": "ugrw4d",
-    "timestamp": "2026-03-20T23:43:30.405Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "9stvjc",
-    "timestamp": "2026-03-20T23:43:30.404Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "kvk6z7",
-    "timestamp": "2026-03-20T23:43:30.404Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "5ovcy",
-    "timestamp": "2026-03-20T23:43:30.402Z",
-    "level": "info",
-    "message": "Revised topic proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "2pxgt7",
-    "timestamp": "2026-03-20T23:43:30.402Z",
-    "level": "info",
-    "message": "Generating new topic based on feedback: Focus on FATCA reporting for dual citizens..."
-  },
-  {
-    "id": "jq1if4",
-    "timestamp": "2026-03-20T23:43:30.400Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
-    "topicId": "12345"
-  },
-  {
-    "id": "qx35",
-    "timestamp": "2026-03-20T23:43:30.399Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "5v0wf9",
-    "timestamp": "2026-03-20T23:43:30.397Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "wjb28",
-    "timestamp": "2026-03-20T23:39:09.460Z",
-    "level": "error",
-    "message": "Heal failed for 99999: WordPress API Error: {\"message\":\"Not Found\"}"
-  },
-  {
-    "id": "xo7qop",
-    "timestamp": "2026-03-20T23:39:09.460Z",
-    "level": "info",
-    "message": "Healing requested for Post 99999",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "uydqih",
-    "timestamp": "2026-03-20T23:39:09.458Z",
-    "level": "success",
-    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
-  },
-  {
-    "id": "s4oebj",
-    "timestamp": "2026-03-20T23:39:09.458Z",
-    "level": "agent",
-    "message": "Healing Translation for 12345...",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "eg2je",
-    "timestamp": "2026-03-20T23:39:09.458Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "fw2pnq",
-    "timestamp": "2026-03-20T23:39:09.457Z",
-    "level": "success",
-    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "lnf58k",
-    "timestamp": "2026-03-20T23:39:09.457Z",
-    "level": "error",
-    "message": "Podcast production failed for \"FBAR 2026 Guide\": TypeError: response.text is not a function",
-    "topicId": "123"
-  },
-  {
-    "id": "trljg4",
-    "timestamp": "2026-03-20T23:39:09.457Z",
-    "level": "error",
-    "message": "Podcast preparation failed for \"FBAR 2026 Guide\"",
-    "topicId": {}
-  },
-  {
-    "id": "jjqqo9",
-    "timestamp": "2026-03-20T23:39:09.451Z",
-    "level": "info",
-    "message": "Starting podcast preparation for: \"FBAR 2026 Guide\"",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "9o3ada",
-    "timestamp": "2026-03-20T23:39:09.451Z",
-    "level": "agent",
-    "message": "Creating podcast episode for: FBAR 2026 Guide...",
-    "topicId": "123"
-  },
-  {
-    "id": "04tbcu",
-    "timestamp": "2026-03-20T23:39:09.451Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "ky77ur",
-    "timestamp": "2026-03-20T23:39:09.450Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "jkn57",
-    "timestamp": "2026-03-20T23:39:09.449Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "xp74pc",
-    "timestamp": "2026-03-20T23:39:09.448Z",
-    "level": "info",
-    "message": "No posts published today. Skipping podcast.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "cdm3ny",
-    "timestamp": "2026-03-20T23:39:09.448Z",
-    "level": "info",
-    "message": "Wednesday Worker: Running Podcast production flow.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "6s2z9m",
-    "timestamp": "2026-03-20T23:39:09.448Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 3, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "tukhwi",
-    "timestamp": "2026-03-20T23:39:09.447Z",
-    "level": "info",
-    "message": "No tasks scheduled for today.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "7dxwfa",
-    "timestamp": "2026-03-20T23:39:09.447Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 0, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "9rfxq4",
-    "timestamp": "2026-03-20T23:39:09.446Z",
-    "level": "info",
-    "message": "Revised topic proposed: Revised FBAR Topic",
-    "topicId": "10000"
-  },
-  {
-    "id": "vlunx8",
-    "timestamp": "2026-03-20T23:39:09.445Z",
-    "level": "info",
-    "message": "Generating new topic based on feedback: Please focus on FATCA requirements..."
-  },
-  {
-    "id": "cxh42",
-    "timestamp": "2026-03-20T23:39:09.436Z",
-    "level": "error",
-    "message": "Proposal Failed: WordPress API Error: {\"message\":\"Internal Server Error\"}"
-  },
-  {
-    "id": "5tgkph",
-    "timestamp": "2026-03-20T23:39:09.436Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "qi69qk",
-    "timestamp": "2026-03-20T23:39:09.435Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026 Deadlines. Waiting for Ben's response...",
-    "topicId": "9999"
-  },
-  {
-    "id": "aieqpu",
-    "timestamp": "2026-03-20T23:39:09.435Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026 Deadlines",
-    "topicId": "9999"
-  },
-  {
-    "id": "vphia",
-    "timestamp": "2026-03-20T23:39:09.434Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "1f9e1",
-    "timestamp": "2026-03-20T23:39:09.399Z",
-    "level": "info",
-    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
-  },
-  {
-    "id": "9o4kte",
-    "timestamp": "2026-03-20T23:39:09.398Z",
-    "level": "info",
-    "message": "Tuesday/Friday Worker: Running SEO Audit scan.",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "fz4wa1",
-    "timestamp": "2026-03-20T23:39:09.398Z",
-    "level": "info",
-    "message": "AutoPilot triggered. Day index: 5, Hour: 18",
-    "topicId": "AUTOPILOT"
-  },
-  {
-    "id": "topx6o",
-    "timestamp": "2026-03-20T23:39:09.103Z",
-    "level": "error",
-    "message": "Heal failed for 12345: WordPress API Error: {\"error\":\"Service error\"}"
-  },
-  {
-    "id": "0yt0s",
-    "timestamp": "2026-03-20T23:39:09.103Z",
-    "level": "error",
-    "message": "Podcast AutoPilot Failed: WordPress API Error: {\"error\":\"Service error\"}"
-  },
-  {
-    "id": "xa6oig",
-    "timestamp": "2026-03-20T23:39:09.103Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "xbdcy",
-    "timestamp": "2026-03-20T23:39:09.103Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "frune",
-    "timestamp": "2026-03-20T23:39:09.102Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "kl53ec",
-    "timestamp": "2026-03-20T23:39:09.102Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "wlfna9",
-    "timestamp": "2026-03-20T23:39:09.101Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
-    "topicId": "12345"
-  },
-  {
-    "id": "dzjdu",
-    "timestamp": "2026-03-20T23:39:09.101Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "w4sh3",
-    "timestamp": "2026-03-20T23:39:09.101Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
-  },
-  {
-    "id": "v6styk",
-    "timestamp": "2026-03-20T23:39:09.099Z",
-    "level": "success",
-    "message": "Heal diagnostics complete for 12345. Re-queued relevant workers."
-  },
-  {
-    "id": "g6ub5",
-    "timestamp": "2026-03-20T23:39:09.099Z",
-    "level": "agent",
-    "message": "Healing Translation for 12345...",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "0iy6x",
-    "timestamp": "2026-03-20T23:39:09.099Z",
-    "level": "info",
-    "message": "Healing requested for Post 12345",
-    "topicId": "HEAL"
-  },
-  {
-    "id": "59kj6",
-    "timestamp": "2026-03-20T23:39:09.097Z",
-    "level": "info",
-    "message": "Successfully optimized \"Short post\". New Score: 6.045%",
-    "topicId": "123"
-  },
-  {
-    "id": "i9xlpk",
-    "timestamp": "2026-03-20T23:39:09.087Z",
-    "level": "agent",
-    "message": "Initializing SEO enhancement for: \"Short post\""
-  },
-  {
-    "id": "rjlkx",
-    "timestamp": "2026-03-20T23:39:09.086Z",
-    "level": "info",
-    "message": "Low SEO score (6.01%) identified for \"Short post\". Starting enhancement.",
-    "topicId": "123"
-  },
-  {
-    "id": "znqaxi",
-    "timestamp": "2026-03-20T23:39:09.086Z",
-    "level": "agent",
-    "message": "Analyzing SEO for: \"Short post\" (Keyword: \"\", Score: 6.01%)",
-    "topicId": "123"
-  },
-  {
-    "id": "57ut59",
-    "timestamp": "2026-03-20T23:39:09.085Z",
-    "level": "info",
-    "message": "Running SEO AutoPilot: scanning WordPress for low-score posts..."
-  },
-  {
-    "id": "a34n4",
-    "timestamp": "2026-03-20T23:39:09.084Z",
-    "level": "success",
-    "message": "Podcast AutoPilot complete. Generated 0 episodes.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "ue9dym",
-    "timestamp": "2026-03-20T23:39:09.084Z",
-    "level": "error",
-    "message": "Podcast production failed for \"Remote Work Tax Obligations for Israeli-Americans\": TypeError: response.text is not a function",
-    "topicId": "12345"
-  },
-  {
-    "id": "azt1zf",
-    "timestamp": "2026-03-20T23:39:09.084Z",
-    "level": "error",
-    "message": "Podcast preparation failed for \"Remote Work Tax Obligations for Israeli-Americans\"",
-    "topicId": {}
-  },
-  {
-    "id": "djy4cd",
-    "timestamp": "2026-03-20T23:39:09.059Z",
-    "level": "info",
-    "message": "Starting podcast preparation for: \"Remote Work Tax Obligations for Israeli-Americans\"",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "7c04jf",
-    "timestamp": "2026-03-20T23:39:09.059Z",
-    "level": "agent",
-    "message": "Creating podcast episode for: Remote Work Tax Obligations for Israeli-Americans...",
-    "topicId": "12345"
-  },
-  {
-    "id": "y3qbk2",
-    "timestamp": "2026-03-20T23:39:09.059Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "rlbe38",
-    "timestamp": "2026-03-20T23:39:09.057Z",
-    "level": "info",
-    "message": "No recent posts found for podcast production.",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "0v660q",
-    "timestamp": "2026-03-20T23:39:09.056Z",
-    "level": "info",
-    "message": "Running Podcast AutoPilot: processing recent content for episodes...",
-    "topicId": "PODCAST"
-  },
-  {
-    "id": "0ii9qy",
-    "timestamp": "2026-03-20T23:39:09.055Z",
-    "level": "info",
-    "message": "Revised topic proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "011zrg",
-    "timestamp": "2026-03-20T23:39:09.054Z",
-    "level": "info",
-    "message": "Generating new topic based on feedback: Focus on FATCA reporting for dual citizens..."
-  },
-  {
-    "id": "2nss87",
-    "timestamp": "2026-03-20T23:39:09.052Z",
-    "level": "info",
-    "message": "Topic approval pending for: FBAR 2026. Waiting for Ben's response...",
-    "topicId": "12345"
-  },
-  {
-    "id": "10wjvo",
-    "timestamp": "2026-03-20T23:39:09.052Z",
-    "level": "info",
-    "message": "Topic Proposed: FBAR 2026",
-    "topicId": "12345"
-  },
-  {
-    "id": "wn9ny",
-    "timestamp": "2026-03-20T23:39:09.050Z",
-    "level": "info",
-    "message": "Starting Topic Proposal Phase..."
   }
 ]
