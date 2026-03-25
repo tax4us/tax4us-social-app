@@ -62,5 +62,181 @@
     "updated_at": "2026-02-18T08:22:30.006Z",
     "content_english": "Professional tax guidance regarding test, automation for Israeli-Americans.",
     "seo_score": 80
+  },
+  {
+    "topic_id": "topic_1771458560993_ecb15gz01",
+    "title_english": "Tax Advice: דרישות הגשת FBAR לישראלים-אמריקאים",
+    "title_hebrew": "דרישות הגשת FBAR לישראלים-אמריקאים",
+    "target_keywords": [
+      "FBAR",
+      "Israeli Americans",
+      "tax compliance",
+      "foreign accounts"
+    ],
+    "status": "draft",
+    "media_urls": {
+      "blog_video": "http://localhost:3000/videos/tax4us_wordpress_1774149026396.mp4",
+      "blog_thumbnail": "http://localhost:3000/videos/tax4us_wordpress_1774149026396-thumb.jpg",
+      "facebook_reel": "https://www.tax4us.co.il/wp-content/uploads/2026/03/tax4us_facebook_reel_1774150005411.mp4",
+      "linkedin_video": "http://localhost:3000/videos/tax4us_linkedin_1774149148083.mp4"
+    },
+    "id": "content_1772572489279_dyjdu0phm",
+    "created_at": "2026-03-03T21:14:49.279Z",
+    "updated_at": "2026-03-03T21:14:49.422Z",
+    "content_english": "Professional tax guidance regarding FBAR, Israeli Americans, tax compliance, foreign accounts for Israeli-Americans.",
+    "seo_score": 80
+  },
+  {
+    "topic_id": "topic_1771458561005_n8nzwsfh7",
+    "title_english": "Tax Advice: יתרונות והגבלות של אמנת המס בין ארה\"ב וישראל",
+    "title_hebrew": "יתרונות והגבלות של אמנת המס בין ארה\"ב וישראל",
+    "target_keywords": [
+      "tax treaty",
+      "double taxation",
+      "Israel US",
+      "tax planning"
+    ],
+    "status": "draft",
+    "media_urls": {
+      "blog_video": "http://localhost:3000/videos/tax4us_wordpress_1772572827968.mp4",
+      "blog_thumbnail": "http://localhost:3000/videos/tax4us_wordpress_1772572827968-thumb.jpg",
+      "facebook_reel": "http://localhost:3000/videos/tax4us_facebook_reel_1772572827953.mp4",
+      "linkedin_video": "http://localhost:3000/videos/tax4us_linkedin_1772572827965.mp4"
+    },
+    "id": "content_1772572827870_4ruoeuo1k",
+    "created_at": "2026-03-03T21:20:27.870Z",
+    "updated_at": "2026-03-03T21:20:28.062Z",
+    "content_english": "Professional tax guidance regarding tax treaty, double taxation, Israel US, tax planning for Israeli-Americans.",
+    "seo_score": 80
+  },
+  {
+    "topic_id": "topic_1771458561017_2nargrf3u",
+    "title_english": "Tax Advice: דיווח טופס 3520 למוטבי נאמנות ישראליים",
+    "title_hebrew": "דיווח טופס 3520 למוטבי נאמנות ישראליים",
+    "target_keywords": [
+      "Form 3520",
+      "trusts",
+      "reporting requirements",
+      "penalties"
+    ],
+    "status": "draft",
+    "media_urls": {
+      "blog_video": "http://localhost:3000/videos/tax4us_wordpress_1772583086126.mp4",
+      "blog_thumbnail": "http://localhost:3000/videos/tax4us_wordpress_1772583086126-thumb.jpg",
+      "facebook_reel": "http://localhost:3000/videos/tax4us_facebook_reel_1772583086125.mp4",
+      "linkedin_video": "http://localhost:3000/videos/tax4us_linkedin_1772583086122.mp4"
+    },
+    "id": "content_1772583085769_qfdxy1ek2",
+    "created_at": "2026-03-04T00:11:25.769Z",
+    "updated_at": "2026-03-04T00:11:26.146Z",
+    "content_english": "Professional tax guidance regarding Form 3520, trusts, reporting requirements, penalties for Israeli-Americans.",
+    "seo_score": 80
+  },
+  {
+    "topic_id": "topic_1771458561029_0do2x6lxg",
+    "title_english": "Tax Advice: חובות מס על מטבעות דיגיטליים בישראל וארה\"ב",
+    "title_hebrew": "חובות מס על מטבעות דיגיטליים בישראל וארה\"ב",
+    "target_keywords": [
+      "cryptocurrency",
+      "digital assets",
+      "tax compliance",
+      "dual taxation"
+    ],
+    "status": "draft",
+    "media_urls": {
+      "blog_video": "http://localhost:3000/videos/tax4us_wordpress_1772583254988.mp4",
+      "blog_thumbnail": "http://localhost:3000/videos/tax4us_wordpress_1772583254988-thumb.jpg",
+      "facebook_reel": "http://localhost:3000/videos/tax4us_facebook_reel_1772583254993.mp4",
+      "linkedin_video": "http://localhost:3000/videos/tax4us_linkedin_1772583254997.mp4"
+    },
+    "id": "content_1772583254949_qmwkxdjj1",
+    "created_at": "2026-03-04T00:14:14.949Z",
+    "updated_at": "2026-03-04T00:14:15.020Z",
+    "content_english": "Professional tax guidance regarding cryptocurrency, digital assets, tax compliance, dual taxation for Israeli-Americans.",
+    "seo_score": 80
+  },
+  {
+    "topic_id": "topic_1771458561042_ubaxy2a65",
+    "title_english": "Tax Advice: יחס מס לתוכניות פנסיה ישראליות בארה\"ב",
+    "title_hebrew": "יחס מס לתוכניות פנסיה ישראליות בארה\"ב",
+    "target_keywords": [
+      "pension plans",
+      "retirement",
+      "Israeli pensions",
+      "US tax"
+    ],
+    "status": "draft",
+    "media_urls": {
+      "blog_video": "http://localhost:3000/videos/tax4us_wordpress_1772583267403.mp4",
+      "blog_thumbnail": "http://localhost:3000/videos/tax4us_wordpress_1772583267403-thumb.jpg",
+      "facebook_reel": "http://localhost:3000/videos/tax4us_facebook_reel_1772583267406.mp4",
+      "linkedin_video": "http://localhost:3000/videos/tax4us_linkedin_1772583267408.mp4"
+    },
+    "id": "content_1772583267363_rbf9vseku",
+    "created_at": "2026-03-04T00:14:27.363Z",
+    "updated_at": "2026-03-04T00:14:27.423Z",
+    "content_english": "Professional tax guidance regarding pension plans, retirement, Israeli pensions, US tax for Israeli-Americans.",
+    "seo_score": 80
+  },
+  {
+    "topic_id": "topic_1771458561055_fh47hzrze",
+    "title_english": "Tax Advice: חוקי מס יציאה של סעיף 877",
+    "title_hebrew": "חוקי מס יציאה של סעיף 877",
+    "target_keywords": [
+      "expatriation tax",
+      "exit tax",
+      "green card surrender",
+      "citizenship"
+    ],
+    "status": "draft",
+    "media_urls": {
+      "blog_video": "http://localhost:3000/videos/tax4us_wordpress_1772583409264.mp4",
+      "blog_thumbnail": "http://localhost:3000/videos/tax4us_wordpress_1772583409264-thumb.jpg",
+      "facebook_reel": "http://localhost:3000/videos/tax4us_facebook_reel_1772583409267.mp4",
+      "linkedin_video": "http://localhost:3000/videos/tax4us_linkedin_1772583409268.mp4"
+    },
+    "id": "content_1772583409197_n6gio8t20",
+    "created_at": "2026-03-04T00:16:49.197Z",
+    "updated_at": "2026-03-04T00:16:49.306Z",
+    "content_english": "Professional tax guidance regarding expatriation tax, exit tax, green card surrender, citizenship for Israeli-Americans.",
+    "seo_score": 80
+  },
+  {
+    "topic_id": "topic_1771458561075_phc4woa7d",
+    "title_english": "Tax Advice: עסקאות נדל\"ן בישראל - השפעה על מס אמריקאי",
+    "title_hebrew": "עסקאות נדל\"ן בישראל - השפעה על מס אמריקאי",
+    "target_keywords": [
+      "real estate",
+      "property transactions",
+      "capital gains",
+      "Israeli property"
+    ],
+    "status": "published",
+    "media_urls": {},
+    "id": "content_1772773848336_4pkiejpgl",
+    "created_at": "2026-03-06T05:10:48.336Z",
+    "updated_at": "2026-03-24T17:31:48.744Z",
+    "content_english": "Professional tax guidance regarding real estate, property transactions, capital gains, Israeli property for Israeli-Americans.",
+    "content_hebrew": "מדריך מס מקצועי בנושא עסקאות נדל\"ן, מכירות נכסים, רווח הון ונדל\"ן ישראלי עבור ישראלים-אמריקניים.",
+    "seo_score": 85,
+    "wordpress_post_id": 12345
+  },
+  {
+    "topic_id": "topic_1774373295584",
+    "title_english": "Old FBAR Article with Low SEO Score",
+    "title_hebrew": "Old FBAR Article with Low SEO Score",
+    "target_keywords": [
+      "FBAR",
+      "outdated"
+    ],
+    "status": "published",
+    "media_urls": {},
+    "id": "content_1774373295584_8j5464z45",
+    "created_at": "2026-03-24T17:28:16.210Z",
+    "updated_at": "2026-03-24T17:31:48.963Z",
+    "content_english": "Basic FBAR information for Israeli-Americans with outdated guidance.",
+    "content_hebrew": "מידע בסיסי על FBAR לישראלים-אמריקניים עם הנחיות לא מעודכנות.",
+    "seo_score": 65,
+    "wordpress_post_id": 12346
   }
 ]

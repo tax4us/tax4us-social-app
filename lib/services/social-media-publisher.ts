@@ -4,7 +4,9 @@
  */
 
 import { ContentPiece } from './database'
+import { linkedInPersistentAuth } from './linkedin-persistent-auth'
 // Using internal API for NotebookLM queries
+import { logger } from '../utils/logger'
 
 export interface SocialPost {
   platform: 'facebook' | 'linkedin'
@@ -23,16 +25,20 @@ export interface PostResult {
   note?: string
 }
 
+interface FacebookPageData {
+  id: string;
+  access_token: string;
+  name: string;
+}
+
 class SocialMediaPublisher {
-  private readonly uploadPostApiKey: string
   private readonly facebookPageId: string
-  private readonly linkedinClientId: string
+  private readonly facebookAccessToken: string
   private readonly notebookId: string
 
   constructor() {
-    this.uploadPostApiKey = process.env.UPLOAD_POST_TOKEN || ''
-    this.facebookPageId = process.env.FACEBOOK_PAGE_ID || '61571773396514'
-    this.linkedinClientId = process.env.LINKEDIN_CLIENT_ID || '867fvsh119usxe'
+    this.facebookPageId = process.env.FACEBOOK_PAGE_ID || '844266372343077'
+    this.facebookAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || ''
     this.notebookId = process.env.NOTEBOOKLM_NOTEBOOK_ID || 'd5f128c4-0d17-42c3-8d52-109916859c76'
   }
 
@@ -56,7 +62,7 @@ class SocialMediaPublisher {
       return results
 
     } catch (error) {
-      console.error('Social media publishing failed:', error)
+      logger.error('SocialMediaPublisher', 'Social media publishing failed', error)
       return [
         {
           platform: 'facebook',
@@ -125,13 +131,20 @@ class SocialMediaPublisher {
 
       if (result.success) {
         const content = result.answer.trim()
+        
+        // If NotebookLM returned raw article content instead of a social post, use fallback
+        if (content.length > 500 || content.includes('# ') || content.includes('## ')) {
+          logger.info('SocialMediaPublisher', 'NotebookLM returned full article instead of social post, using fallback')
+          return this.createFallbackFacebookPost(contentPiece)
+        }
+        
         const hashtags = this.extractHashtags(content)
 
         return {
           platform: 'facebook',
           content: content,
           hashtags,
-          mediaUrl: contentPiece.media_urls.social_video || contentPiece.media_urls.featured_image
+          mediaUrl: contentPiece.media_urls.facebook_reel || contentPiece.media_urls.social_video || contentPiece.media_urls.featured_image
         }
       }
 
@@ -139,7 +152,7 @@ class SocialMediaPublisher {
       return this.createFallbackFacebookPost(contentPiece)
 
     } catch (error) {
-      console.error('Facebook post generation failed:', error)
+      logger.error('SocialMediaPublisher', 'Facebook post generation failed', error)
       return this.createFallbackFacebookPost(contentPiece)
     }
   }
@@ -198,13 +211,20 @@ class SocialMediaPublisher {
 
       if (result.success) {
         const content = result.answer.trim()
+        
+        // If NotebookLM returned generic English response instead of Hebrew LinkedIn post, use fallback
+        if (content.length < 200 || content.includes('Based on') || !content.includes('Israeli-American')) {
+          logger.info('SocialMediaPublisher', 'NotebookLM returned generic response instead of Hebrew LinkedIn post, using fallback')
+          return this.createFallbackLinkedInPost(contentPiece)
+        }
+        
         const hashtags = this.extractHashtags(content)
 
         return {
           platform: 'linkedin',
           content: content,
           hashtags,
-          mediaUrl: contentPiece.media_urls.social_video || contentPiece.media_urls.featured_image
+          mediaUrl: contentPiece.media_urls.linkedin_video || contentPiece.media_urls.social_video || contentPiece.media_urls.featured_image
         }
       }
 
@@ -212,38 +232,201 @@ class SocialMediaPublisher {
       return this.createFallbackLinkedInPost(contentPiece)
 
     } catch (error) {
-      console.error('LinkedIn post generation failed:', error)
+      logger.error('SocialMediaPublisher', 'LinkedIn post generation failed', error)
       return this.createFallbackLinkedInPost(contentPiece)
     }
   }
 
   /**
-   * Publish to Facebook using Upload-Post API
+   * Publish to Facebook using Graph API
    */
   private async publishToFacebook(post: SocialPost): Promise<PostResult> {
     try {
-      const formData = new FormData()
-      formData.append('title', post.content)
-      formData.append('user', 'tax4us')
-      formData.append('platform[]', 'facebook')
-      formData.append('type', 'text') // Specify text post type
-
-      if (post.mediaUrl) {
-        formData.append('image_url', post.mediaUrl)
-        formData.append('type', 'image') // Change to image post if media exists
+      if (!this.facebookAccessToken) {
+        throw new Error('Facebook access token not configured')
       }
 
-      const response = await fetch('https://api.upload-post.com/api/upload_text', {
+      // Get page-specific access token for posting
+      const pageTokenResponse = await fetch(`https://graph.facebook.com/v18.0/me/accounts?access_token=${this.facebookAccessToken}`)
+      if (!pageTokenResponse.ok) {
+        throw new Error('Failed to fetch page access token')
+      }
+      
+      const pageData = await pageTokenResponse.json()
+      const targetPage = pageData.data?.find((page: FacebookPageData) => page.id === this.facebookPageId)
+      if (!targetPage?.access_token) {
+        throw new Error('Page access token not found for posting')
+      }
+
+      const payload = {
+        message: post.content + (post.hashtags?.length > 0 ? '\n\n' + post.hashtags.join(' ') : ''),
+        access_token: targetPage.access_token
+      }
+
+      // If media URL provided, determine if it's video or image
+      if (post.mediaUrl) {
+        const isVideo = post.mediaUrl.includes('.mp4') || post.mediaUrl.includes('video')
+        const isReel = isVideo && (post.mediaUrl.includes('reel') || post.mediaUrl.includes('facebook_reel'))
+        
+        logger.info('SocialMediaPublisher', `📹 Media URL: ${post.mediaUrl}`)
+        logger.info('SocialMediaPublisher', `📹 Is Video: ${isVideo}`)
+        logger.info('SocialMediaPublisher', `📹 Is Reel: ${isReel}`)
+        
+        // Ensure video URL is publicly accessible for Facebook
+        let publicMediaUrl = post.mediaUrl
+        if (isVideo && (post.mediaUrl.includes('localhost') || post.mediaUrl.includes('vercel.app'))) {
+          try {
+            // Upload video to WordPress for public access
+            const localVideoPath = post.mediaUrl.replace(/https?:\/\/[^\/]+/, './public')
+            if (require('fs').existsSync(localVideoPath)) {
+              const { wordPressPublisher } = await import('./wordpress-publisher')
+              publicMediaUrl = await wordPressPublisher.uploadVideo(localVideoPath, 'facebook-reel')
+              logger.info('SocialMediaPublisher', `✅ Uploaded video to WordPress: ${publicMediaUrl}`)
+            }
+          } catch (uploadError) {
+            logger.warn('SocialMediaPublisher', '⚠️ Video upload failed, using original URL', uploadError)
+          }
+        }
+        
+        // Determine API endpoint based on media type
+        const apiEndpoint = isVideo 
+          ? (isReel 
+              ? `https://graph.facebook.com/v18.0/${this.facebookPageId}/video_reels`
+              : `https://graph.facebook.com/v18.0/${this.facebookPageId}/videos`)
+          : `https://graph.facebook.com/v18.0/${this.facebookPageId}/photos`
+          
+        logger.info('SocialMediaPublisher', `FB-DEBUG: URL=${post.mediaUrl}, isReel=${isReel}, endpoint=${apiEndpoint}`)
+        
+        let requestBody
+        let headers
+        if (isVideo && isReel) {
+          // Use multipart form data for video upload
+          const formData = new FormData()
+          formData.append('access_token', targetPage.access_token)
+          formData.append('description', payload.message)
+          
+          // Fetch video and append as blob
+          const videoResponse = await fetch(publicMediaUrl)
+          const videoBlob = await videoResponse.blob()
+          formData.append('source', videoBlob, 'video.mp4')
+          
+          const reelResponse = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}/video_reels`, {
+            method: 'POST',
+            body: formData
+          })
+          
+          if (reelResponse.ok) {
+            const reelResult = await reelResponse.json()
+            return {
+              platform: 'facebook',
+              success: true,
+              postId: reelResult.id,
+              postUrl: `https://www.facebook.com/reel/${reelResult.id}`
+            }
+          }
+        }
+        
+        if (isVideo) {
+          // Read video file from local filesystem and upload directly
+          const fs = require('fs')
+          const path = require('path')
+          const localPath = publicMediaUrl.replace(/https?:\/\/[^\/]+/, './public')
+          
+          if (fs.existsSync(localPath)) {
+            const formData = new FormData()
+            const videoBuffer = fs.readFileSync(localPath)
+            const videoBlob = new Blob([videoBuffer], { type: 'video/mp4' })
+            
+            formData.append('access_token', targetPage.access_token)
+            formData.append('description', payload.message)
+            formData.append('source', videoBlob, path.basename(localPath))
+            
+            logger.info('SocialMediaPublisher', 'FB-UPLOAD', {
+              endpoint: apiEndpoint,
+              formDataKeys: Array.from(formData.keys()),
+              fileSize: videoBuffer.length
+            })
+            
+            const response = await fetch(apiEndpoint, {
+              method: 'POST',
+              body: formData
+            })
+
+            logger.info('SocialMediaPublisher', 'FB-RESPONSE', {
+              status: response.status,
+              statusText: response.statusText,
+              headers: Object.fromEntries(response.headers.entries())
+            })
+
+            if (!response.ok) {
+              const error = await response.json()
+              logger.error('SocialMediaPublisher', 'FB-ERROR', error)
+              throw new Error(`Facebook API error: ${error.error?.message || response.statusText}`)
+            }
+
+            const result = await response.json()
+            logger.info('SocialMediaPublisher', 'FB-SUCCESS', result)
+            return {
+              platform: 'facebook',
+              success: true,
+              postId: result.id,
+              postUrl: `https://www.facebook.com/${this.facebookPageId}/videos/${result.id}`
+            }
+          } else {
+            throw new Error(`Video file not found: ${localPath}`)
+          }
+        } else {
+          // Images
+          requestBody = JSON.stringify({
+            ...payload,
+            url: publicMediaUrl
+          })
+          headers = { 'Content-Type': 'application/json' }
+        }
+        
+        // FORCE DEBUG: Log exact API call  
+        logger.info('SocialMediaPublisher', 'FB-API-CALL', {
+          endpoint: apiEndpoint,
+          isReel,
+          isVideo,
+          contentType: headers['Content-Type'],
+          bodyPreview: isVideo ? 'FormData: ' + requestBody : 'JSON request'
+        })
+        
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers,
+          body: requestBody
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(`Facebook API error: ${error.error?.message || response.statusText}`)
+        }
+
+        const result = await response.json()
+        return {
+          platform: 'facebook',
+          success: true,
+          postId: result.id,
+          postUrl: isVideo
+            ? `https://www.facebook.com/${this.facebookPageId}/videos/${result.id}`
+            : `https://www.facebook.com/${result.id}`
+        }
+      }
+
+      // Text-only post
+      const response = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}/feed`, {
         method: 'POST',
         headers: {
-          'Authorization': `Apikey ${this.uploadPostApiKey}`
+          'Content-Type': 'application/json'
         },
-        body: formData
+        body: JSON.stringify(payload)
       })
 
       if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Facebook API error: ${response.status} - ${errorText}`)
+        const error = await response.json()
+        throw new Error(`Facebook API error: ${error.error?.message || response.statusText}`)
       }
 
       const result = await response.json()
@@ -251,16 +434,15 @@ class SocialMediaPublisher {
       return {
         platform: 'facebook',
         success: true,
-        postId: result.post_id,
-        postUrl: result.post_url
+        postId: result.id,
+        postUrl: `https://www.facebook.com/${result.id}`
       }
 
     } catch (error) {
-      console.error('Facebook publishing failed:', error)
+      logger.error('SocialMediaPublisher', 'Facebook publishing failed', error)
 
-      // Development mode: Skip external API failures gracefully
       if (process.env.NODE_ENV === 'development') {
-        console.log('DEV MODE: Facebook publishing bypassed due to API credentials')
+        logger.info('SocialMediaPublisher', 'DEV MODE: Facebook publishing bypassed due to API credentials')
         return {
           platform: 'facebook',
           success: true,
@@ -279,32 +461,140 @@ class SocialMediaPublisher {
   }
 
   /**
-   * Publish to LinkedIn using Upload-Post API
+   * Upload video to LinkedIn using 3-step native video upload process.
+   * LinkedIn does NOT accept video URLs — binary upload required.
+   */
+  private async uploadLinkedInVideo(videoUrl: string, accessToken: string, authorUrn: string): Promise<string> {
+    // Step 1: Register upload to get upload URL + asset URN
+    const registerResp = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'X-Restli-Protocol-Version': '2.0.0'
+      },
+      body: JSON.stringify({
+        registerUploadRequest: {
+          recipes: ['urn:li:digitalmediaRecipe:feedshare-video'],
+          owner: authorUrn,
+          serviceRelationships: [{
+            relationshipType: 'OWNER',
+            identifier: 'urn:li:userGeneratedContent'
+          }]
+        }
+      })
+    })
+
+    if (!registerResp.ok) {
+      const err = await registerResp.json()
+      throw new Error(`LinkedIn register upload failed: ${JSON.stringify(err).substring(0, 200)}`)
+    }
+
+    const registerData = await registerResp.json()
+    const uploadUrl = registerData.value?.uploadMechanism?.['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']?.uploadUrl
+    const assetUrn = registerData.value?.asset
+
+    if (!uploadUrl || !assetUrn) {
+      throw new Error(`LinkedIn register upload: missing uploadUrl or asset URN. Response: ${JSON.stringify(registerData).substring(0, 300)}`)
+    }
+
+    // Step 2: Download video and upload binary to LinkedIn
+    const videoResp = await fetch(videoUrl)
+    if (!videoResp.ok) throw new Error(`Failed to fetch video for LinkedIn upload: ${videoUrl}`)
+    const videoBuffer = await videoResp.arrayBuffer()
+
+    const uploadResp = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'video/mp4'
+      },
+      body: videoBuffer
+    })
+
+    if (!uploadResp.ok && uploadResp.status !== 201) {
+      throw new Error(`LinkedIn video binary upload failed: ${uploadResp.status}`)
+    }
+
+    return assetUrn
+  }
+
+  /**
+   * Publish to LinkedIn using UGC Posts API v2.
+   * Member ID is managed by linkedInPersistentAuth — stored in linkedin-token.json,
+   * fetched once via /v2/me when r_liteprofile scope is available, reused across renewals.
+   * Videos require 3-step native upload (register → binary PUT → ugcPost with asset URN).
    */
   private async publishToLinkedIn(post: SocialPost): Promise<PostResult> {
     try {
-      const formData = new FormData()
-      formData.append('title', post.content)
-      formData.append('user', 'tax4us')
-      formData.append('platform[]', 'linkedin')
-      formData.append('type', 'text') // Specify text post type
+      const accessToken = await linkedInPersistentAuth.getValidAccessToken()
+      const content = post.content + (post.hashtags && post.hashtags.length > 0 ? '\n\n' + post.hashtags.join(' ') : '')
+
+      const authorUrn = `urn:li:organization:17903965`
+      let mediaCategory = 'NONE'
+      let mediaArray: { status: string; media?: string; originalUrl?: string; title?: { text: string } }[] = []
 
       if (post.mediaUrl) {
-        formData.append('image_url', post.mediaUrl)
-        formData.append('type', 'image') // Change to image post if media exists
+        const isVideo = post.mediaUrl.includes('.mp4') || post.mediaUrl.includes('video')
+        if (isVideo) {
+          logger.info('SocialMediaPublisher', '📹 Uploading video to LinkedIn natively (3-step)...')
+          const assetUrn = await this.uploadLinkedInVideo(post.mediaUrl, accessToken, authorUrn)
+          mediaCategory = 'VIDEO'
+          mediaArray = [{ status: 'READY', media: assetUrn }]
+        } else {
+          mediaCategory = 'ARTICLE'
+          mediaArray = [{ status: 'READY', originalUrl: post.mediaUrl, title: { text: 'TAX4US Content' } }]
+        }
       }
 
-      const response = await fetch('https://api.upload-post.com/api/upload_text', {
+      const payload: {
+        author: string;
+        lifecycleState: string;
+        specificContent: {
+          'com.linkedin.ugc.ShareContent': {
+            shareCommentary: { text: string };
+            shareMediaCategory: string;
+            media?: unknown[];
+          };
+        };
+        visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': string };
+      } = {
+        author: authorUrn,
+        lifecycleState: 'PUBLISHED',
+        specificContent: {
+          'com.linkedin.ugc.ShareContent': {
+            shareCommentary: { text: content },
+            shareMediaCategory: mediaCategory,
+            ...(mediaArray.length > 0 && { media: mediaArray })
+          }
+        },
+        visibility: {
+          'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC'
+        }
+      }
+
+      // FORCE DEBUG: Log LinkedIn API call
+      logger.info('SocialMediaPublisher', 'LI-API-CALL', {
+        authorUrn,
+        hasToken: !!accessToken,
+        mediaCategory,
+        mediaArray: mediaArray.length
+      })
+      
+      const response = await fetch('https://api.linkedin.com/v2/ugcPosts', {
         method: 'POST',
         headers: {
-          'Authorization': `Apikey ${this.uploadPostApiKey}`
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'X-Restli-Protocol-Version': '2.0.0',
+          'LinkedIn-Version': '202303'
         },
-        body: formData
+        body: JSON.stringify(payload)
       })
 
       if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`LinkedIn API error: ${response.status} - ${errorText}`)
+        const error = await response.json()
+        throw new Error(`LinkedIn API error: ${JSON.stringify(error).substring(0, 200)}`)
       }
 
       const result = await response.json()
@@ -312,24 +602,12 @@ class SocialMediaPublisher {
       return {
         platform: 'linkedin',
         success: true,
-        postId: result.post_id,
-        postUrl: result.post_url
+        postId: result.id,
+        postUrl: `https://www.linkedin.com/feed/update/${result.id}/`
       }
 
     } catch (error) {
-      console.error('LinkedIn publishing failed:', error)
-
-      // Development mode: Skip external API failures gracefully
-      if (process.env.NODE_ENV === 'development') {
-        console.log('DEV MODE: LinkedIn publishing bypassed due to API credentials')
-        return {
-          platform: 'linkedin',
-          success: true,
-          postId: 'dev-mock-' + Date.now(),
-          postUrl: 'https://linkedin.com/posts/mock-dev-post',
-          note: 'Development mode bypass'
-        }
-      }
+      logger.error('SocialMediaPublisher', 'LinkedIn publishing failed', error)
 
       return {
         platform: 'linkedin',
@@ -379,7 +657,7 @@ class SocialMediaPublisher {
       return results
 
     } catch (error) {
-      console.error('Scheduled posting failed:', error)
+      logger.error('SocialMediaPublisher', 'Scheduled posting failed', error)
       return []
     }
   }
@@ -436,7 +714,7 @@ class SocialMediaPublisher {
   }
 
   /**
-   * Test social media connections
+   * Test social media connections using direct API access
    */
   async testConnections(): Promise<{
     facebook: { success: boolean; message: string }
@@ -448,24 +726,77 @@ class SocialMediaPublisher {
     }
 
     try {
-      // Upload-Post API endpoints appear to have changed - mark as operational if token exists
-      if (this.uploadPostApiKey && this.uploadPostApiKey.length > 10) {
-        results.facebook.success = true
-        results.facebook.message = 'Upload-Post credentials configured (service ready)'
-        results.linkedin.success = true
-        results.linkedin.message = 'Upload-Post credentials configured (service ready)'
+      // Test Facebook connection
+      if (this.facebookAccessToken && this.facebookPageId) {
+        // First get page-specific token
+        const pageTokenResponse = await fetch(`https://graph.facebook.com/v18.0/me/accounts?access_token=${this.facebookAccessToken}`)
+        if (pageTokenResponse.ok) {
+          const pageData = await pageTokenResponse.json()
+          const targetPage = pageData.data?.find((page: FacebookPageData) => page.id === this.facebookPageId)
+          
+          if (targetPage?.access_token) {
+            // Test with page token
+            const fbResponse = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}?fields=id,name&access_token=${targetPage.access_token}`)
+            if (fbResponse.ok) {
+              const fbData = await fbResponse.json()
+              results.facebook.success = true
+              results.facebook.message = `Connected to Facebook Page: ${fbData.name} (with posting permissions)`
+            } else {
+              results.facebook.message = 'Facebook page access failed with page token'
+            }
+          } else {
+            results.facebook.message = 'Facebook page token not found - posting may fail'
+          }
+        } else {
+          results.facebook.message = 'Facebook API connection failed - token may be expired'
+        }
       } else {
-        results.facebook.message = 'No Upload-Post API key configured'
-        results.linkedin.message = 'No Upload-Post API key configured'
+        results.facebook.message = 'Facebook credentials not configured'
+      }
+
+      // Test LinkedIn connection using persistent auth
+      try {
+        const testResult = await linkedInPersistentAuth.testToken()
+        if (testResult.valid) {
+          results.linkedin.success = true
+          results.linkedin.message = `Connected to LinkedIn: ${testResult.userInfo?.name}`
+        } else {
+          results.linkedin.message = `LinkedIn token invalid: ${testResult.error}`
+        }
+      } catch (_error) {
+        results.linkedin.message = 'LinkedIn not configured - run npm run get-linkedin-token'
       }
 
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error'
-      results.facebook.message = errorMsg
-      results.linkedin.message = errorMsg
+      if (!results.facebook.message) results.facebook.message = errorMsg
+      if (!results.linkedin.message) results.linkedin.message = errorMsg
     }
 
     return results
+  }
+
+  /**
+   * Upload Facebook Reel using 3-step process
+   */
+  private async uploadFacebookReel(videoUrl: string, description: string, accessToken: string): Promise<{ id: string }> {
+    // Use direct video_reels endpoint with URL - simpler approach
+    const response = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}/video_reels`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        video_url: videoUrl,
+        description: description,
+        access_token: accessToken
+      }).toString()
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(`Reel upload failed: ${error.error?.message || response.statusText}`)
+    }
+
+    return await response.json()
   }
 }
 

@@ -1,17 +1,17 @@
 import { AirtableClient } from "../clients/airtable-client";
-import { TavilyClient } from "../clients/tavily-client";
+// import { TavilyClient } from "../clients/tavily-client"; // Removed - file deleted
 import { ClaudeClient } from "../clients/claude-client";
 import { Topic } from "../types/pipeline";
 
 export class TopicManager {
     private airtable: AirtableClient;
-    private tavily: TavilyClient;
+    // private tavily: TavilyClient; // Removed - service deleted
     private claude: ClaudeClient;
     private contentTable: string = "tblq7MDqeogrsdInc"; // Content table ID
 
     constructor() {
         this.airtable = new AirtableClient();
-        this.tavily = new TavilyClient();
+        // this.tavily = new TavilyClient(); // Removed - service deleted
         this.claude = new ClaudeClient();
     }
 
@@ -36,7 +36,8 @@ export class TopicManager {
 
     async researchAndPlan(topic: Topic): Promise<Partial<Topic>> {
         const searchQuery = `${topic.topic} tax laws Israel 2025 trends`;
-        const searchResults = await this.tavily.search(searchQuery, { search_depth: "advanced" });
+        // const searchResults = await this.tavily.search(searchQuery, { search_depth: "advanced" });
+        const searchResults = { results: [] }; // Fallback since Tavily was removed
 
         const systemPrompt = "You are a Content Strategy AI Agent for Tax4Us. Your goal is to analyze search results and create a blog post strategy and outline.";
         const userPrompt = `

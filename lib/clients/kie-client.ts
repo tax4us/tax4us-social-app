@@ -32,10 +32,10 @@ export class KieClient {
         excerpt: string,
         style?: "abstract" | "documentary" | "corporate"
     }) {
-        // Temporary bypass: Kie.ai API appears to be deprecated/changed
-        if (process.env.NODE_ENV === "development" || process.env.DISABLE_KIE_AI === "true") {
-            pipelineLogger.warn("Kie.ai bypassed in development mode", "KIE_AI");
-            return "dev-video-placeholder";
+        // Only bypass if explicitly disabled
+        if (process.env.DISABLE_KIE_AI === "true") {
+            pipelineLogger.warn("Kie.ai explicitly disabled", "KIE_AI");
+            return "kie-disabled-placeholder";
         }
 
         const style = params.style || "documentary";
@@ -69,13 +69,12 @@ export class KieClient {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "veo-3", // Using working Veo 3 model for 2026
+                    model: "kling-3.0/video",
                     input: {
                         prompt: prompt,
-                        aspect_ratio: "9:16", // Portrait format
-                        resolution: "1080p",
-                        duration: "8s",
-                        seed: Math.floor(Math.random() * 1000000)
+                        mode: "std",
+                        aspect_ratio: "9:16",
+                        duration: "8s"
                     }
                 })
             });
@@ -108,10 +107,10 @@ export class KieClient {
     }
 
     async generateImage(prompt: string) {
-        // Temporary bypass: Kie.ai API appears to be deprecated/changed
-        if (process.env.NODE_ENV === "development" || process.env.DISABLE_KIE_AI === "true") {
-            pipelineLogger.warn("Kie.ai image bypassed in development mode", "KIE_AI");
-            return "dev-image-placeholder";
+        // Only bypass if explicitly disabled
+        if (process.env.DISABLE_KIE_AI === "true") {
+            pipelineLogger.warn("Kie.ai image explicitly disabled", "KIE_AI");
+            return "kie-image-disabled-placeholder";
         }
 
         pipelineLogger.agent(`Initiating Image generation for: "${prompt.substring(0, 50)}..."`, "KIE_AI");

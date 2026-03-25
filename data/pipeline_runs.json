@@ -2,6 +2,213 @@
   {
     "trigger_type": "cron",
     "pipeline_type": "content_creation",
+    "status": "running",
+    "current_stage": "initialization",
+    "stages_completed": [],
+    "stages_failed": [],
+    "started_at": "2026-03-20T15:00:59.141Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T15:00:59.141Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      }
+    ],
+    "id": "run_1774018859144_ereqvpcpr"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "running",
+    "current_stage": "initialization",
+    "stages_completed": [],
+    "stages_failed": [],
+    "started_at": "2026-03-20T15:01:19.777Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T15:01:19.777Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      }
+    ],
+    "id": "run_1774018879781_4akillxu8"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "running",
+    "current_stage": "initialization",
+    "stages_completed": [],
+    "stages_failed": [],
+    "started_at": "2026-03-20T15:01:30.503Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T15:01:30.503Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      }
+    ],
+    "id": "run_1774018890506_85s3v9i1r"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "running",
+    "current_stage": "initialization",
+    "stages_completed": [],
+    "stages_failed": [],
+    "started_at": "2026-03-20T15:02:03.516Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T15:02:03.516Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      }
+    ],
+    "id": "run_1774018923519_5xalepesy"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "failed",
+    "current_stage": "failed",
+    "stages_completed": [],
+    "stages_failed": [
+      "execution"
+    ],
+    "started_at": "2026-03-20T15:08:18.023Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T15:08:18.023Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      },
+      {
+        "timestamp": "2026-03-20T15:08:18.048Z",
+        "level": "error",
+        "message": "Pipeline execution failed: posts is not iterable",
+        "stage": "execution"
+      }
+    ],
+    "id": "run_1774019298026_5co2i029q",
+    "completed_at": "2026-03-20T15:08:18.047Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "failed",
+    "current_stage": "failed",
+    "stages_completed": [],
+    "stages_failed": [
+      "execution"
+    ],
+    "started_at": "2026-03-20T15:08:27.908Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T15:08:27.908Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      },
+      {
+        "timestamp": "2026-03-20T15:08:27.912Z",
+        "level": "error",
+        "message": "Pipeline execution failed: posts is not iterable",
+        "stage": "execution"
+      }
+    ],
+    "id": "run_1774019307908_9dpf2rzez",
+    "completed_at": "2026-03-20T15:08:27.912Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "failed",
+    "current_stage": "failed",
+    "stages_completed": [],
+    "stages_failed": [
+      "execution"
+    ],
+    "started_at": "2026-03-20T15:20:19.484Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T15:20:19.484Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      },
+      {
+        "timestamp": "2026-03-20T15:20:19.489Z",
+        "level": "error",
+        "message": "Pipeline execution failed: posts is not iterable",
+        "stage": "execution"
+      }
+    ],
+    "id": "run_1774020019484_zzph2bfb3",
+    "completed_at": "2026-03-20T15:20:19.488Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "failed",
+    "current_stage": "failed",
+    "stages_completed": [],
+    "stages_failed": [
+      "execution"
+    ],
+    "started_at": "2026-03-20T21:21:39.722Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T21:21:39.722Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      },
+      {
+        "timestamp": "2026-03-20T21:21:39.727Z",
+        "level": "error",
+        "message": "Pipeline execution failed: posts is not iterable",
+        "stage": "execution"
+      }
+    ],
+    "id": "run_1774041699723_rqv2h29m2",
+    "completed_at": "2026-03-20T21:21:39.726Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
+    "status": "failed",
+    "current_stage": "failed",
+    "stages_completed": [],
+    "stages_failed": [
+      "execution"
+    ],
+    "started_at": "2026-03-20T21:27:11.449Z",
+    "logs": [
+      {
+        "timestamp": "2026-03-20T21:27:11.449Z",
+        "level": "info",
+        "message": "Pipeline content started via cron",
+        "stage": "initialization"
+      },
+      {
+        "timestamp": "2026-03-20T21:27:11.454Z",
+        "level": "error",
+        "message": "Pipeline execution failed: posts is not iterable",
+        "stage": "execution"
+      }
+    ],
+    "id": "run_1774042031450_2p6zitm5e",
+    "completed_at": "2026-03-20T21:27:11.454Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "content_creation",
     "status": "completed",
     "current_stage": "completed",
     "stages_completed": [
@@ -9,22 +216,225 @@
       "execution"
     ],
     "stages_failed": [],
-    "started_at": "2026-02-25T20:09:19.197Z",
+    "started_at": "2026-03-20T23:09:48.426Z",
     "logs": [
       {
-        "timestamp": "2026-02-25T20:09:19.197Z",
+        "timestamp": "2026-03-20T23:09:48.426Z",
         "level": "info",
         "message": "Pipeline content started via cron",
         "stage": "initialization"
       },
       {
-        "timestamp": "2026-02-25T20:09:21.466Z",
-        "level": "success",
+        "timestamp": "2026-03-20T23:09:48.432Z",
+        "level": "info",
         "message": "Pipeline content completed successfully",
         "stage": "completed"
       }
     ],
-    "id": "run_1772050159199_e2frsemc8",
-    "completed_at": "2026-02-25T20:09:21.465Z"
+    "id": "run_1774048188429_j17zqxq82",
+    "completed_at": "2026-03-20T23:09:48.431Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "seo_optimization",
+    "status": "completed",
+    "current_stage": "scanning_posts",
+    "stages_completed": [],
+    "stages_failed": [],
+    "logs": [
+      {
+        "timestamp": "2026-03-22T02:53:19.811Z",
+        "level": "info",
+        "stage": "scanning_posts",
+        "message": "Found 0 posts with SEO score < 80"
+      }
+    ],
+    "started_at": "2026-03-22T02:53:19.802Z",
+    "id": "run_1774147999808_zcfojqyvq",
+    "completed_at": "2026-03-22T02:53:19.813Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "seo_optimization",
+    "status": "completed",
+    "current_stage": "scanning_posts",
+    "stages_completed": [],
+    "stages_failed": [],
+    "logs": [
+      {
+        "timestamp": "2026-03-22T02:54:40.230Z",
+        "level": "info",
+        "stage": "scanning_posts",
+        "message": "Found 0 posts with SEO score < 80"
+      }
+    ],
+    "started_at": "2026-03-22T02:54:40.198Z",
+    "id": "run_1774148080198_xkoirvemi",
+    "completed_at": "2026-03-22T02:54:40.232Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "seo_optimization",
+    "status": "completed",
+    "current_stage": "scanning_posts",
+    "stages_completed": [],
+    "stages_failed": [],
+    "logs": [
+      {
+        "timestamp": "2026-03-24T17:27:52.783Z",
+        "level": "info",
+        "stage": "scanning_posts",
+        "message": "Found 0 posts with SEO score < 80"
+      }
+    ],
+    "started_at": "2026-03-24T17:27:52.778Z",
+    "id": "run_1774373272780_84v6pzigh",
+    "completed_at": "2026-03-24T17:27:52.790Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "seo_optimization",
+    "status": "completed",
+    "current_stage": "scanning_posts",
+    "stages_completed": [],
+    "stages_failed": [],
+    "logs": [
+      {
+        "timestamp": "2026-03-24T17:29:58.174Z",
+        "level": "info",
+        "stage": "scanning_posts",
+        "message": "Found 2 posts with SEO score < 80"
+      },
+      {
+        "timestamp": "2026-03-24T17:29:58.178Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "Starting AI-powered SEO optimization for: Tax Advice: עסקאות נדל\"ן בישראל - השפעה על מס אמריקאי",
+        "data": {
+          "contentId": "content_1772773848336_4pkiejpgl",
+          "currentScore": 65
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:29:58.327Z",
+        "level": "error",
+        "stage": "optimizing_post",
+        "message": "SEO optimization failed for Tax Advice: עסקאות נדל\"ן בישראל - השפעה על מס אמריקאי: SEO analysis failed: Notebook query failed: 401",
+        "data": {
+          "contentId": "content_1772773848336_4pkiejpgl",
+          "error": "SEO analysis failed: Notebook query failed: 401"
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:29:58.549Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "Starting AI-powered SEO optimization for: Old FBAR Article with Low SEO Score",
+        "data": {
+          "contentId": "content_1774373295584_8j5464z45",
+          "currentScore": 45
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:29:58.768Z",
+        "level": "error",
+        "stage": "optimizing_post",
+        "message": "SEO optimization failed for Old FBAR Article with Low SEO Score: SEO analysis failed: Notebook query failed: 401",
+        "data": {
+          "contentId": "content_1774373295584_8j5464z45",
+          "error": "SEO analysis failed: Notebook query failed: 401"
+        }
+      }
+    ],
+    "started_at": "2026-03-24T17:29:58.152Z",
+    "id": "run_1774373398170_niagvi0ak",
+    "completed_at": "2026-03-24T17:29:58.812Z"
+  },
+  {
+    "trigger_type": "cron",
+    "pipeline_type": "seo_optimization",
+    "status": "completed",
+    "current_stage": "scanning_posts",
+    "stages_completed": [],
+    "stages_failed": [],
+    "logs": [
+      {
+        "timestamp": "2026-03-24T17:31:48.321Z",
+        "level": "info",
+        "stage": "scanning_posts",
+        "message": "Found 2 posts with SEO score < 80"
+      },
+      {
+        "timestamp": "2026-03-24T17:31:48.323Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "Starting AI-powered SEO optimization for: Tax Advice: עסקאות נדל\"ן בישראל - השפעה על מס אמריקאי",
+        "data": {
+          "contentId": "content_1772773848336_4pkiejpgl",
+          "currentScore": 65
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:31:48.667Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "SEO analysis completed. Found 0 issues. Target score: 85",
+        "data": {
+          "contentId": "content_1772773848336_4pkiejpgl",
+          "currentScore": 65,
+          "targetScore": 85,
+          "issuesFound": 0
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:31:48.745Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "SEO optimization completed successfully. Score improved from 65 to 85",
+        "data": {
+          "contentId": "content_1772773848336_4pkiejpgl",
+          "oldScore": 65,
+          "newScore": 85,
+          "optimizationsApplied": 3
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:31:48.746Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "Starting AI-powered SEO optimization for: Old FBAR Article with Low SEO Score",
+        "data": {
+          "contentId": "content_1774373295584_8j5464z45",
+          "currentScore": 45
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:31:48.886Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "SEO analysis completed. Found 0 issues. Target score: 65",
+        "data": {
+          "contentId": "content_1774373295584_8j5464z45",
+          "currentScore": 45,
+          "targetScore": 65,
+          "issuesFound": 0
+        }
+      },
+      {
+        "timestamp": "2026-03-24T17:31:48.964Z",
+        "level": "info",
+        "stage": "optimizing_post",
+        "message": "SEO optimization completed successfully. Score improved from 45 to 65",
+        "data": {
+          "contentId": "content_1774373295584_8j5464z45",
+          "oldScore": 45,
+          "newScore": 65,
+          "optimizationsApplied": 3
+        }
+      }
+    ],
+    "started_at": "2026-03-24T17:31:48.303Z",
+    "id": "run_1774373508318_60ng71mo7",
+    "completed_at": "2026-03-24T17:31:48.970Z"
   }
 ]

@@ -62,8 +62,7 @@ export class PodcastService {
             return this.getFallbackEpisodes();
         }
 
-        // 1. Return fallback data since Captivate auth is disabled
-        // Captivate integration disabled - credentials need refresh
+        // 1. Captivate integration operational
 
         // 2. Fetch from ElevenLabs (History)
         try {

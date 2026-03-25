@@ -18,7 +18,7 @@ export const mockElevenLabsError = {
 export const mockFetch = jest.fn()
 
 export const setupElevenLabsMock = (shouldSucceed = true) => {
-  global.fetch = jest.fn().mockImplementation((url: string) => {
+  ;(global as any).fetch = jest.fn().mockImplementation((url: any) => {
     if (url.includes('elevenlabs.io')) {
       if (shouldSucceed) {
         return Promise.resolve({

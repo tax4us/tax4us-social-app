@@ -189,6 +189,13 @@ class PipelineManager {
       topic.title_hebrew
     )
 
+    // Extract content immediately if completed
+    if (result.status === 'completed' && result.result?.data?.content) {
+      await db.updateContentPiece(contentPiece.id, {
+        content_hebrew: result.result.data.content
+      })
+    }
+
     state.checkpoints.hebrew_content_generation = { 
       taskId: result.id,
       contentPieceId: contentPiece.id 
@@ -205,38 +212,40 @@ class PipelineManager {
     try {
       this.log(runId, 'info', 'media_generation', `Starting media generation for: ${state.selectedTopic?.title_english}`)
 
-      // Generate multiple media assets using real Kie.ai API
+      // Generate multiple video formats using Remotion (replacing Kie.ai)
       const mediaPromises = [
-        // Blog header video (30-second explainer)
-        this.generateKieVideo(
-          `Create a 30-second professional explainer video about ${state.selectedTopic?.title_english} for Israeli-Americans dealing with US tax obligations`,
-          'documentary',
-          30
-        ),
-        // Social media video (shorter, more engaging)
-        this.generateKieVideo(
-          `Create a 15-second engaging social media video about ${state.selectedTopic?.title_english} with visual appeal for Facebook and LinkedIn`,
-          'social',
-          15
-        )
+        // WordPress header video (3-minute explainer) 
+        this.generateRemotionVideo(state.contentPiece, 'wordpress'),
+        // Social media videos (Facebook Reel + LinkedIn)
+        this.generateRemotionVideo(state.contentPiece, 'facebook_reel'),
+        this.generateRemotionVideo(state.contentPiece, 'linkedin')
       ]
 
-      const [blogVideo, socialVideo] = await Promise.allSettled(mediaPromises)
+      const [wordpressVideo, facebookVideo, linkedinVideo] = await Promise.allSettled(mediaPromises)
 
-      // Handle blog video result
-      if (blogVideo.status === 'fulfilled' && blogVideo.value.success) {
-        state.contentPiece.media_urls.blog_video = blogVideo.value.videoUrl
-        this.log(runId, 'info', 'media_generation', `Blog video generated: ${blogVideo.value.taskId}`)
+      // Handle WordPress video result
+      if (wordpressVideo.status === 'fulfilled' && wordpressVideo.value.success) {
+        state.contentPiece.media_urls.blog_video = wordpressVideo.value.videoUrl
+        state.contentPiece.media_urls.blog_thumbnail = wordpressVideo.value.thumbnailUrl
+        this.log(runId, 'info', 'media_generation', `WordPress video generated: ${wordpressVideo.value.videoId}`)
       } else {
-        this.log(runId, 'warn', 'media_generation', `Blog video generation failed: ${blogVideo.status === 'rejected' ? blogVideo.reason : 'Unknown error'}`)
+        this.log(runId, 'warn', 'media_generation', `WordPress video generation failed: ${wordpressVideo.status === 'rejected' ? wordpressVideo.reason : 'Unknown error'}`)
       }
 
-      // Handle social video result
-      if (socialVideo.status === 'fulfilled' && socialVideo.value.success) {
-        state.contentPiece.media_urls.social_video = socialVideo.value.videoUrl
-        this.log(runId, 'info', 'media_generation', `Social video generated: ${socialVideo.value.taskId}`)
+      // Handle Facebook Reel result
+      if (facebookVideo.status === 'fulfilled' && facebookVideo.value.success) {
+        state.contentPiece.media_urls.facebook_reel = facebookVideo.value.videoUrl
+        this.log(runId, 'info', 'media_generation', `Facebook Reel generated: ${facebookVideo.value.videoId}`)
       } else {
-        this.log(runId, 'warn', 'media_generation', `Social video generation failed: ${socialVideo.status === 'rejected' ? socialVideo.reason : 'Unknown error'}`)
+        this.log(runId, 'warn', 'media_generation', `Facebook Reel generation failed: ${facebookVideo.status === 'rejected' ? facebookVideo.reason : 'Unknown error'}`)
+      }
+
+      // Handle LinkedIn video result
+      if (linkedinVideo.status === 'fulfilled' && linkedinVideo.value.success) {
+        state.contentPiece.media_urls.linkedin_video = linkedinVideo.value.videoUrl
+        this.log(runId, 'info', 'media_generation', `LinkedIn video generated: ${linkedinVideo.value.videoId}`)
+      } else {
+        this.log(runId, 'warn', 'media_generation', `LinkedIn video generation failed: ${linkedinVideo.status === 'rejected' ? linkedinVideo.reason : 'Unknown error'}`)
       }
 
       // Update content piece with new media URLs
@@ -245,16 +254,17 @@ class PipelineManager {
       })
 
       state.checkpoints.media_generation = {
-        blogVideoStatus: blogVideo.status === 'fulfilled' && blogVideo.value.success,
-        socialVideoStatus: socialVideo.status === 'fulfilled' && socialVideo.value.success,
+        wordpressVideoStatus: wordpressVideo.status === 'fulfilled' && wordpressVideo.value.success,
+        facebookVideoStatus: facebookVideo.status === 'fulfilled' && facebookVideo.value.success,
+        linkedinVideoStatus: linkedinVideo.status === 'fulfilled' && linkedinVideo.value.success,
         mediaUrls: state.contentPiece.media_urls
       }
 
-      const successCount = [blogVideo, socialVideo].filter(
+      const successCount = [wordpressVideo, facebookVideo, linkedinVideo].filter(
         result => result.status === 'fulfilled' && (result.value as any).success
       ).length
 
-      this.log(runId, 'info', 'media_generation', `Media generation completed: ${successCount}/2 assets generated successfully`)
+      this.log(runId, 'info', 'media_generation', `Remotion video generation completed: ${successCount}/3 videos generated successfully`)
 
     } catch (error) {
       this.log(runId, 'error', 'media_generation', `Media generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -263,39 +273,42 @@ class PipelineManager {
   }
 
   /**
-   * Generate video using Kie.ai API
+   * Generate video using Remotion (replaced Kie.ai)
    */
-  private async generateKieVideo(prompt: string, style: string, duration: number): Promise<{
+  private async generateRemotionVideo(contentPiece: ContentPiece, videoType: 'wordpress' | 'facebook_reel' | 'linkedin'): Promise<{
     success: boolean
-    taskId?: string
+    videoId?: string
     videoUrl?: string
+    thumbnailUrl?: string
     error?: string
   }> {
     try {
-      // Use existing video generation API
-      const response = await fetch('http://localhost:3000/api/video/generate', {
+      // Use new Remotion video generation API
+      const response = await fetch('http://localhost:3000/api/video', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          prompt,
-          style,
-          duration,
-          platform: 'blog' // or 'social' depending on usage
+          contentId: contentPiece.id,
+          videoType
         })
       })
 
       if (!response.ok) {
         const errorText = await response.text()
-        throw new Error(`Video generation API error: ${response.status} - ${errorText}`)
+        throw new Error(`Remotion video API error: ${response.status} - ${errorText}`)
       }
 
       const result = await response.json()
       
-      if (result.success) {
-        // Poll for completion (videos take time to generate)
-        return await this.pollVideoCompletion(result.taskId)
+      if (result.success && result.video) {
+        return {
+          success: true,
+          videoId: result.video.id,
+          videoUrl: result.video.url,
+          thumbnailUrl: result.video.thumbnail
+        }
       } else {
         throw new Error(result.error || 'Video generation failed')
       }
@@ -617,8 +630,8 @@ class PipelineManager {
       // Publish content to WordPress using real API
       const result = await wordPressPublisher.publishContent(state.contentPiece, {
         status: 'publish',
-        categories: ['מס ארה"ב', 'ייעוץ מס'],
-        tags: state.contentPiece.target_keywords,
+        categories: ['Business Tax', 'Tax Planning'],
+        tags: state.contentPiece.target_keywords.slice(0, 5),
         seoMeta: {
           metaTitle: state.contentPiece.title_hebrew,
           metaDescription: this.generateSEODescription(state.contentPiece),

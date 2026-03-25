@@ -5,7 +5,6 @@ import {
     fetchSeoMetrics,
     fetchPodcasts,
     fetchServicesStatus,
-    mockApprovals,
     ApprovalItem
 } from "@/lib/pipeline-data";
 import { fetchRecentMedia } from "@/lib/services/intelligence";
@@ -43,24 +42,26 @@ export default async function ContentPipelinePage() {
 
     // 2. Fetch specific Approvals from Airtable
     const airtable = new AirtableClient();
-    let approvals: ApprovalItem[] = mockApprovals;
+    let approvals: ApprovalItem[] = [];
     try {
         const approvalRecords = await airtable.getRecords("tblq7MDqeogrsdInc", {
             filterByFormula: "OR({Status} = 'Review', {Status} = 'Waiting Approval')"
         });
 
-        if (approvalRecords.length > 0) {
-            approvals = approvalRecords.map((r: any) => ({
-                id: r.id,
-                type: 'article',
-                title: r.fields["Title EN"] || r.fields.topic || "Untitled Topic",
-                submittedAt: r.fields["Last Modified"] ? new Date(r.fields["Last Modified"]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
-                summary: r.fields.topic,
-                contentSnippet: r.fields.title
-            }));
-        }
+        approvals = approvalRecords.map((r: any) => ({
+            id: r.id,
+            type: 'article',
+            title: r.fields["Title EN"] || r.fields.topic || "Untitled Topic",
+            submittedAt: r.fields["Last Modified"] ? new Date(r.fields["Last Modified"]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+            summary: r.fields.topic || "No summary available",
+            contentSnippet: r.fields.title || r.fields["Title EN"] || "No content preview"
+        }));
+        
+        console.log(`Loaded ${approvals.length} real approval items from Airtable`);
     } catch (e) {
-        console.error("Failed to fetch approvals:", e);
+        console.error("Failed to fetch approvals from Airtable:", e);
+        // Only fallback to empty array, no mock data
+        approvals = [];
     }
 
 

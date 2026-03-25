@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/services/database'
+// import { remotionVideoService } from '@/lib/services/remotion-video-service' // Removed - file deleted
 
 export async function POST(request: NextRequest) {
   try {
-    const { contentId } = await request.json()
+    const { contentId, videoType = 'wordpress' } = await request.json()
     
     if (!contentId) {
       return NextResponse.json({
@@ -21,21 +22,12 @@ export async function POST(request: NextRequest) {
       }, { status: 404 })
     }
 
-    // Generate video using KIE.ai
-    const video = {
-      id: `video_${Date.now()}`,
-      title: contentPiece.title_hebrew,
-      url: `https://kie.ai/video/${Date.now()}.mp4`,
-      thumbnail: `https://kie.ai/thumbnail/${Date.now()}.jpg`,
-      duration: 45,
-      status: 'ready'
-    }
-    
+    // Remotion video service was removed - returning mock response
     return NextResponse.json({
-      success: true,
-      video,
-      generatedAt: new Date().toISOString()
-    })
+      success: false,
+      error: 'Video generation service temporarily disabled',
+      message: 'Remotion video service has been removed from the codebase'
+    }, { status: 503 });
 
   } catch (error) {
     console.error('Video generation error:', error)

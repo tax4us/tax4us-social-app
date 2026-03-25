@@ -1,4 +1,4 @@
-import { ContentPiece } from '@/lib/types/pipeline'
+import { ContentPiece } from '@/lib/services/database'
 
 export const mockContentPiece: ContentPiece = {
   id: "test-123",
@@ -12,7 +12,6 @@ export const mockContentPiece: ContentPiece = {
   media_urls: {
     featured_image: "https://example.com/image.jpg",
     social_video: "https://example.com/video.mp4",
-    social_image: "https://example.com/social.jpg"
   }
 }
 
@@ -32,13 +31,13 @@ export const mockBlogContent = `
 <p>Maintain detailed records of your work location, maintain clear documentation of your employment arrangements, and consult with qualified professionals.</p>
 `
 
-export const mockPodcastScript = `EMMA: Welcome to Tax4Us Weekly, the essential podcast for Israeli-Americans navigating complex tax obligations. I'm Emma, and I'm here with tax expert Ben to discuss remote work taxation.
+export const mockPodcastScript = `[EMMA] Welcome to Tax4Us Weekly, the essential podcast for Israeli-Americans navigating complex tax obligations. I'm Emma, and I'm here with tax expert Ben to discuss remote work taxation.
 
-BEN: Thanks for having me, Emma. This is such a critical topic for our community, especially with the rise in remote work arrangements.
+[EXPERT] Thanks for having me, Emma. This is such a critical topic for our community, especially with the rise in remote work arrangements.
 
-EMMA: Absolutely. Let's start with FBAR requirements. Can you explain what our listeners need to know?
+[EMMA] Absolutely. Let's start with FBAR requirements. Can you explain what our listeners need to know?
 
-BEN: FBAR, or the Foreign Bank Account Report, is required when the aggregate value of your foreign financial accounts exceeds $10,000 at any time during the calendar year...`
+[EXPERT] FBAR, or the Foreign Bank Account Report, is required when the aggregate value of your foreign financial accounts exceeds $10,000 at any time during the calendar year...`
 
 export const createMockContent = (overrides: Partial<ContentPiece> = {}): ContentPiece => ({
   ...mockContentPiece,

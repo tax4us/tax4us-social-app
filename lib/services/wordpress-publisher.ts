@@ -4,6 +4,7 @@
  */
 
 import { ContentPiece } from './database'
+import { logger } from '../utils/logger'
 
 export interface WordPressPost {
   id: number
@@ -39,9 +40,9 @@ class WordPressPublisher {
   private readonly timeout = 30000
 
   constructor() {
-    this.baseURL = process.env.WORDPRESS_API_URL || 'https://tax4us.co.il/wp-json/wp/v2'
-    this.username = process.env.WORDPRESS_APP_USERNAME || 'admin'
-    this.password = process.env.WORDPRESS_APP_PASSWORD || '0nm7^1l&PEN5HAWE7LSamBRu'
+    this.baseURL = (process.env.WP_URL || 'https://www.tax4us.co.il') + '/wp-json/wp/v2'
+    this.username = process.env.WP_USERNAME || 'Shai ai'
+    this.password = process.env.WP_APPLICATION_PASSWORD || '0nm7^1l&PEN5HAWE7LSamBRu'
 
     if (!this.username || !this.password) {
       throw new Error('WordPress credentials not configured')
@@ -107,7 +108,7 @@ class WordPressPublisher {
       }
 
     } catch (error) {
-      console.error('WordPress publishing failed:', error)
+      logger.error('WordPressPublisher', 'WordPress publishing failed', error)
       throw new Error(`WordPress publishing failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
@@ -146,7 +147,7 @@ class WordPressPublisher {
       }
 
     } catch (error) {
-      console.error('WordPress update failed:', error)
+      logger.error('WordPressPublisher', 'WordPress update failed', error)
       throw new Error(`WordPress update failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
@@ -179,8 +180,36 @@ class WordPressPublisher {
         }))
 
     } catch (error) {
-      console.error('Failed to get low SEO posts:', error)
+      logger.error('WordPressPublisher', 'Failed to get low SEO posts', error)
       return []
+    }
+  }
+
+  /**
+   * Upload video to WordPress Media Library and return public URL
+   */
+  async uploadVideo(videoPath: string, title: string): Promise<string> {
+    try {
+      // Read the local video file
+      const videoBuffer = require('fs').readFileSync(videoPath)
+      const filename = `${title.replace(/[^א-ת\w\s-]/g, '').substring(0, 30)}-${Date.now()}.mp4`
+
+      // Upload to WordPress Media Library
+      const formData = new FormData()
+      formData.append('file', new Blob([videoBuffer], { type: 'video/mp4' }), filename)
+
+      const uploadResponse = await this.apiRequest('/media', {
+        method: 'POST',
+        body: formData,
+        headers: {} // Let browser set content-type for FormData
+      })
+
+      const media = await uploadResponse.json()
+      return media.source_url // Return the public URL
+
+    } catch (error) {
+      logger.error('WordPressPublisher', 'Video upload failed', error)
+      throw new Error(`Video upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
@@ -214,7 +243,7 @@ class WordPressPublisher {
       return media.id
 
     } catch (error) {
-      console.error('Featured image upload failed:', error)
+      logger.error('WordPressPublisher', 'Featured image upload failed', error)
       return 0 // Return 0 if upload fails, WordPress will handle gracefully
     }
   }
@@ -249,7 +278,7 @@ class WordPressPublisher {
       
       return ids
     } catch (error) {
-      console.error('Failed to get category IDs:', error)
+      logger.error('WordPressPublisher', 'Failed to get category IDs', error)
       return [1] // Return default "Uncategorized" category
     }
   }
@@ -284,7 +313,7 @@ class WordPressPublisher {
       
       return ids
     } catch (error) {
-      console.error('Failed to get tag IDs:', error)
+      logger.error('WordPressPublisher', 'Failed to get tag IDs', error)
       return []
     }
   }
@@ -302,7 +331,7 @@ class WordPressPublisher {
         // Convert Gutenberg blocks to HTML
         content = this.convertGutenbergToHTML(blocks)
       } catch (error) {
-        console.error('Failed to parse Gutenberg JSON:', error)
+        logger.error('WordPressPublisher', 'Failed to parse Gutenberg JSON', error)
       }
     }
 
@@ -388,7 +417,7 @@ ${videoUrl}
       })
 
     } catch (error) {
-      console.error('Failed to add video to post:', error)
+      logger.error('WordPressPublisher', 'Failed to add video to post', error)
     }
   }
 

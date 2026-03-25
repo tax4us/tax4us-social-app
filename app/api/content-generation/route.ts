@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { AirtableClient } from '@/lib/clients/airtable-client'
+import { logger } from '@/lib/utils/logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,7 +44,8 @@ export async function POST(request: NextRequest) {
     const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/notebook-query`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${Buffer.from('ben:' + process.env.ADMIN_PASSWORD).toString('base64')}`
       },
       body: JSON.stringify({
         notebookId: notebookId,
@@ -94,9 +96,9 @@ export async function POST(request: NextRequest) {
         'topic_tags': keywords || []
       })
       
-      console.log(`Content persisted to Airtable: ${contentId}`)
+      logger.info('ContentGeneration', `Content persisted to Airtable: ${contentId}`)
     } catch (error) {
-      console.warn('Failed to persist content to Airtable:', error)
+      logger.warn('ContentGeneration', 'Failed to persist content to Airtable', error)
       // Continue even if Airtable fails
     }
 
@@ -126,7 +128,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Content generation error:', error)
+    logger.error('ContentGeneration', 'Content generation error', error)
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'

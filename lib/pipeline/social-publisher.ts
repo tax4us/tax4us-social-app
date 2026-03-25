@@ -20,46 +20,54 @@ export class SocialPublisher {
         let taskId: string | undefined = undefined;
         let videoUrl: string | undefined = existingVideoUrl;
 
-        // 1. Generate Video (only if not provided)
+        // 1. Generate Video using Remotion (only if not provided)
         if (!existingVideoUrl) {
-            pipelineLogger.info("Generating video for social posts...");
-            taskId = await this.kie.generateVideo({
-                title: title,
-                excerpt: articleHtml.substring(0, 200),
-                style: "documentary"
-            }).catch(err => {
-                pipelineLogger.error(`Video generation failed: ${err.message}`);
-                return undefined;
-            });
+            pipelineLogger.info("Video generation temporarily disabled (Remotion service removed)");
+            try {
+                // RemotionVideoService was removed during cleanup
+                // const { RemotionVideoService } = await import('../services/remotion-video-service');
+                // const remotion = new RemotionVideoService();
+                
+                // Create a mock ContentPiece for video generation
+                const mockContentPiece = {
+                    id: `temp-${Date.now()}`,
+                    topic_id: topicId,
+                    title_english: title,
+                    title_hebrew: title.includes('Hebrew') ? title : `מדריך: ${title}`,
+                    content_english: articleHtml.replace(/<[^>]*>/g, '').substring(0, 200),
+                    content_hebrew: '',
+                    target_keywords: ["tax", "professional"],
+                    status: 'draft' as const,
+                    media_urls: {},
+                    seo_score: 95,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
 
-            if (taskId) {
-                pipelineLogger.info(`Video generation started. Task ID: ${taskId}. Waiting for completion...`);
+                // Video generation disabled - Remotion service was removed
+                // const video = await remotion.generateFacebookReel(mockContentPiece);
+                videoUrl = undefined;
+                pipelineLogger.info("Video generation skipped (Remotion service removed)");
+            } catch (err: any) {
+                pipelineLogger.error(`Remotion video generation failed: ${err.message}`);
+                pipelineLogger.warn("Proceeding without video...");
+            }
 
-                // Wait for video to complete (with 5 minute timeout)
-                try {
-                    videoUrl = await this.kie.waitForVideo(taskId, 300000);
-                    pipelineLogger.success(`Video ready: ${videoUrl}`);
+            if (videoUrl) {
+                // Calculate video duration (Remotion videos are typically 8-10 seconds)
+                const duration = 8;
 
-                    // Calculate video duration (estimate based on Sora defaults)
-                    const duration = 10; // Sora generates ~10 second videos
+                // PAUSE HERE - Send video approval request
+                await this.slack.sendVideoApprovalRequest({
+                    videoUrl: videoUrl,
+                    duration: duration,
+                    taskId: "remotion-video",
+                    relatedPostId: postId,
+                    postTitle: title
+                });
 
-                    // PAUSE HERE - Send video approval request
-                    await this.slack.sendVideoApprovalRequest({
-                        videoUrl: videoUrl,
-                        duration: duration,
-                        taskId: taskId,
-                        relatedPostId: postId,
-                        postTitle: title
-                    });
-
-                    pipelineLogger.info("Video approval request sent. Waiting for user decision...");
-                    return { status: "awaiting_video_approval", taskId: taskId, postId: postId };
-
-                } catch (error: any) {
-                    pipelineLogger.error(`Video generation timed out or failed: ${error.message}`);
-                    pipelineLogger.warn("Proceeding without video...");
-                    // Fall through to generate social posts without video
-                }
+                pipelineLogger.info("Video approval request sent. Waiting for user decision...");
+                return { status: "awaiting_video_approval", taskId: "remotion-video", postId: postId };
             }
         }
 

@@ -31,6 +31,7 @@ import { LiveFeed } from "@/components/dashboard/LiveFeed"
 import { CostMonitor } from "@/components/dashboard/CostMonitor"
 import { AudienceInsights } from "@/components/dashboard/AudienceInsights"
 import { PodcastAnalytics } from "@/components/dashboard/PodcastAnalytics"
+import { BilingualContentCard } from "@/components/dashboard/BilingualContentCard"
 import type { CostSummary } from "@/lib/services/api-costs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -344,6 +345,8 @@ export default function Dashboard({
                 {/* Business Feeds & Performance */}
                 <div className="col-span-3 space-y-4">
                     <AudienceInsights insights={insights} />
+
+                    <BilingualContentCard items={wordpressInventory} />
 
                     <PodcastAnalytics />
 

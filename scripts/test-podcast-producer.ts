@@ -17,10 +17,14 @@ async function testPodcastProduction() {
         console.log("Step 2: Testing podcast production...");
         // Create mock content piece for testing
         const mockContentPiece = {
-            id: 123,
+            id: "123",
+            topic_id: "test-topic-id",
             title_hebrew: "How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?",
             title_english: "How Does the Redefinition of Remote Work Impact Your US-Israel Tax Obligations?",
             target_keywords: ["FBAR", "US-Israel Tax", "Remote Work"],
+            status: "draft" as const,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
             media_urls: {
                 featured_image: "",
                 social_video: "",

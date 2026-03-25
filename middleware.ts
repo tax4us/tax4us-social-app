@@ -3,14 +3,19 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
     const password = process.env.ADMIN_PASSWORD;
+    const allowedUsers = process.env.ADMIN_USERS?.split(',') || ['ben'];
 
-    // If no password is set, allow access (for initial setup/dev)
+    // Require password in production
     if (!password) {
-        return NextResponse.next();
+        console.error('SECURITY: ADMIN_PASSWORD not set - denying access');
+        return new NextResponse('Configuration Error', { status: 500 });
     }
 
-    // Exempt Slack callbacks from authentication
-    if (request.nextUrl.pathname.startsWith('/api/slack')) {
+    // Exempt API routes that have their own authentication
+    if (request.nextUrl.pathname.startsWith('/api/slack') ||
+        request.nextUrl.pathname.startsWith('/api/pipeline/') ||
+        request.nextUrl.pathname.startsWith('/api/social-publish') ||
+        request.nextUrl.pathname.startsWith('/api/cron/')) {
         return NextResponse.next();
     }
 
@@ -24,7 +29,7 @@ export function middleware(request: NextRequest) {
                 const decoded = atob(encoded);
                 const [username, providedPassword] = decoded.split(':');
 
-                if (username === 'ben' && providedPassword === password) {
+                if (allowedUsers.includes(username) && providedPassword === password) {
                     return NextResponse.next();
                 }
             } catch (e) {

@@ -26,7 +26,8 @@
     ],
     "id": "topic_1771458560993_ecb15gz01",
     "created_at": "2026-02-18T23:49:20.993Z",
-    "updated_at": "2026-02-18T23:49:20.993Z"
+    "updated_at": "2026-03-03T21:14:49.275Z",
+    "last_used": "2026-03-03T21:14:49.274Z"
   },
   {
     "title_hebrew": "יתרונות והגבלות של אמנת המס בין ארה\"ב וישראל",
@@ -41,7 +42,8 @@
     ],
     "id": "topic_1771458561005_n8nzwsfh7",
     "created_at": "2026-02-18T23:49:21.005Z",
-    "updated_at": "2026-02-18T23:49:21.005Z"
+    "updated_at": "2026-03-03T21:20:27.867Z",
+    "last_used": "2026-03-03T21:20:27.866Z"
   },
   {
     "title_hebrew": "דיווח טופס 3520 למוטבי נאמנות ישראליים",
@@ -56,7 +58,8 @@
     ],
     "id": "topic_1771458561017_2nargrf3u",
     "created_at": "2026-02-18T23:49:21.017Z",
-    "updated_at": "2026-02-18T23:49:21.017Z"
+    "updated_at": "2026-03-04T00:11:25.757Z",
+    "last_used": "2026-03-04T00:11:25.757Z"
   },
   {
     "title_hebrew": "חובות מס על מטבעות דיגיטליים בישראל וארה\"ב",
@@ -71,7 +74,8 @@
     ],
     "id": "topic_1771458561029_0do2x6lxg",
     "created_at": "2026-02-18T23:49:21.029Z",
-    "updated_at": "2026-02-18T23:49:21.029Z"
+    "updated_at": "2026-03-04T00:14:14.946Z",
+    "last_used": "2026-03-04T00:14:14.944Z"
   },
   {
     "title_hebrew": "יחס מס לתוכניות פנסיה ישראליות בארה\"ב",
@@ -86,7 +90,8 @@
     ],
     "id": "topic_1771458561042_ubaxy2a65",
     "created_at": "2026-02-18T23:49:21.042Z",
-    "updated_at": "2026-02-18T23:49:21.042Z"
+    "updated_at": "2026-03-04T00:14:27.357Z",
+    "last_used": "2026-03-04T00:14:27.356Z"
   },
   {
     "title_hebrew": "חוקי מס יציאה של סעיף 877",
@@ -101,7 +106,8 @@
     ],
     "id": "topic_1771458561055_fh47hzrze",
     "created_at": "2026-02-18T23:49:21.056Z",
-    "updated_at": "2026-02-18T23:49:21.056Z"
+    "updated_at": "2026-03-04T00:16:49.196Z",
+    "last_used": "2026-03-04T00:16:49.195Z"
   },
   {
     "title_hebrew": "עסקאות נדל\"ן בישראל - השפעה על מס אמריקאי",
@@ -116,7 +122,8 @@
     ],
     "id": "topic_1771458561075_phc4woa7d",
     "created_at": "2026-02-18T23:49:21.075Z",
-    "updated_at": "2026-02-18T23:49:21.075Z"
+    "updated_at": "2026-03-06T05:10:48.332Z",
+    "last_used": "2026-03-06T05:10:48.332Z"
   },
   {
     "title_hebrew": "חוקי PFIC - חברות השקעה זרות פסיביות",
@@ -162,5 +169,226 @@
     "id": "topic_1771458561115_bkd43s32w",
     "created_at": "2026-02-18T23:49:21.115Z",
     "updated_at": "2026-02-18T23:49:21.115Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774018859170_96bb8iu86",
+    "created_at": "2026-03-20T15:00:59.170Z",
+    "updated_at": "2026-03-20T15:00:59.170Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774018879803_ns9btlqqv",
+    "created_at": "2026-03-20T15:01:19.803Z",
+    "updated_at": "2026-03-20T15:01:19.803Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774018890524_1c4s6kh5q",
+    "created_at": "2026-03-20T15:01:30.524Z",
+    "updated_at": "2026-03-20T15:01:30.524Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774018923536_4jyiitka3",
+    "created_at": "2026-03-20T15:02:03.536Z",
+    "updated_at": "2026-03-20T15:02:03.536Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774019298067_2t2surkse",
+    "created_at": "2026-03-20T15:08:18.067Z",
+    "updated_at": "2026-03-20T15:08:18.067Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774019307923_6arzqdjyk",
+    "created_at": "2026-03-20T15:08:27.923Z",
+    "updated_at": "2026-03-20T15:08:27.923Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774020019502_ayk9qsib4",
+    "created_at": "2026-03-20T15:20:19.502Z",
+    "updated_at": "2026-03-20T15:20:19.502Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774041699743_e8zllhx4j",
+    "created_at": "2026-03-20T21:21:39.743Z",
+    "updated_at": "2026-03-20T21:21:39.743Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774042031470_b2cejehtc",
+    "created_at": "2026-03-20T21:27:11.470Z",
+    "updated_at": "2026-03-20T21:27:11.470Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774048188440_rkkrmf0r4",
+    "created_at": "2026-03-20T23:09:48.440Z",
+    "updated_at": "2026-03-20T23:09:48.440Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774049949408_yek0heq3x",
+    "created_at": "2026-03-20T23:39:09.408Z",
+    "updated_at": "2026-03-20T23:39:09.408Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774050210688_0nm585976",
+    "created_at": "2026-03-20T23:43:30.688Z",
+    "updated_at": "2026-03-20T23:43:30.688Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774050604346_5uaxvi0js",
+    "created_at": "2026-03-20T23:50:04.346Z",
+    "updated_at": "2026-03-20T23:50:04.346Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774051543636_49n5b56q5",
+    "created_at": "2026-03-21T00:05:43.636Z",
+    "updated_at": "2026-03-21T00:05:43.636Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774163374723_trz2rz1ht",
+    "created_at": "2026-03-22T07:09:34.723Z",
+    "updated_at": "2026-03-22T07:09:34.723Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774296606432_191fjr65u",
+    "created_at": "2026-03-23T20:10:06.432Z",
+    "updated_at": "2026-03-23T20:10:06.432Z"
+  },
+  {
+    "title_hebrew": "מס על עבודה מרחוק",
+    "title_english": "Remote Work Tax",
+    "priority": "medium",
+    "seasonal_relevance": "year-round",
+    "tags": [
+      "FBAR",
+      "taxation"
+    ],
+    "id": "topic_1774400293556_1vgjrnl9o",
+    "created_at": "2026-03-25T00:58:13.556Z",
+    "updated_at": "2026-03-25T00:58:13.556Z"
   }
 ]

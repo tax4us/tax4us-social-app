@@ -34,7 +34,7 @@ export default function FactoryControlsPage() {
                     title="Full Production Run"
                     description="Executes the complete content production workflow for all ready topics."
                     icon={<Bot className="h-6 w-6 text-primary" />}
-                    endpoint="/api/pipeline/cron"
+                    endpoint="/api/cron/content-pipeline"
                 />
                 <GeneratorCard
                     title="Manual Asset Trigger"

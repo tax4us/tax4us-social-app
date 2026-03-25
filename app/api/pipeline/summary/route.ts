@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { AirtableClient } from "@/lib/clients/airtable-client";
 import { ClaudeClient } from "@/lib/clients/claude-client";
 
+interface AirtableRecord {
+  fields?: {
+    Status?: string;
+    topic?: string;
+  };
+}
+
 export async function GET() {
     const airtable = new AirtableClient();
     const claude = new ClaudeClient();
@@ -18,10 +25,10 @@ export async function GET() {
         
         const stats = {
             total: safeRecords.length,
-            published: safeRecords.filter((r: any) => r.fields?.Status === 'Published').length,
-            ready: safeRecords.filter((r: any) => r.fields?.Status === 'Ready').length,
-            errors: safeRecords.filter((r: any) => r.fields?.Status === 'Error').length,
-            recentTopics: safeRecords.slice(0, 5).map((r: any) => r.fields?.topic || 'Untitled').join(", ")
+            published: safeRecords.filter((r: AirtableRecord) => r.fields?.Status === 'Published').length,
+            ready: safeRecords.filter((r: AirtableRecord) => r.fields?.Status === 'Ready').length,
+            errors: safeRecords.filter((r: AirtableRecord) => r.fields?.Status === 'Error').length,
+            recentTopics: safeRecords.slice(0, 5).map((r: AirtableRecord) => r.fields?.topic || 'Untitled').join(", ")
         };
 
         const prompt = `

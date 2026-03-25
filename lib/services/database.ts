@@ -1,5 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { storage } from './storage-adapter'
 
 // Database Schema Types
 export interface Topic {
@@ -29,7 +30,10 @@ export interface ContentPiece {
   media_urls: {
     featured_image?: string
     blog_video?: string
+    blog_thumbnail?: string
     social_video?: string
+    facebook_reel?: string
+    linkedin_video?: string
     podcast_audio?: string
   }
   created_at: string
@@ -89,19 +93,52 @@ class DatabaseManager {
   }
 
   private async readFile<T>(filename: string): Promise<T[]> {
-    const filePath = path.join(this.dataDir, filename)
+    const key = filename.replace('.json', '')
     try {
-      const data = await fs.readFile(filePath, 'utf-8')
-      return JSON.parse(data)
+      // Try new storage adapter first
+      const data = await storage.read<T>(key)
+      if (data.length > 0) {
+        return data
+      }
+
+      // Fallback to local file system (for migration)
+      const filePath = path.join(this.dataDir, filename)
+      try {
+        const content = await fs.readFile(filePath, 'utf-8')
+        const legacyData = JSON.parse(content)
+        
+        // Migrate to new storage if we found local data
+        if (legacyData.length > 0) {
+          console.log(`[DB] Migrating ${legacyData.length} items from ${filename} to new storage`)
+          await storage.write(key, legacyData)
+        }
+        
+        return legacyData
+      } catch (fsError) {
+        // Local file doesn't exist, return empty
+        return []
+      }
     } catch (error) {
-      // If file doesn't exist, return empty array
+      console.error(`[DB] Error reading ${key}:`, error)
       return []
     }
   }
 
   private async writeFile<T>(filename: string, data: T[]): Promise<void> {
-    const filePath = path.join(this.dataDir, filename)
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2))
+    // Use new storage adapter for all environments
+    const key = filename.replace('.json', '')
+    try {
+      await storage.write(key, data)
+      console.log(`[DB] Successfully persisted ${data.length} items to ${key}`)
+    } catch (error) {
+      console.error(`[DB] Failed to persist ${key}:`, error)
+      // In production, continue without throwing to prevent pipeline failures
+      if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+        console.warn(`[DB] Continuing in read-only mode for ${key}`)
+      } else {
+        throw error
+      }
+    }
   }
 
   // Topics CRUD

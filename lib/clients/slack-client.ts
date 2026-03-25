@@ -323,7 +323,7 @@ export class SlackClient {
                             emoji: true,
                         },
                         action_id: "feedback_topic",
-                        value: JSON.stringify({ action: "feedback_topic", draftId: params.draftId }),
+                        value: JSON.stringify({ action: "feedback_topic", draftId: params.draftId, topic: params.topic }),
                     }
                 ],
             },

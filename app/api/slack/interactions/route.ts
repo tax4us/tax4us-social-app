@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PodcastProducer } from "@/lib/pipeline/podcast-producer";
+import { logger } from '@/lib/utils/logger';
 
 export async function POST(req: NextRequest) {
     try {
@@ -23,16 +24,16 @@ export async function POST(req: NextRequest) {
 
         const value = JSON.parse(action.value || "{}");
 
-        console.log(`[SLACK] Action Received: ${action.action_id}`, { value });
+        logger.info('SlackInteractions', `[SLACK] Action Received: ${action.action_id}`, { value });
 
         if (action.action_id === "approve_publish" && value.action === "publish") {
-            console.log("🚀 Slack Approval Received: Publishing Episode...", value);
+            logger.info('SlackInteractions', "🚀 Slack Approval Received: Publishing Episode...", { value });
             const producer = new PodcastProducer();
             producer.publishEpisode({
                 episodeId: value.episodeId,
                 title: value.title,
                 episodeNumber: value.episodeNumber,
-            }).catch(e => console.error("Async Publish Failed:", e));
+            }).catch(e => logger.error('SlackInteractions', "Async Publish Failed", e));
 
             return NextResponse.json({
                 text: "✅ Approved! Publishing process started. You will receive a confirmation shortly.",
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
         if (action.action_id === "approve_social" && value.action === "publish_social") {
             const { SocialPublisher } = require("../../../../lib/pipeline/social-publisher");
             const publisher = new SocialPublisher();
-            publisher.publishSocialPosts(value).catch((e: any) => console.error("Async Social Publish Failed:", e));
+            publisher.publishSocialPosts(value).catch((e: any) => logger.error('SlackInteractions', "Async Social Publish Failed", e));
 
             return NextResponse.json({
                 text: "✅ Social posts approved! Publishing to linked accounts.",
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (action.action_id === "approve_topic") {
-            console.log("🚀 Topic Approval Matched! Starting generation...");
+            logger.info('SlackInteractions', "🚀 Topic Approval Matched! Starting generation...");
             const { PipelineOrchestrator } = require("../../../../lib/pipeline/orchestrator");
             const orchestrator = new PipelineOrchestrator();
 
@@ -81,9 +82,17 @@ export async function POST(req: NextRequest) {
         }
 
         if (action.action_id === "feedback_topic") {
+            const { PipelineOrchestrator } = require("../../../../lib/pipeline/orchestrator");
+            const orchestrator = new PipelineOrchestrator();
+
+            // Re-propose a new topic signalling the user wants something different
+            orchestrator.proposeNewTopicWithFeedback(
+                `User rejected topic "${value.topic || 'current topic'}" and requested a different proposal. Please suggest a fresh, alternative tax topic that hasn't been covered recently.`
+            ).catch((e: any) => logger.error('SlackInteractions', "Topic re-proposal failed", e));
+
             return NextResponse.json({
-                text: `✍️ *Feedback requested.* Please reply to this thread with your comments. (Note: Feedback processing is currently manual, please inform the team once you reply).`,
-                replace_original: false
+                text: `✍️ Got it! Generating a fresh topic proposal now. Check Slack in a moment for a new suggestion.`,
+                replace_original: true
             });
         }
 
@@ -95,14 +104,14 @@ export async function POST(req: NextRequest) {
         }
 
         if (action.action_id === "approve_article") {
-            console.log("📝 Article Approval Received: Publishing...", value);
+            logger.info('SlackInteractions', "📝 Article Approval Received: Publishing...", value);
 
             const { PipelineOrchestrator } = require("../../../../lib/pipeline/orchestrator");
             const orchestrator = new PipelineOrchestrator();
 
             // Trigger publish workflow (async to avoid timeout)
             orchestrator.publishApprovedArticle(value.draftId).catch((e: any) =>
-                console.error("Article publish failed:", e)
+                logger.error('SlackInteractions', "Article publish failed", e)
             );
 
             return NextResponse.json({
@@ -112,7 +121,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (action.action_id === "reject_article") {
-            console.log("❌ Article Rejected: Marking for regeneration...", value);
+            logger.info('SlackInteractions', "❌ Article Rejected: Marking for regeneration...", value);
 
             const { PipelineOrchestrator } = require("../../../../lib/pipeline/orchestrator");
             const orchestrator = new PipelineOrchestrator();
@@ -191,24 +200,17 @@ export async function POST(req: NextRequest) {
         if (action.action_id === "approve_facebook") {
             console.log("📘 Facebook Post Approved: Publishing...", value);
 
-            // Publish to Facebook via Upload-Post API
-            const formData = new FormData();
-            formData.append('title', value.content);
-            formData.append('user', 'tax4us');
-            formData.append('platform[]', 'facebook');
-            if (value.mediaUrl) {
-                formData.append('image_url', value.mediaUrl);
-                formData.append('type', 'image');
-            }
-
-            fetch('https://api.upload-post.com/api/upload_text', {
-                method: 'POST',
-                headers: { 'Authorization': `Apikey ${process.env.UPLOAD_POST_API_KEY}` },
-                body: formData
-            }).catch(e => console.error("Facebook publish failed:", e));
+            // Publish to Facebook via native Graph API
+            const { SocialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
+            const publisher = new SocialMediaPublisher();
+            
+            publisher.publishToFacebook({
+                content: value.content,
+                mediaUrl: value.mediaUrl
+            }).catch((e: any) => console.error("Facebook publish failed:", e));
 
             return NextResponse.json({
-                text: `✅ Facebook post approved! Publishing now.`,
+                text: `✅ Facebook post approved! Publishing via native Graph API.`,
                 replace_original: false
             });
         }
@@ -231,24 +233,17 @@ export async function POST(req: NextRequest) {
         if (action.action_id === "approve_linkedin") {
             console.log("💼 LinkedIn Post Approved: Publishing...", value);
 
-            // Publish to LinkedIn via Upload-Post API
-            const formData = new FormData();
-            formData.append('title', value.content);
-            formData.append('user', 'tax4us');
-            formData.append('platform[]', 'linkedin');
-            if (value.mediaUrl) {
-                formData.append('image_url', value.mediaUrl);
-                formData.append('type', 'image');
-            }
-
-            fetch('https://api.upload-post.com/api/upload_text', {
-                method: 'POST',
-                headers: { 'Authorization': `Apikey ${process.env.UPLOAD_POST_API_KEY}` },
-                body: formData
-            }).catch(e => console.error("LinkedIn publish failed:", e));
+            // Publish to LinkedIn via native API
+            const { SocialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
+            const publisher = new SocialMediaPublisher();
+            
+            publisher.publishToLinkedIn({
+                content: value.content,
+                mediaUrl: value.mediaUrl
+            }).catch((e: any) => console.error("LinkedIn publish failed:", e));
 
             return NextResponse.json({
-                text: `✅ LinkedIn post approved! Publishing now.`,
+                text: `✅ LinkedIn post approved! Publishing via native LinkedIn API.`,
                 replace_original: false
             });
         }

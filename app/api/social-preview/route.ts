@@ -26,7 +26,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Access private methods through reflection to generate posts without publishing
-    const publisher = socialMediaPublisher as any
+    const publisher = socialMediaPublisher as unknown as {
+      generateFacebookPost: (contentPiece: unknown) => Promise<unknown>;
+      generateLinkedInPost: (contentPiece: unknown) => Promise<unknown>;
+    }
     
     // Generate Facebook and LinkedIn posts
     const [facebookPost, linkedinPost] = await Promise.all([
@@ -40,19 +43,19 @@ export async function POST(request: NextRequest) {
       posts: {
         facebook: {
           platform: 'facebook',
-          content: facebookPost.content,
-          hashtags: facebookPost.hashtags,
-          mediaUrl: facebookPost.mediaUrl,
-          wordCount: facebookPost.content.split(/\s+/).length,
-          characterCount: facebookPost.content.length
+          content: (facebookPost as any)?.content || 'Preview unavailable',
+          hashtags: (facebookPost as any)?.hashtags || [],
+          mediaUrl: (facebookPost as any)?.mediaUrl || '',
+          wordCount: ((facebookPost as any)?.content || '').split(/\s+/).length,
+          characterCount: ((facebookPost as any)?.content || '').length
         },
         linkedin: {
           platform: 'linkedin', 
-          content: linkedinPost.content,
-          hashtags: linkedinPost.hashtags,
-          mediaUrl: linkedinPost.mediaUrl,
-          wordCount: linkedinPost.content.split(/\s+/).length,
-          characterCount: linkedinPost.content.length
+          content: (linkedinPost as any)?.content || 'Preview unavailable',
+          hashtags: (linkedinPost as any)?.hashtags || [],
+          mediaUrl: (linkedinPost as any)?.mediaUrl || '',
+          wordCount: ((linkedinPost as any)?.content || '').split(/\s+/).length,
+          characterCount: ((linkedinPost as any)?.content || '').length
         }
       },
       generatedAt: new Date().toISOString()

@@ -6,6 +6,7 @@
 // Using internal API for NotebookLM queries
 import { ContentPiece, db } from './database'
 import { wordPressPublisher } from './wordpress-publisher'
+import { logger } from '../utils/logger'
 
 export interface SEOAnalysis {
   currentScore: number
@@ -54,7 +55,7 @@ class SEOOptimizer {
             currentWordPressContent = `Current WordPress URL: ${wpPost.url}\nCurrent SEO Score: ${wpPost.seoScore}`
           }
         } catch (error) {
-          console.warn('Could not fetch WordPress content:', error)
+          logger.warn('SEOOptimizer', 'Could not fetch WordPress content', error)
         }
       }
 
@@ -118,7 +119,8 @@ class SEOOptimizer {
       const response = await fetch(`${baseUrl}/api/notebook-query`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic YmVuOnRheDR1c19hZG1pbl8yMDI2'
         },
         body: JSON.stringify({
           notebookId: this.notebookId,
@@ -142,7 +144,7 @@ class SEOOptimizer {
       return analysis
 
     } catch (error) {
-      console.error('SEO analysis failed:', error)
+      logger.error('SEOOptimizer', 'SEO analysis failed', error)
       throw new Error(`SEO analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
@@ -190,7 +192,7 @@ class SEOOptimizer {
           )
           wordpressUrl = wpResult.url
         } catch (wpError) {
-          console.error('WordPress update failed during SEO optimization:', wpError)
+          logger.error('SEOOptimizer', 'WordPress update failed during SEO optimization', wpError)
           // Don't fail the entire operation if WordPress update fails
         }
       }
@@ -202,7 +204,7 @@ class SEOOptimizer {
       }
 
     } catch (error) {
-      console.error('Failed to apply SEO optimizations:', error)
+      logger.error('SEOOptimizer', 'Failed to apply SEO optimizations', error)
       return {
         success: false,
         newScore: contentPiece.seo_score || 0
@@ -221,7 +223,7 @@ class SEOOptimizer {
         .filter(piece => piece.seo_score && piece.seo_score < threshold)
         .slice(0, limit)
     } catch (error) {
-      console.error('Failed to get low performing content:', error)
+      logger.error('SEOOptimizer', 'Failed to get low performing content', error)
       return []
     }
   }
@@ -232,7 +234,7 @@ class SEOOptimizer {
   private parseAIResponse(aiResponse: string, contentPiece: ContentPiece): SEOAnalysis {
     // Handle null or undefined responses
     if (!aiResponse || typeof aiResponse !== 'string') {
-      console.warn('SEO analysis received null/invalid response, using defaults')
+      logger.warn('SEOOptimizer', 'SEO analysis received null/invalid response, using defaults')
       return this.getDefaultSEOAnalysis(contentPiece)
     }
 
@@ -357,9 +359,9 @@ class SEOOptimizer {
   private async updateContentPiece(contentId: string, updates: Partial<ContentPiece>): Promise<void> {
     try {
       await db.updateContentPiece(contentId, updates)
-      console.log(`Successfully updated content piece ${contentId} with SEO optimizations`)
+      logger.info('SEOOptimizer', `Successfully updated content piece ${contentId} with SEO optimizations`)
     } catch (error) {
-      console.error(`Failed to update content piece ${contentId}:`, error)
+      logger.error('SEOOptimizer', `Failed to update content piece ${contentId}`, error)
       throw error
     }
   }
@@ -394,7 +396,8 @@ class SEOOptimizer {
       const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/notebook-query`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic YmVuOnRheDR1c19hZG1pbl8yMDI2'
         },
         body: JSON.stringify({
           notebookId: this.notebookId,
@@ -415,7 +418,7 @@ class SEOOptimizer {
       return []
 
     } catch (error) {
-      console.error('Failed to generate internal links:', error)
+      logger.error('SEOOptimizer', 'Failed to generate internal links', error)
       return []
     }
   }

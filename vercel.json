@@ -9,8 +9,12 @@
       "schedule": "0 10 * * 2,5"
     },
     {
-      "path": "/api/test-podcast-cron",
+      "path": "/api/cron/podcast-production",
       "schedule": "0 14 * * 3"
+    },
+    {
+      "path": "/api/cron/token-reminder",
+      "schedule": "0 9 * * *"
     }
   ]
 }

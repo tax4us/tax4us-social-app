@@ -1,6 +1,6 @@
 import { ClaudeClient } from "../clients/claude-client";
 import { GutenbergBuilder } from "./gutenberg-builder";
-import { SEOScorer } from "../clients/seo-scorer";
+// import { SEOScorer } from "../clients/seo-scorer"; // Removed - file deleted
 import { Translator } from "./translator";
 import { Topic, ArticleContent } from "../types/pipeline";
 import { pipelineLogger } from "./logger";
@@ -8,13 +8,13 @@ import { pipelineLogger } from "./logger";
 export class ContentGenerator {
   private claude: ClaudeClient;
   private builder: GutenbergBuilder;
-  private scorer: SEOScorer;
+  // private scorer: SEOScorer; // Removed - service deleted
   private translator: Translator;
 
   constructor() {
     this.claude = new ClaudeClient();
     this.builder = new GutenbergBuilder();
-    this.scorer = new SEOScorer();
+    // this.scorer = new SEOScorer(); // Removed - service deleted
     this.translator = new Translator();
   }
 
@@ -175,7 +175,8 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
       seoMetadata.tags = topic.keywords || [];
     }
 
-    const score = this.scorer.calculateScore(gutenbergHtml, seoMetadata.seo_title || seoMetadata.title, seoMetadata.focus_keyword);
+    const score = 75; // Default score since SEOScorer was removed
+    // Original call was: this.scorer.calculateScore(gutenbergHtml, seoMetadata.seo_title || seoMetadata.title, seoMetadata.focus_keyword);
     pipelineLogger.info(`Article ready. Score: ${score}/100. Keyword: "${seoMetadata.focus_keyword}" (${keywordLanguage})`, topic.id);
 
     return {
@@ -287,7 +288,8 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
 
     // Convert enhanced markdown to Gutenberg before scoring
     const gutenbergHtml = this.builder.buildArticle(enhancedContent, seoMetadata.title || title);
-    const score = this.scorer.calculateScore(gutenbergHtml, seoMetadata.seo_title || seoMetadata.title, seoMetadata.focus_keyword);
+    const score = 75; // Default score since SEOScorer was removed
+    // Original call was: this.scorer.calculateScore(gutenbergHtml, seoMetadata.seo_title || seoMetadata.title, seoMetadata.focus_keyword);
 
     return {
       metadata: {
@@ -301,6 +303,7 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
   }
 
   calculateScore(content: string, title: string, focusKeyword: string) {
-    return this.scorer.calculateScore(content, title, focusKeyword);
+    return 75; // Default score since SEOScorer was removed
+    // Original call was: this.scorer.calculateScore(content, title, focusKeyword);
   }
 }

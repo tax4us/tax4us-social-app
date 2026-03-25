@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { contentGenerationService } from '@/lib/services/content-generation'
+import { withErrorHandler, ValidationError } from '@/lib/utils/error-handler'
+import { withAuth } from '@/lib/middleware/auth-middleware'
+import { logger } from '@/lib/utils/logger'
 
-export async function POST(request: NextRequest) {
+export const POST = withAuth(withErrorHandler(async (request: NextRequest) => {
   try {
     const body = await request.json()
     const { type, prompt, imageUrl, voice, language, targetKeywords, seoTitle } = body
+    
+    const validLanguage = language as 'english' | 'hebrew' | 'bilingual'
 
     if (!type || !prompt) {
-      return NextResponse.json(
-        { error: 'Type and prompt are required' },
-        { status: 400 }
-      )
+      throw new ValidationError('Type and prompt are required', 'ContentGeneration')
     }
 
     let result
@@ -19,13 +21,13 @@ export async function POST(request: NextRequest) {
       case 'article':
         result = await contentGenerationService.generateTaxArticle(
           prompt, 
-          language as any, 
+          validLanguage, 
           targetKeywords, 
           seoTitle
         )
         break
       case 'social-post':
-        result = await contentGenerationService.generateSocialPost(prompt, language as any)
+        result = await contentGenerationService.generateSocialPost(prompt, validLanguage)
         break
       case 'podcast':
       case 'text-to-speech':
@@ -55,10 +57,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Content generation error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('ContentGeneration', 'Content generation failed', error)
+    throw error
   }
-}
+}, 'ContentGeneration'), 'api')

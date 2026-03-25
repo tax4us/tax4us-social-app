@@ -9,14 +9,23 @@ export class GutenbergBuilder {
      * Includes a cover block with video/image and a column layout.
      */
     buildArticle(contentMarkdown: string, mediaUrl: string, isVideo: boolean = true) {
-        const mediaBlock = this.buildMediaCover(mediaUrl, isVideo);
         const contentBlocks = this.markdownToBlocks(contentMarkdown);
+        const isVideoUrl = isVideo || mediaUrl.includes('.mp4') || mediaUrl.includes('video');
+
+        // Cover block: video goes directly as wp-block-cover__video-background (NOT as a nested wp:video block)
+        const coverBlockAttrs = isVideoUrl
+            ? `{"url":"${mediaUrl}","backgroundType":"video","dimRatio":50,"overlayColor":"black","minHeight":400,"minHeightUnit":"px","align":"full"}`
+            : `{"url":"${mediaUrl}","dimRatio":50,"overlayColor":"black","minHeight":400,"minHeightUnit":"px","align":"full"}`;
+
+        const coverInnerMedia = isVideoUrl
+            ? `<video class="wp-block-cover__video-background intrinsic-ignore" autoplay="" muted="" loop="" playsinline="" src="${mediaUrl}"></video>`
+            : `<img class="wp-block-cover__image-background" alt="" src="${mediaUrl}" data-object-fit="cover"/>`;
 
         // Wrap in a column layout (25/75 as per audit)
         return `
-<!-- wp:cover {"url":"${mediaUrl}","dimRatio":50,"overlayColor":"black","minHeight":400,"minHeightUnit":"px","align":"full"} -->
+<!-- wp:cover ${coverBlockAttrs} -->
 <div class="wp-block-cover alignfull"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim-50 has-background-dim"></span>
-${mediaBlock}
+${coverInnerMedia}
 </div>
 <!-- /wp:cover -->
 
@@ -44,16 +53,6 @@ ${mediaBlock}
 `;
     }
 
-    private buildMediaCover(url: string, isVideo: boolean) {
-        if (isVideo) {
-            return `<!-- wp:video {"url":"${url}","autoplay":true,"muted":true,"loop":true,"playsInline":true,"controls":false} -->
-<figure class="wp-block-video"><video src="${url}" autoplay muted loop playsinline></video></figure>
-<!-- /wp:video -->`;
-        }
-        return `<!-- wp:image {"url":"${url}","sizeSlug":"full","linkDestination":"none"} -->
-<figure class="wp-block-image size-full"><img src="${url}" alt=""/></figure>
-<!-- /wp:image -->`;
-    }
 
     /**
      * Convert inline markdown formatting to HTML.

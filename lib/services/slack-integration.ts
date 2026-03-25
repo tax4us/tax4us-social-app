@@ -1,8 +1,9 @@
 // Slack integration using direct API calls
+import { logger } from '../utils/logger'
 
 export interface SlackApprovalRequest {
   id: string
-  type: 'content_review' | 'topic_selection' | 'seo_optimization'
+  type: 'content_review' | 'topic_selection' | 'seo_optimization' | 'media_approval'
   title: string
   content?: string
   previewUrl?: string
@@ -40,7 +41,7 @@ class SlackIntegrationService {
       
       return result.ts
     } catch (error) {
-      console.error('Failed to send Slack approval request:', error)
+      logger.error('SlackIntegration', 'Failed to send Slack approval request', error)
       throw new Error(`Slack approval request failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
@@ -54,7 +55,7 @@ class SlackIntegrationService {
       
       await this.postSlackMessage(this.NOTIFICATIONS_CHANNEL_ID, formattedMessage)
     } catch (error) {
-      console.error('Failed to send Slack notification:', error)
+      logger.error('SlackIntegration', 'Failed to send Slack notification', error)
     }
   }
 
@@ -118,7 +119,7 @@ class SlackIntegrationService {
 
       await this.postSlackMessage(this.APPROVAL_CHANNEL_ID, message)
     } catch (error) {
-      console.error('Failed to send revision request:', error)
+      logger.error('SlackIntegration', 'Failed to send revision request', error)
     }
   }
 
@@ -131,7 +132,8 @@ class SlackIntegrationService {
     const typeEmoji = {
       'content_review': '📝',
       'topic_selection': '🎯', 
-      'seo_optimization': '🔍'
+      'seo_optimization': '🔍',
+      'media_approval': '🎬'
     }
 
     let message = `${typeEmoji[type]} *${this.getTypeTitle(type)} Approval Required*\n\n`
@@ -175,7 +177,7 @@ class SlackIntegrationService {
   ): Promise<void> {
     // This would store in database for tracking responses
     // For now, we'll use in-memory storage or extend the database
-    console.log(`Stored approval message: ${approvalId} -> ${messageTimestamp} (Run: ${runId})`)
+    logger.info('SlackIntegration', `Stored approval message: ${approvalId} -> ${messageTimestamp} (Run: ${runId})`)
   }
 
   /**
@@ -211,7 +213,7 @@ class SlackIntegrationService {
 
     } catch (error) {
       if (!this.errorLogged) {
-        console.error('Slack API call failed:', error)
+        logger.error('SlackIntegration', 'Slack API call failed', error)
         this.errorLogged = true
       }
       throw error
@@ -246,7 +248,7 @@ class SlackIntegrationService {
 
       await this.sendNotification('Pipeline Complete', message, runId)
     } catch (error) {
-      console.error('Failed to send completion notification:', error)
+      logger.error('SlackIntegration', 'Failed to send completion notification', error)
     }
   }
 
@@ -262,7 +264,7 @@ class SlackIntegrationService {
 
       await this.sendNotification('Pipeline Error', message, runId)
     } catch (error) {
-      console.error('Failed to send error notification:', error)
+      logger.error('SlackIntegration', 'Failed to send error notification', error)
     }
   }
 }

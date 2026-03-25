@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import {
     Tooltip,
     TooltipContent,
@@ -9,6 +9,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 interface PremiumStatCardProps {
     title: string;
@@ -19,7 +20,27 @@ interface PremiumStatCardProps {
     explanation?: string;
 }
 
+/** Extract numeric core, prefix ($), and suffix (%, h) from a value */
+function parseAnimatableValue(value: string | number) {
+    if (typeof value === "number") {
+        return { numeric: value, prefix: "", suffix: "", hasComma: false, decimals: 0 };
+    }
+    const match = value.match(/^(\$?)([\d,]+\.?\d*)([\w%]*)?$/);
+    if (!match) return null;
+    const raw = match[2].replace(/,/g, "");
+    const decimals = raw.includes(".") ? raw.split(".")[1].length : 0;
+    return {
+        numeric: parseFloat(raw),
+        prefix: match[1] || "",
+        suffix: match[3] || "",
+        hasComma: match[2].includes(","),
+        decimals,
+    };
+}
+
 export function PremiumStatCard({ title, value, trend, icon, description, explanation }: PremiumStatCardProps) {
+    const parsed = useMemo(() => parseAnimatableValue(value), [value]);
+
     return (
         <TooltipProvider>
             <motion.div
@@ -69,7 +90,17 @@ export function PremiumStatCard({ title, value, trend, icon, description, explan
                         </h3>
                         <div className="flex items-baseline gap-1.5 mt-auto">
                             <p className="text-3xl font-bold text-foreground font-heading tracking-tight italic">
-                                {value}
+                                {parsed ? (
+                                    <NumberTicker
+                                        value={parsed.numeric}
+                                        prefix={parsed.prefix}
+                                        suffix={parsed.suffix}
+                                        decimalPlaces={parsed.decimals}
+                                        delay={0.15}
+                                    />
+                                ) : (
+                                    value
+                                )}
                             </p>
                             {description && (
                                 <span className="text-[10px] text-foreground/30 font-medium italic lowercase">

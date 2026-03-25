@@ -3,6 +3,7 @@ import { WordPressClient } from "@/lib/clients/wordpress-client";
 import { podcastProducer } from "@/lib/services/podcast-producer";
 import { socialMediaPublisher } from "@/lib/services/social-media-publisher";
 import { KieClient } from "@/lib/clients/kie-client";
+import { linkedInPersistentAuth } from "@/lib/services/linkedin-persistent-auth";
 
 export async function GET() {
   try {
@@ -60,27 +61,51 @@ export async function GET() {
       };
     }
 
-    // Test Social Media (Facebook/LinkedIn) via Upload-Post API
+    // Test Facebook (Permanent Token)
     try {
-      const testResult = await socialMediaPublisher.testConnections();
+      const fbToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+      const fbPageId = process.env.FACEBOOK_PAGE_ID;
       
-      integrations.facebook = {
-        status: testResult.facebook?.success ? 'operational' : 'failed',
-        message: testResult.facebook?.message || 'No response from Facebook API',
-        lastChecked: new Date().toISOString()
-      };
-
-      integrations.linkedin = {
-        status: testResult.linkedin?.success ? 'operational' : 'failed',
-        message: testResult.linkedin?.message || 'No response from LinkedIn API', 
-        lastChecked: new Date().toISOString()
-      };
+      if (fbToken && fbPageId) {
+        const response = await fetch(`https://graph.facebook.com/v18.0/${fbPageId}?fields=id,name&access_token=${fbToken}`);
+        if (response.ok) {
+          const data = await response.json();
+          integrations.facebook = {
+            status: 'operational',
+            message: `Facebook page "${data.name}" connected (permanent token)`,
+            lastChecked: new Date().toISOString()
+          };
+        } else {
+          throw new Error(`Facebook API error: ${response.status}`);
+        }
+      } else {
+        throw new Error('Facebook credentials not configured');
+      }
     } catch (error: any) {
       integrations.facebook = {
         status: 'failed',
-        message: `Facebook test failed: ${error.message}`,
+        message: `Facebook connection failed: ${error.message}`,
         lastChecked: new Date().toISOString()
       };
+    }
+
+    // Test LinkedIn using persistent auth service
+    try {
+      const testResult = await linkedInPersistentAuth.testToken();
+      if (testResult.valid) {
+        integrations.linkedin = {
+          status: 'operational',
+          message: `LinkedIn API connected: ${testResult.userInfo?.name || 'Connected'} (persistent auth)`,
+          lastChecked: new Date().toISOString()
+        };
+      } else {
+        integrations.linkedin = {
+          status: 'failed',
+          message: `LinkedIn token invalid: ${testResult.error || 'Unknown error'}`,
+          lastChecked: new Date().toISOString()
+        };
+      }
+    } catch (error: any) {
       integrations.linkedin = {
         status: 'failed',
         message: `LinkedIn test failed: ${error.message}`,
