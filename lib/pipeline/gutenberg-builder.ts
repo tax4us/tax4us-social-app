@@ -11,17 +11,9 @@ export class GutenbergBuilder {
     buildArticle(contentMarkdown: string, mediaUrl: string, isVideo: boolean = true, title?: string) {
         const contentBlocks = this.markdownToBlocks(contentMarkdown);
 
-        // If no media URL, skip cover block entirely — content only
+        // If no media URL, return flat content (no cover, no columns)
         if (!mediaUrl) {
-            return `<!-- wp:columns -->
-<div class="wp-block-columns">
-  <!-- wp:column {"width":"75%"} -->
-  <div class="wp-block-column" style="flex-basis:75%">
-    ${contentBlocks}
-  </div>
-  <!-- /wp:column -->
-</div>
-<!-- /wp:columns -->`;
+            return contentBlocks;
         }
 
         const isVideoUrl = isVideo || mediaUrl.includes('.mp4') || mediaUrl.includes('video');
@@ -49,27 +41,7 @@ ${titleBlock}
 </div>
 <!-- /wp:cover -->
 
-<!-- wp:columns -->
-<div class="wp-block-columns">
-  <!-- wp:column {"width":"75%"} -->
-  <div class="wp-block-column" style="flex-basis:75%">
-    ${contentBlocks}
-  </div>
-  <!-- /wp:column -->
-
-  <!-- wp:column {"width":"25%"} -->
-  <div class="wp-block-column" style="flex-basis:25%">
-    <!-- wp:query {"query":{"perPage":5,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false}} -->
-    <div class="wp-block-query">
-      <!-- wp:post-template -->
-      <!-- wp:post-title {"isLink":true} /-->
-      <!-- /wp:post-template -->
-    </div>
-    <!-- /wp:query -->
-  </div>
-  <!-- /wp:column -->
-</div>
-<!-- /wp:columns -->
+${contentBlocks}
 `;
     }
 
