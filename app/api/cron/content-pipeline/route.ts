@@ -20,7 +20,17 @@ export async function GET(request: NextRequest) {
 
     console.log('Starting Tax4US Content Pipeline - Monday/Thursday Cron')
 
+    const url = new URL(request.url)
+    const forceMode = url.searchParams.get('force')
+
     const orchestrator = new PipelineOrchestrator()
+
+    if (forceMode === 'topic') {
+      console.log('Force mode: Running topic proposal regardless of day')
+      const result = await orchestrator.proposeNewTopic()
+      return NextResponse.json({ success: true, message: 'Forced topic proposal', result, timestamp: new Date().toISOString() })
+    }
+
     const result = await orchestrator.runAutoPilot()
 
     return NextResponse.json({

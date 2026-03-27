@@ -440,18 +440,6 @@ class SocialMediaPublisher {
 
     } catch (error) {
       logger.error('SocialMediaPublisher', 'Facebook publishing failed', error)
-
-      if (process.env.NODE_ENV === 'development') {
-        logger.info('SocialMediaPublisher', 'DEV MODE: Facebook publishing bypassed due to API credentials')
-        return {
-          platform: 'facebook',
-          success: true,
-          postId: 'dev-mock-fb-' + Date.now(),
-          postUrl: 'https://facebook.com/tax4us/posts/mock-dev-post',
-          note: 'Development mode bypass'
-        }
-      }
-
       return {
         platform: 'facebook',
         success: false,
@@ -527,10 +515,13 @@ class SocialMediaPublisher {
    */
   private async publishToLinkedIn(post: SocialPost): Promise<PostResult> {
     try {
+
       const accessToken = await linkedInPersistentAuth.getValidAccessToken()
       const content = post.content + (post.hashtags && post.hashtags.length > 0 ? '\n\n' + post.hashtags.join(' ') : '')
 
-      const authorUrn = `urn:li:organization:17903965`
+      // Use company URN for company posting (TAX4US LinkedIn company page)  
+      // Changed from organization to company format per LinkedIn API requirements
+      const authorUrn = `urn:li:company:17903965`
       let mediaCategory = 'NONE'
       let mediaArray: { status: string; media?: string; originalUrl?: string; title?: { text: string } }[] = []
 
