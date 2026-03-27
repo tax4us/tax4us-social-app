@@ -612,46 +612,59 @@ export class PipelineOrchestrator {
             const categoryIds = await this.wp.resolveCategories(["מיסוי ישראל", "ייעוץ מס"]);
             const tagIds = await this.wp.resolveTags([title]);
 
-            // Create separate English post as requested
-            logger.info('PipelineOrchestrator', 'Creating separate English post as requested')
-            
-            // Merge bilingual content with cover block at top
-            const coverBlockRegex = /<!-- wp:cover[\s\S]*?<!-- \/wp:cover -->\s*/g;
-            // Extract first cover block found (from Hebrew content which has the image)
-            const coverMatch = content.match(coverBlockRegex);
-            const coverBlock = coverMatch ? coverMatch[0] : '';
-            // Strip ALL cover blocks from both contents
-            const hebrewClean = content.replace(coverBlockRegex, '');
-            const englishClean = englishContent.replace(coverBlockRegex, '');
-            // Reassemble: cover at top, then Hebrew, then English
-            const mergedContent = coverBlock + hebrewClean + '\n\n<hr>\n<h2>English Version</h2>\n' + englishClean;
-
+            // Update Hebrew post — keep it Hebrew only (per SOP: separate posts linked via Polylang)
             await this.wp.updatePost(draft.id, {
-                title: title + ' | ' + englishSeoMeta.metadata.title,
-                content: mergedContent,
+                title: title,
                 status: "publish",
-                excerpt: englishSeoMeta.metadata.excerpt,
                 featured_media: draft.featured_media || 0,
-                categories: categoryIds.concat(enCategoryIds),
-                tags: tagIds.concat(enTagIds).slice(0, 5), // Combine tags but limit
+                categories: categoryIds,
+                tags: tagIds,
+                meta: {
+                    rank_math_focus_keyword: title.split(':')[0] || title,
+                    rank_math_title: title,
+                    rank_math_description: content.replace(/<[^>]+>/g, '').substring(0, 160),
+                    rank_math_seo_score: 80
+                }
+            });
+
+            // Set Hebrew language via Polylang
+            await this.wp.updatePost(draft.id, {}, { lang: "he" });
+
+            const hebrewLink = `https://www.tax4us.co.il/?p=${draftId}`;
+            pipelineLogger.success(`Hebrew article published: ${hebrewLink}`);
+
+            // Create SEPARATE English post (per SOP: Polylang-linked, not merged)
+            logger.info('PipelineOrchestrator', 'Creating separate English post');
+            const { GutenbergBuilder } = await import('./gutenberg-builder');
+            const enBuilder = new GutenbergBuilder();
+            const englishGutenberg = enBuilder.buildArticle(englishContent, '', false);
+
+            const enPost = await this.wp.createPost({
+                title: englishSeoMeta.metadata.title || `${title} (English)`,
+                content: englishGutenberg,
+                status: "publish",
+                featured_media: draft.featured_media || 0,
+                categories: enCategoryIds,
+                tags: enTagIds,
                 meta: {
                     rank_math_focus_keyword: englishSeoMeta.metadata.focus_keyword || title,
                     rank_math_title: englishSeoMeta.metadata.seo_title || title,
-                    rank_math_description: englishSeoMeta.metadata.seo_description || englishSeoMeta.metadata.excerpt,
+                    rank_math_description: englishSeoMeta.metadata.seo_description || '',
                     rank_math_seo_score: Math.round(englishSeoMeta.seo_score || 80)
                 }
             });
-            
-            const englishPost = { id: draft.id }; // Reference same post
 
-            // Link with Polylang
-            await this.wp.updatePost(englishPost.id, {}, {
+            // Link Hebrew and English posts via Polylang
+            await this.wp.updatePost(enPost.id, {}, {
                 lang: "en",
                 "translations[he]": draftId.toString()
             });
+            await this.wp.updatePost(draftId, {}, {
+                "translations[en]": enPost.id.toString()
+            });
 
-            const englishLink = draft.link;
-            pipelineLogger.success(`Bilingual content published: ${englishLink}`);
+            const englishLink = `https://www.tax4us.co.il/?p=${enPost.id}`;
+            pipelineLogger.success(`English article published: ${englishLink}`);
 
             // Generate background video via VideoStudio (Kie.ai Kling 3.0)
             // VideoStudio handles: video gen, polling, WP post update with video cover block
