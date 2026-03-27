@@ -200,12 +200,18 @@ export async function POST(req: NextRequest) {
         if (action.action_id === "approve_facebook") {
             console.log("📘 Facebook Post Approved: Publishing...", value);
 
+            // Fetch content from WP post (content removed from button value for Slack size limits)
+            const { WordPressClient } = require("../../../../lib/clients/wordpress-client");
+            const wpClient = new WordPressClient();
+            const wpPost = await wpClient.getPost(value.postId);
+            const fbContent = wpPost.content.rendered.replace(/<[^>]+>/g, ' ').substring(0, 2000).trim();
+
             // Publish to Facebook via native Graph API
             const { socialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
 
             socialMediaPublisher.publishToFacebook({
                 platform: 'facebook',
-                content: value.content,
+                content: fbContent,
                 mediaUrl: value.mediaUrl,
                 hashtags: []
             }).catch((e: any) => console.error("Facebook publish failed:", e));
@@ -234,12 +240,18 @@ export async function POST(req: NextRequest) {
         if (action.action_id === "approve_linkedin") {
             console.log("💼 LinkedIn Post Approved: Publishing...", value);
 
+            // Fetch content from WP post (content removed from button value for Slack size limits)
+            const { WordPressClient: WPClient } = require("../../../../lib/clients/wordpress-client");
+            const wpLI = new WPClient();
+            const liPost = await wpLI.getPost(value.postId);
+            const liContent = liPost.content.rendered.replace(/<[^>]+>/g, ' ').substring(0, 2000).trim();
+
             // Publish to LinkedIn via native API
             const { socialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
 
             socialMediaPublisher.publishToLinkedIn({
                 platform: 'linkedin',
-                content: value.content,
+                content: liContent,
                 mediaUrl: value.mediaUrl,
                 hashtags: []
             }).catch((e: any) => console.error("LinkedIn publish failed:", e));
