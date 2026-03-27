@@ -147,28 +147,10 @@ FBAR (Foreign Bank Account Report) הוא דיווח חובה פדרלי המו�
       timestamp: new Date().toISOString()
     };
     
-    // Create mock response object
-    const response = {
-      ok: true,
-      json: async () => result
-    };
-
-    if (!response.ok) {
-      throw new Error(`NotebookLM query failed: ${response.status}`)
-    }
-
-    const result = await response.json()
-
-    if (!result.success) {
-      throw new Error('NotebookLM query failed')
-    }
-
-    const content = result.answer || result.content || ''
-    
     if (!content) {
-      throw new Error('No content returned from NotebookLM')
+      throw new Error('No content returned from generation')
     }
-    
+
     const actualWordCount = content.split(/\s+/).length
     const contentId = `content_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     

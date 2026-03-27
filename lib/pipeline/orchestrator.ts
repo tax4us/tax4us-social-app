@@ -654,7 +654,7 @@ export class PipelineOrchestrator {
                     rank_math_description: hebrewContent.replace(/<[^>]+>/g, '').substring(0, 160),
                     rank_math_seo_score: 80
                 }
-            });
+            } as any);
 
             // Set Hebrew language via Polylang
             await this.wp.updatePost(draftId, {}, { lang: "he" });
