@@ -31,6 +31,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, message: 'Forced topic proposal', result, timestamp: new Date().toISOString() })
     }
 
+    if (forceMode === 'publish') {
+      const postId = parseInt(url.searchParams.get('postId') || '0')
+      if (!postId) return NextResponse.json({ error: 'postId required' }, { status: 400 })
+      console.log(`Force mode: Publishing approved article ${postId}`)
+      const result = await orchestrator.publishApprovedArticle(postId)
+      return NextResponse.json({ success: true, message: 'Forced publish', result, timestamp: new Date().toISOString() })
+    }
+
     const result = await orchestrator.runAutoPilot()
 
     return NextResponse.json({
