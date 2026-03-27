@@ -255,15 +255,21 @@ export class PipelineOrchestrator {
             pipelineLogger.agent("Translating to Hebrew...", draftPostId.toString());
             const hebrewContent = await this.translator.translateEnToHe(article.content);
             article.content = hebrewContent;
-            // Also translate the title to Hebrew
-            const hebrewTitle = await this.translator.translateEnToHe(article.metadata.title);
-            // Clean: strip quotes, newlines, HTML, and any "Translation:" preamble
+            // Also translate just the title to Hebrew (short, explicit instruction)
+            const titleOnly = article.metadata.title.substring(0, 200); // Cap input length
+            const hebrewTitle = await this.claude.generate(
+                `Translate this article title to Hebrew. Output ONLY the Hebrew title, nothing else. No quotes, no explanation.\n\nTitle: ${titleOnly}`,
+                "claude-sonnet-4-20250514",
+                "You are a translator. Output only the translated title. Maximum 100 characters.",
+                200 // max_tokens — titles are short
+            );
+            // Clean and cap at 120 chars
             const cleanTitle = hebrewTitle
                 .replace(/<[^>]+>/g, '')
                 .replace(/[\n\r]/g, ' ')
                 .replace(/^["'"""]+|["'"""]+$/g, '')
-                .replace(/^(תרגום|Translation|Here is).*?:\s*/i, '')
-                .trim();
+                .trim()
+                .substring(0, 120);
             article.metadata.title = cleanTitle || article.metadata.title;
 
             // 3. Generate Media (Kie.ai)
