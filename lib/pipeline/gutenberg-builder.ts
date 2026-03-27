@@ -10,6 +10,20 @@ export class GutenbergBuilder {
      */
     buildArticle(contentMarkdown: string, mediaUrl: string, isVideo: boolean = true) {
         const contentBlocks = this.markdownToBlocks(contentMarkdown);
+
+        // If no media URL, skip cover block entirely — content only
+        if (!mediaUrl) {
+            return `<!-- wp:columns -->
+<div class="wp-block-columns">
+  <!-- wp:column {"width":"75%"} -->
+  <div class="wp-block-column" style="flex-basis:75%">
+    ${contentBlocks}
+  </div>
+  <!-- /wp:column -->
+</div>
+<!-- /wp:columns -->`;
+        }
+
         const isVideoUrl = isVideo || mediaUrl.includes('.mp4') || mediaUrl.includes('video');
 
         // Cover block: video goes directly as wp-block-cover__video-background (NOT as a nested wp:video block)

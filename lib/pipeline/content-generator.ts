@@ -117,7 +117,8 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
 
     // 2. Convert to Gutenberg
     pipelineLogger.agent(`Stage 3: Structural alignment (Gutenberg conversion)...`, topic.id);
-    const gutenbergHtml = this.builder.buildArticle(generatedContent, topic.title || topic.topic);
+    // Pass empty mediaUrl — orchestrator rebuilds cover block with real Kie.ai image/video after generation
+    const gutenbergHtml = this.builder.buildArticle(generatedContent, "");
 
     // 3. SEO Metadata Generation (LANGUAGE-AWARE)
     pipelineLogger.agent(`Stage 5: SEO Hardening (${contentLanguage})...`, topic.id);
@@ -288,7 +289,7 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
     }
 
     // Convert enhanced markdown to Gutenberg before scoring
-    const gutenbergHtml = this.builder.buildArticle(enhancedContent, seoMetadata.title || title);
+    const gutenbergHtml = this.builder.buildArticle(enhancedContent, "");
     const score = 75; // Default score since SEOScorer was removed
     // Original call was: this.scorer.calculateScore(gutenbergHtml, seoMetadata.seo_title || seoMetadata.title, seoMetadata.focus_keyword);
 

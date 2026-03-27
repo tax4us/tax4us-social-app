@@ -173,8 +173,8 @@ export class KieClient {
         pipelineLogger.agent(`Initiating Image generation for: "${prompt.substring(0, 50)}..."`, "KIE_AI");
 
         try {
-            // Query Observatory for best image model (falls back to flux-pro)
-            const imgRec = await this.getModelRecommendation("image_generation", "flux-pro");
+            // Query Observatory for best image model (falls back to nano-banana-pro — verified working on TAX4US Kie.ai account)
+            const imgRec = await this.getModelRecommendation("image_generation", "nano-banana-pro");
             pipelineLogger.info(`Image model: ${imgRec.model}`, "KIE_AI");
 
             const response = await fetch(`${this.baseUrl}${imgRec.endpoint.replace('/api/v1', '')}`, {
