@@ -52,7 +52,7 @@ export class PipelineOrchestrator {
                 const { TavilyClient } = await import('../clients/tavily-client');
                 const tavily = new TavilyClient();
                 const searchResults = await tavily.search(
-                    `US Israel tax news ${new Date().getFullYear()} latest updates IRS`,
+                    `US tax compliance FBAR FATCA Israeli-Americans ${new Date().getFullYear()} IRS updates deadlines`,
                     { search_depth: "advanced", max_results: 5 }
                 );
                 if (searchResults.results.length > 0) {
@@ -65,17 +65,24 @@ export class PipelineOrchestrator {
             }
 
             // 2. Generate Topic Strategy (Claude with market research)
-            const systemPrompt = "You are a Content Strategy Expert for Tax4Us.co.il. Suggest a high-impact, timely blog topic about US-Israel taxation. Use the market trends to identify what's currently relevant.";
+            const systemPrompt = "You are a Content Strategy Expert for Tax4Us.co.il — a US tax accounting firm serving Israeli-Americans. CRITICAL: Topics must be about US TAX COMPLIANCE (IRS, FBAR, FATCA, Form 1040, dual taxation treaties, US estate tax, etc.) — NOT about Israeli domestic tax law. The audience lives in the US and needs help with US tax obligations.";
             const userPrompt = `
                 Recent Articles (avoid duplicating these):
                 ${existingTitles}
                 ${marketContext}
 
+                Available Topics Pool (choose from or be inspired by):
+                FBAR filing, US tax deadlines, FATCA compliance, Form 8938, US estate tax planning,
+                Transfer pricing, Foreign earned income exclusion, Child tax credit overseas,
+                Social Security benefits, Israeli pension US tax treatment, Real estate taxes,
+                Cryptocurrency taxes, Gift tax cross-border, Trust taxation, PFIC mutual fund reporting,
+                State tax obligations, LLC taxation, W8-BEN/W9, Corporate tax comparison
+
                 Current Date: ${new Date().toISOString()}
 
                 Task:
-                Based on the market trends and what hasn't been covered recently, suggest ONE unique, timely blog topic.
-                Target Audience: Israeli business owners or expats in the US.
+                Suggest ONE unique, timely US tax topic for Israeli-Americans that hasn't been covered recently.
+                Focus on US IRS compliance, NOT Israeli domestic tax law.
 
                 Return JSON: { "topic": "...", "audience": "...", "reasoning": "...", "keywords": ["...", "..."] }
             `;
