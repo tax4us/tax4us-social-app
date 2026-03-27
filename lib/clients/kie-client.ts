@@ -259,9 +259,9 @@ export class KieClient {
 
         const data = await response.json();
         // n8n logic checks data.data.state === 'success'
-        const state = data.data?.state || data.state;
+        const rawState = (data.data?.state || data.state || "").toLowerCase();
 
-        if (state === "success") {
+        if (rawState === "success" || rawState === "completed") {
             // Kie.ai returns nested JSON for video results
             let resultUrl = data.data?.url || data.url || data.data?.videoUrl || data.videoUrl;
 
@@ -275,7 +275,7 @@ export class KieClient {
             }
 
             return { status: "success", url: resultUrl, videoUrl: resultUrl };
-        } else if (state === "fail" || state === "failed") {
+        } else if (rawState === "fail" || rawState === "failed") {
             const error = data.data?.failMsg || data.failMsg || "Unknown error";
             pipelineLogger.error(`Kie.ai Task Failed: ${error}`, "KIE_AI");
             return { status: "failed", error };
