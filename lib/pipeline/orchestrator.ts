@@ -588,9 +588,6 @@ export class PipelineOrchestrator {
                 status: "publish"
             });
 
-            const hebrewLink = draft.link;
-            pipelineLogger.success(`Hebrew article published: ${hebrewLink}`);
-
             // Continue to English translation
             pipelineLogger.agent("Translating to English...", draftId.toString());
             const englishContent = await this.translator.translateHeToEn(content);
