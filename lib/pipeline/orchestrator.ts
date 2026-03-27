@@ -593,36 +593,65 @@ export class PipelineOrchestrator {
 
     /**
      * Publish article after approval (resumes pipeline from approval pause)
+     * Flow: generate content → translate → publish Hebrew → create English → link via Polylang
      */
     async publishApprovedArticle(draftId: number) {
         pipelineLogger.info(`Publishing approved article: ${draftId}`);
 
         try {
-            // Fetch the draft (content already generated)
+            // 1. Fetch the draft to get the topic name
             const draft = await this.wp.getPost(draftId);
-            const content = draft.content.rendered;
-            const title = draft.title.rendered.replace(/\[AWAITING APPROVAL\]/, "").trim();
+            const topicName = draft.title.rendered.replace(/\[PROPOSAL\]\s*/, '').replace(/\[AWAITING APPROVAL\]\s*/, '').trim();
 
-            // Update title, clean slug, and publish
-            const cleanSlug = title
+            // 2. Generate full article content (English-first → translate to Hebrew → media → cover block)
+            // This updates the draft in WordPress with the final Hebrew content + cover block
+            await this.runFullGeneration(draftId, topicName);
+
+            // 3. Re-fetch the draft (now has full Hebrew content with cover block)
+            const updatedDraft = await this.wp.getPost(draftId);
+            const hebrewContent = updatedDraft.content.rendered;
+            const hebrewTitle = updatedDraft.title.rendered.replace(/\[AWAITING APPROVAL\]\s*/, '').trim();
+
+            // 4. Clean slug and publish Hebrew post
+            const cleanSlug = hebrewTitle
                 .replace(/[^\w\s\u0590-\u05FF-]/g, '')
                 .replace(/\s+/g, '-')
                 .toLowerCase()
                 .substring(0, 80);
+
+            const categoryIds = await this.wp.resolveCategories(["מיסוי ישראל", "ייעוץ מס"]);
+            const tagIds = await this.wp.resolveTags([hebrewTitle]);
+
             await this.wp.updatePost(draftId, {
-                title: title,
+                title: hebrewTitle,
                 slug: cleanSlug,
-                status: "publish"
+                status: "publish",
+                featured_media: updatedDraft.featured_media || 0,
+                categories: categoryIds,
+                tags: tagIds,
+                meta: {
+                    rank_math_focus_keyword: hebrewTitle.split(':')[0] || hebrewTitle,
+                    rank_math_title: hebrewTitle,
+                    rank_math_description: hebrewContent.replace(/<[^>]+>/g, '').substring(0, 160),
+                    rank_math_seo_score: 80
+                }
             });
 
-            // Continue to English translation
-            pipelineLogger.agent("Translating to English...", draftId.toString());
-            const englishContent = await this.translator.translateHeToEn(content);
+            // Set Hebrew language via Polylang
+            await this.wp.updatePost(draftId, {}, { lang: "he" });
 
+            const hebrewLink = `https://www.tax4us.co.il/?p=${draftId}`;
+            pipelineLogger.success(`Hebrew article published: ${hebrewLink}`);
+
+            // 5. Translate Hebrew content to English for separate post
+            pipelineLogger.agent("Translating to English...", draftId.toString());
+            const englishContent = await this.translator.translateHeToEn(hebrewContent);
+
+            // Generate English SEO metadata
             const englishSeoMeta = await this.contentGenerator.generateArticle({
                 id: `en-${draftId}`,
-                topic: title,
-                title: title,
+                topic: topicName,
+                title: topicName,
                 audience: "English Speaking Investors/Expats",
                 language: "en",
                 type: "blog_post",
@@ -631,43 +660,18 @@ export class PipelineOrchestrator {
 
             const enCategoryIds = await this.wp.resolveCategories(englishSeoMeta.metadata.categories || ["Business Tax", "English"]);
             const enTagIds = await this.wp.resolveTags(englishSeoMeta.metadata.tags || []);
-            
-            // Get Hebrew categories and tags 
-            const categoryIds = await this.wp.resolveCategories(["מיסוי ישראל", "ייעוץ מס"]);
-            const tagIds = await this.wp.resolveTags([title]);
 
-            // Update Hebrew post — keep it Hebrew only (per SOP: separate posts linked via Polylang)
-            await this.wp.updatePost(draft.id, {
-                title: title,
-                status: "publish",
-                featured_media: draft.featured_media || 0,
-                categories: categoryIds,
-                tags: tagIds,
-                meta: {
-                    rank_math_focus_keyword: title.split(':')[0] || title,
-                    rank_math_title: title,
-                    rank_math_description: content.replace(/<[^>]+>/g, '').substring(0, 160),
-                    rank_math_seo_score: 80
-                }
-            });
-
-            // Set Hebrew language via Polylang
-            await this.wp.updatePost(draft.id, {}, { lang: "he" });
-
-            const hebrewLink = `https://www.tax4us.co.il/?p=${draftId}`;
-            pipelineLogger.success(`Hebrew article published: ${hebrewLink}`);
-
-            // Create SEPARATE English post (per SOP: Polylang-linked, not merged)
+            // 6. Create SEPARATE English post (per SOP: Polylang-linked, not merged)
             logger.info('PipelineOrchestrator', 'Creating separate English post');
             const { GutenbergBuilder } = await import('./gutenberg-builder');
             const enBuilder = new GutenbergBuilder();
             const englishGutenberg = enBuilder.buildArticle(englishContent, '', false);
 
             const enPost = await this.wp.createPost({
-                title: englishSeoMeta.metadata.title || `${title} (English)`,
+                title: englishSeoMeta.metadata.title || `${topicName} (English)`,
                 content: englishGutenberg,
                 status: "publish",
-                featured_media: draft.featured_media || 0,
+                featured_media: updatedDraft.featured_media || 0,
                 categories: enCategoryIds,
                 tags: enTagIds,
                 meta: {
@@ -698,9 +702,9 @@ export class PipelineOrchestrator {
                 const studio = new VideoStudio({ auto_publish_social: false });
                 const videoResult = await studio.produceVideo({
                     post_id: draftId,
-                    title: title,
-                    content: content,
-                    focus_keyword: title.split(':')[0] || title,
+                    title: hebrewTitle,
+                    content: hebrewContent,
+                    focus_keyword: hebrewTitle.split(':')[0] || hebrewTitle,
                     language: 'he',
                     style: 'documentary',
                     duration: 'short'
@@ -717,10 +721,10 @@ export class PipelineOrchestrator {
 
             // Get featured image URL as fallback for social if no video
             let mediaUrlForSocial = videoUrl;
-            if (!mediaUrlForSocial && draft.featured_media) {
+            if (!mediaUrlForSocial && updatedDraft.featured_media) {
                 try {
                     const mediaResponse = await fetch(
-                        `https://tax4us.co.il/wp-json/wp/v2/media/${draft.featured_media}`,
+                        `https://tax4us.co.il/wp-json/wp/v2/media/${updatedDraft.featured_media}`,
                         { headers: { 'Authorization': `Basic ${Buffer.from(`${process.env.WP_USERNAME || 'Shai ai'}:${process.env.WP_APPLICATION_PASSWORD || '0nm7^1l&PEN5HAWE7LSamBRu'}`).toString('base64')}` } }
                     );
                     if (mediaResponse.ok) {
@@ -735,8 +739,8 @@ export class PipelineOrchestrator {
 
             // Continue to social media prep (video or featured image)
             await this.socialPublisher.prepareSocialPosts(
-                content,
-                title,
+                hebrewContent,
+                hebrewTitle,
                 hebrewLink,
                 englishLink,
                 draftId.toString(),

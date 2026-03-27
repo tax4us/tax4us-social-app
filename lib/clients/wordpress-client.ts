@@ -156,8 +156,13 @@ export class WordPressClient {
               body: JSON.stringify({ name }),
             });
             ids.push(created.id);
-          } catch (e) {
-            console.error(`Failed to create category "${name}":`, e);
+          } catch (e: any) {
+            const match = e.message?.match(/term_id":(\d+)/);
+            if (match) {
+              ids.push(parseInt(match[1]));
+            } else {
+              console.error(`Failed to create category "${name}":`, e);
+            }
           }
         }
       }
@@ -211,8 +216,14 @@ export class WordPressClient {
                 body: JSON.stringify({ name: cleanName }),
               });
               ids.push(created.id);
-            } catch (e) {
-              console.error(`Failed to create tag "${cleanName}":`, e);
+            } catch (e: any) {
+              // term_exists means the tag exists beyond our per_page=100 fetch — extract its ID
+              const match = e.message?.match(/term_id":(\d+)/);
+              if (match) {
+                ids.push(parseInt(match[1]));
+              } else {
+                console.error(`Failed to create tag "${cleanName}":`, e);
+              }
             }
           }
         }
