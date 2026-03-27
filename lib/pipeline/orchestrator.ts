@@ -600,14 +600,33 @@ export class PipelineOrchestrator {
             const englishLink = draft.link;
             pipelineLogger.success(`Bilingual content published: ${englishLink}`);
 
-            // Continue to social media prep
+            // Get featured image URL for social media posts
+            let featuredImageUrl: string | undefined;
+            if (draft.featured_media) {
+                try {
+                    const mediaResponse = await fetch(
+                        `https://tax4us.co.il/wp-json/wp/v2/media/${draft.featured_media}`,
+                        { headers: { 'Authorization': `Basic ${Buffer.from(`${process.env.WP_USERNAME || 'Shai ai'}:${process.env.WP_APP_PASSWORD || ''}`).toString('base64')}` } }
+                    );
+                    if (mediaResponse.ok) {
+                        const mediaData = await mediaResponse.json();
+                        featuredImageUrl = mediaData.source_url;
+                        pipelineLogger.info(`Featured image for social: ${featuredImageUrl}`);
+                    }
+                } catch (imgErr: any) {
+                    pipelineLogger.warn(`Could not fetch featured image: ${imgErr.message}`);
+                }
+            }
+
+            // Continue to social media prep (pass featured image as video/media URL)
             await this.socialPublisher.prepareSocialPosts(
                 content,
                 title,
                 hebrewLink,
                 englishLink,
                 draftId.toString(),
-                draftId
+                draftId,
+                featuredImageUrl
             );
 
             pipelineLogger.info("Article pipeline resumed successfully");

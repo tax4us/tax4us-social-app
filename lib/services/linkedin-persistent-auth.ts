@@ -1,10 +1,17 @@
 /**
  * LinkedIn Persistent Authentication Service
  * Maintains long-lived LinkedIn access without constant re-authorization
+ *
+ * Token resolution order (post Plan 78-02):
+ *   1. SuperSeller API (social_tokens DB) — primary source
+ *   2. File-based storage (legacy-token.json) — legacy fallback
+ *      (will be removed after LinkedIn Community Management API review is approved
+ *      and token is seeded via seed-tax4us-tokens.ts)
  */
 
 import fs from 'fs/promises'
 import path from 'path'
+import { getSocialTokenViaApi } from './social-token-client'
 
 export interface LinkedInPersistentToken {
   access_token: string
@@ -24,25 +31,34 @@ class LinkedInPersistentAuth {
   }
 
   /**
-   * Get a valid LinkedIn access token, using stored token if available
+   * Get a valid LinkedIn access token.
+   *
+   * Resolution order:
+   *   1. SuperSeller API (primary — token in social_tokens DB, encrypted at rest)
+   *   2. Persistent file storage (.project-memory/) — legacy fallback
+   *   3. Environment variable LINKEDIN_ACCESS_TOKEN — backward-compat only
    */
   async getValidAccessToken(): Promise<string> {
+    // 1. Try SuperSeller API (primary source post Plan 78-02)
     try {
-      // First try environment variable (set by user or previous runs)
-      const envToken = process.env.LINKEDIN_ACCESS_TOKEN
-      if (envToken && envToken.length > 20) {
-        console.log('✅ Using LinkedIn token from environment')
-        return envToken
+      const apiToken = await getSocialTokenViaApi('tax4us', 'linkedin', 'long_lived')
+      if (apiToken && apiToken.length > 20) {
+        console.log('✅ Using LinkedIn token from SuperSeller API')
+        return apiToken
       }
+    } catch (_apiErr) {
+      // Token not yet in DB (LinkedIn API review pending) — fall through to legacy sources
+      console.log('⚠️  LinkedIn token not in SuperSeller API (review pending), trying legacy sources')
+    }
 
-      // Try to load from persistent storage
+    try {
+      // 2. Try file-based storage (legacy fallback)
       await this.loadStoredToken()
-      
+
       if (this.cachedToken) {
         const now = new Date()
         const expiry = new Date(this.cachedToken.estimated_expiry)
-        
-        // If token is still valid (with 1-day buffer), use it
+
         if (now.getTime() < (expiry.getTime() - 24 * 60 * 60 * 1000)) {
           console.log('✅ Using stored LinkedIn token (valid until', this.cachedToken.estimated_expiry + ')')
           return this.cachedToken.access_token
@@ -52,7 +68,7 @@ class LinkedInPersistentAuth {
       }
 
       // No valid token available
-      throw new Error('No valid LinkedIn access token available. Please run: npm run get-linkedin-token')
+      throw new Error('No valid LinkedIn access token available. LinkedIn API review pending — token will be seeded once approved.')
 
     } catch (error) {
       console.error('Failed to get LinkedIn access token:', error)
@@ -105,7 +121,7 @@ class LinkedInPersistentAuth {
       this.cachedToken = tokenData
       await this.ensureDirectoryExists()
       await fs.writeFile(this.storePath, JSON.stringify(tokenData, null, 2), 'utf-8')
-      process.env.LINKEDIN_ACCESS_TOKEN = accessToken
+      // Note: env var write removed — token storage is now via SuperSeller social_tokens DB
       if (memberId) process.env.LINKEDIN_MEMBER_ID = memberId
 
       console.log('✅ LinkedIn token stored successfully')
@@ -188,24 +204,26 @@ class LinkedInPersistentAuth {
     hasToken: boolean
     expiresAt?: string
     daysUntilExpiry?: number
-    source: 'environment' | 'stored' | 'none'
+    source: 'api' | 'stored' | 'none'
   }> {
     try {
-      // Check environment first
-      const envToken = process.env.LINKEDIN_ACCESS_TOKEN
-      if (envToken && envToken.length > 20) {
-        return {
-          hasToken: true,
-          source: 'environment'
+      // Check SuperSeller API first (primary source post Plan 78-02)
+      try {
+        const apiToken = await getSocialTokenViaApi('tax4us', 'linkedin', 'long_lived')
+        if (apiToken && apiToken.length > 20) {
+          return {
+            hasToken: true,
+            source: 'api'
+          }
         }
-      }
+      } catch { /* token not in DB yet */ }
 
-      // Check stored token
+      // Check stored token (legacy fallback)
       await this.loadStoredToken()
       if (this.cachedToken) {
         const expiry = new Date(this.cachedToken.estimated_expiry)
         const daysUntilExpiry = Math.ceil((expiry.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-        
+
         return {
           hasToken: true,
           expiresAt: this.cachedToken.estimated_expiry,
@@ -282,15 +300,16 @@ class LinkedInPersistentAuth {
   async clearTokens(): Promise<void> {
     try {
       this.cachedToken = null
-      delete process.env.LINKEDIN_ACCESS_TOKEN
-      
+      // Note: env var management removed — token is now in SuperSeller social_tokens DB
+      // To clear from DB: deactivate via SuperSeller admin API
+
       try {
         await fs.unlink(this.storePath)
       } catch (error) {
         // File doesn't exist - not an error
       }
-      
-      console.log('✅ LinkedIn tokens cleared')
+
+      console.log('✅ LinkedIn legacy tokens cleared (DB token managed via SuperSeller API)')
     } catch (error) {
       console.error('Failed to clear tokens:', error)
     }

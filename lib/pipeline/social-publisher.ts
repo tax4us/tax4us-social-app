@@ -20,58 +20,65 @@ export class SocialPublisher {
         let taskId: string | undefined = undefined;
         let videoUrl: string | undefined = existingVideoUrl;
 
-        // 1. Generate Video using Remotion (only if not provided)
+        // 1. Generate Video via Kie.ai Kling 3.0 (only if not provided)
         if (!existingVideoUrl) {
-            pipelineLogger.info("Video generation temporarily disabled (Remotion service removed)");
-            try {
-                // RemotionVideoService was removed during cleanup
-                // const { RemotionVideoService } = await import('../services/remotion-video-service');
-                // const remotion = new RemotionVideoService();
-                
-                // Create a mock ContentPiece for video generation
-                const mockContentPiece = {
-                    id: `temp-${Date.now()}`,
-                    topic_id: topicId,
-                    title_english: title,
-                    title_hebrew: title.includes('Hebrew') ? title : `מדריך: ${title}`,
-                    content_english: articleHtml.replace(/<[^>]*>/g, '').substring(0, 200),
-                    content_hebrew: '',
-                    target_keywords: ["tax", "professional"],
-                    status: 'draft' as const,
-                    media_urls: {},
-                    seo_score: 95,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                };
+            const videoPromise = this.kie.generateVideo({
+                title: title,
+                excerpt: articleHtml.substring(0, 200).replace(/<[^>]*>/g, ''),
+                style: "documentary"
+            }).catch(err => {
+                pipelineLogger.error(`Video generation failed: ${err.message}`);
+                return undefined;
+            });
 
-                // Video generation disabled - Remotion service was removed
-                // const video = await remotion.generateFacebookReel(mockContentPiece);
-                videoUrl = undefined;
-                pipelineLogger.info("Video generation skipped (Remotion service removed)");
-            } catch (err: any) {
-                pipelineLogger.error(`Remotion video generation failed: ${err.message}`);
-                pipelineLogger.warn("Proceeding without video...");
+            // 2. Generate Bilingual Text (parallel with video)
+            const textPromise = this.generateBilingualContent(articleHtml, title, hebrewUrl, englishUrl);
+
+            // Wait for both
+            const [generatedTaskId, content] = await Promise.all([videoPromise, textPromise]);
+            taskId = generatedTaskId;
+
+            if (taskId) {
+                try {
+                    const status = await this.kie.getTask(taskId);
+                    if (status.status === 'success') videoUrl = status.videoUrl;
+                } catch (e) {
+                    pipelineLogger.warn("Could not retrieve video status immediately.");
+                }
             }
 
             if (videoUrl) {
-                // Calculate video duration (Remotion videos are typically 8-10 seconds)
-                const duration = 8;
-
-                // PAUSE HERE - Send video approval request
+                // Video ready — send video approval request
                 await this.slack.sendVideoApprovalRequest({
                     videoUrl: videoUrl,
-                    duration: duration,
-                    taskId: "remotion-video",
+                    duration: 8,
+                    taskId: taskId || "kie-video",
                     relatedPostId: postId,
                     postTitle: title
                 });
 
                 pipelineLogger.info("Video approval request sent. Waiting for user decision...");
-                return { status: "awaiting_video_approval", taskId: "remotion-video", postId: postId };
+                return { status: "awaiting_video_approval", taskId: taskId, postId: postId };
             }
+
+            // Video not ready yet or failed — continue with social approval
+            await this.slack.sendSocialApprovalRequest({
+                hebrewHeadline: content.hebrew_headline,
+                englishHeadline: content.english_headline,
+                hebrewTeaser: content.hebrew_teaser,
+                hebrewUrl: hebrewUrl,
+                englishUrl: englishUrl,
+                facebookPost: content.facebook_post,
+                videoUrl: videoUrl,
+                videoTaskId: taskId,
+                topicId: topicId
+            });
+
+            pipelineLogger.info("Social approval request sent.");
+            return { status: "waiting_social_approval", videoUrl: videoUrl };
         }
 
-        // 2. Continue with social approval (with or without video)
+        // Existing video provided — continue with social approval
         return this.continueWithSocialApproval(articleHtml, title, hebrewUrl, englishUrl, topicId, videoUrl);
     }
 
