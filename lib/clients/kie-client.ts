@@ -85,41 +85,57 @@ export class KieClient {
         excerpt: string,
         style?: "abstract" | "documentary" | "corporate"
     }) {
-        // Only bypass if explicitly disabled
         if (process.env.DISABLE_KIE_AI === "true") {
             pipelineLogger.warn("Kie.ai explicitly disabled", "KIE_AI");
             return "kie-disabled-placeholder";
         }
 
-        const style = params.style || "documentary";
+        // PRIMARY: Sora 2 Pro Storyboard with @shai-lfc.tax4us cameo
+        // 25 seconds, portrait (9:16), professional tax advisor scenes
+        try {
+            pipelineLogger.info("Video model: sora-2-pro-storyboard (primary)", "KIE_AI");
 
-        // Base hook and blueprint based on user's high-engagement reference
-        let prompt = "";
+            const shots = this.buildSoraStoryboard(params.title, params.excerpt);
 
-        if (style === "documentary") {
-            prompt = `Raw documentary aesthetic video for: "${params.title}". 
-            Blueprints: 
-            - Consistent character anchor: A professional, friendly person (Likeness of @shai-lfc.tax4us) as the cross-cultural bridge.
-            - Emotional hook (first 2s): Close-up with an expressive "Look what they did" or "Listen to that" vibe.
-            - Visual delivery: Subtle urgency, mixed-language cues (English/Hebrew text or cultural symbols).
-            - Creative format twist: Handheld camera motion, authentic lighting.
-            - Clear CTA: Visual cue for "Wake up!" or "Share this!".
-            - Flags: Specific US and Israeli flags integrated into the background.
-            - Aspect Ratio: Vertical 9:16. No text overlay.`;
-        } else {
-            prompt = `Abstract and friendly financial services motion graphics for: "${params.title}". 
-            Visuals: Warm and inviting abstract shapes, flowing lines, integrated US and Israeli flags waving subtly. 
-            Colors: Professional green (#8fb634), white, and soft accent tones. 
-            Include a subtle digital handle @shai-lfc.tax4us integrated into the background design. 
-            Style: Clean, premium, 3D abstract elements. Vertical format. Looping background video. No text overlay.`;
+            const response = await this.fetchWithRetry(`${this.baseUrl}/jobs/createTask`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${this.apiKey}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: "sora-2-pro-storyboard",
+                    input: {
+                        n_frames: "25",
+                        aspect_ratio: "portrait",
+                        upload_method: "s3",
+                        shots: shots
+                    }
+                })
+            });
+
+            if (response?.ok) {
+                const data = await response.json();
+                const taskId = data.data?.taskId || data.taskId;
+                if (taskId) {
+                    pipelineLogger.info(`Sora task ID: ${taskId}`, "KIE_AI");
+                    return taskId;
+                }
+            }
+
+            pipelineLogger.warn("Sora failed or no taskId. Falling back to Observatory model...", "KIE_AI");
+        } catch (soraErr: any) {
+            pipelineLogger.warn(`Sora error: ${soraErr.message}. Falling back to Observatory...`, "KIE_AI");
         }
 
+        // FALLBACK: Observatory model selection (Kling 3.0, Veo 3.1, etc.)
         try {
-            // Query Observatory for best video model (falls back to kling-3.0/video)
             const videoRec = await this.getModelRecommendation("video_clip_generation", "kling-3.0/video");
-            pipelineLogger.info(`Video model: ${videoRec.model}`, "KIE_AI");
+            pipelineLogger.info(`Fallback video model: ${videoRec.model}`, "KIE_AI");
 
-            let response = await this.fetchWithRetry(`${this.baseUrl}${videoRec.endpoint.replace('/api/v1', '')}`, {
+            const prompt = `Professional tax advisor @shai-lfc.tax4us in modern office with US and Israeli flags. Speaking confidently about "${params.title}". Warm lighting, professional attire. Vertical 9:16.`;
+
+            const response = await this.fetchWithRetry(`${this.baseUrl}${videoRec.endpoint.replace('/api/v1', '')}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${this.apiKey}`,
@@ -127,40 +143,56 @@ export class KieClient {
                 },
                 body: JSON.stringify({
                     model: videoRec.model,
-                    input: {
-                        prompt: prompt,
-                        mode: "std",
-                        aspect_ratio: "9:16",
-                        duration: "8s"
-                    }
+                    input: { prompt, mode: "std", aspect_ratio: "9:16", duration: "8s" }
                 })
             });
 
-            // FALLBACK logic: If primary model fails, attempt high-quality Image generation
-            if (!response.ok) {
-                pipelineLogger.warn(`${videoRec.model} failed. Falling back to image generation...`, "KIE_AI");
-                return await this.generateImage(`Premium documentary aesthetic for: ${params.title}. ${params.excerpt}`);
+            if (response?.ok) {
+                const data = await response.json();
+                const taskId = data.data?.taskId || data.taskId;
+                if (taskId) {
+                    pipelineLogger.info(`Fallback task ID: ${taskId}`, "KIE_AI");
+                    return taskId;
+                }
             }
 
-            const data = await response.json();
-            const taskId = data.data?.taskId || data.taskId;
-
-            if (!taskId) {
-                pipelineLogger.warn("Kie.ai did not return a taskId. Attempting Image fallback...", "KIE_AI");
-                return await this.generateImage(`Premium documentary aesthetic for: ${params.title}. ${params.excerpt}`);
-            }
-
-            pipelineLogger.info(`Task ID: ${taskId}`, "KIE_AI");
-            return taskId;
+            pipelineLogger.warn("Fallback video also failed. Generating image instead...", "KIE_AI");
+            return await this.generateImage(`Professional infographic for: ${params.title}. ${params.excerpt}`);
 
         } catch (error: any) {
-            pipelineLogger.error(`Kie.ai Generation Error: ${error.message}. Attempting Image fallback...`);
-            try {
-                return await this.generateImage(`Premium documentary aesthetic for: ${params.title}. ${params.excerpt}`);
-            } catch (fallbackError) {
-                throw error; // If both fail, throw original error
-            }
+            pipelineLogger.error(`All video generation failed: ${error.message}. Image fallback...`);
+            return await this.generateImage(`Professional infographic for: ${params.title}. ${params.excerpt}`);
         }
+    }
+
+    /**
+     * Build Sora storyboard shots for Tax4US reel
+     * 25 seconds total, 5 shots, @shai-lfc.tax4us cameo throughout
+     */
+    private buildSoraStoryboard(title: string, excerpt: string): Array<{ Scene: string; duration: number }> {
+        const shortExcerpt = excerpt.substring(0, 200).trim();
+        return [
+            {
+                Scene: `Professional tax advisor @shai-lfc.tax4us in a modern office with US and Israeli flags on the wall. He faces the camera with a warm, confident expression. Soft professional lighting. He begins speaking about: "${title}".`,
+                duration: 6
+            },
+            {
+                Scene: `@shai-lfc.tax4us gestures while explaining a key tax concept. Medium shot showing his professional attire and the office environment. Tax law books and documents visible on shelves behind him.`,
+                duration: 5
+            },
+            {
+                Scene: `Close-up of @shai-lfc.tax4us speaking with conviction. His expression shows deep expertise and genuine care for his audience. The US and Israeli flags are slightly blurred in the background.`,
+                duration: 5
+            },
+            {
+                Scene: `@shai-lfc.tax4us at his desk, reviewing a document. He looks up at the camera and nods, as if confirming an important point. Professional, trustworthy atmosphere.`,
+                duration: 5
+            },
+            {
+                Scene: `@shai-lfc.tax4us smiles warmly at the camera, making a welcoming gesture. The Tax4US office setting is clean and professional. He appears approachable and ready to help.`,
+                duration: 4
+            }
+        ];
     }
 
     async generateImage(prompt: string) {

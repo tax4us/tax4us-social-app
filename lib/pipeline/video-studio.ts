@@ -161,12 +161,11 @@ export class VideoStudio {
     let prompt = '';
 
     if (style === 'documentary') {
-      prompt = `Professional documentary-style video for Tax4US content: "${title}". `;
-      prompt += `Raw, authentic aesthetic with subtle professional branding. `;
+      prompt = `Professional tax advisory video for Tax4US: "${title}". `;
+      prompt += `Clean, professional aesthetic. Modern office setting. `;
       prompt += `Visual theme: US-Israel cross-border taxation expertise. `;
-      prompt += `Character anchor: Professional, trustworthy tax advisor (likeness of @shai-lfc.tax4us). `;
-      prompt += `Emotional hook: Immediate authority and expertise demonstration. `;
-      prompt += `Visual delivery: Confident, knowledgeable presentation with subtle urgency. `;
+      prompt += `Character: @shai-lfc.tax4us — professional, trustworthy tax advisor. `;
+      prompt += `Tone: Confident, knowledgeable, warm and approachable. `;
       
       if (isHebrew) {
         prompt += `Language context: Hebrew-speaking Israeli-American professionals. `;
