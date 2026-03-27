@@ -165,14 +165,17 @@ export class SocialPublisher {
             }
         }
 
+        // Reconstruct content from WP post if not in button value (truncated for Slack limits)
+        const socialContent = data.content || post.content.rendered.replace(/<[^>]+>/g, ' ').substring(0, 2000).trim();
+
         // Extract hashtags from content (look for #tags)
-        const hashtagMatches = data.content.match(/#\w+/g) || [];
+        const hashtagMatches = socialContent.match(/#\w+/g) || [];
         const hashtags = hashtagMatches.length > 0 ? hashtagMatches : ["#Tax4US", "#USIsraeliTax"];
 
         // Send Facebook approval request
         pipelineLogger.info("Sending Facebook post for approval...");
         await this.slack.sendFacebookApprovalRequest({
-            content: data.content,
+            content: socialContent,
             hashtags: hashtags,
             mediaUrl: mediaUrl,
             postTitle: postTitle,
@@ -182,7 +185,7 @@ export class SocialPublisher {
         // Send LinkedIn approval request
         pipelineLogger.info("Sending LinkedIn post for approval...");
         await this.slack.sendLinkedInApprovalRequest({
-            content: data.content,
+            content: socialContent,
             hashtags: hashtags,
             mediaUrl: finalVideoUrl,
             postTitle: postTitle,
