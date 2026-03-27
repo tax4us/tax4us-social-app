@@ -132,6 +132,24 @@ export class SocialPublisher {
         const post = await wp.getPost(postId);
         const postTitle = post.title.rendered;
 
+        // Get featured image URL as fallback if no video
+        let mediaUrl = finalVideoUrl;
+        if (!mediaUrl && post.featured_media) {
+            try {
+                const mediaRes = await fetch(
+                    `https://tax4us.co.il/wp-json/wp/v2/media/${post.featured_media}`,
+                    { headers: { 'Authorization': `Basic ${Buffer.from(`${process.env.WP_USERNAME || 'Shai ai'}:${process.env.WP_APPLICATION_PASSWORD || '0nm7^1l&PEN5HAWE7LSamBRu'}`).toString('base64')}` } }
+                );
+                if (mediaRes.ok) {
+                    const mediaData = await mediaRes.json();
+                    mediaUrl = mediaData.source_url;
+                    pipelineLogger.info(`Using featured image for social: ${mediaUrl}`);
+                }
+            } catch (e: any) {
+                pipelineLogger.warn(`Could not fetch featured image for social: ${e.message}`);
+            }
+        }
+
         // Extract hashtags from content (look for #tags)
         const hashtagMatches = data.content.match(/#\w+/g) || [];
         const hashtags = hashtagMatches.length > 0 ? hashtagMatches : ["#Tax4US", "#USIsraeliTax"];
@@ -141,7 +159,7 @@ export class SocialPublisher {
         await this.slack.sendFacebookApprovalRequest({
             content: data.content,
             hashtags: hashtags,
-            mediaUrl: finalVideoUrl,
+            mediaUrl: mediaUrl,
             postTitle: postTitle,
             postId: postId
         });
