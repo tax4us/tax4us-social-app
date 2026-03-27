@@ -1,11 +1,64 @@
 import { pipelineLogger } from "../pipeline/logger";
 
+// TAX4US Kie.ai API key prefix — credential isolation guard
+const TAX4US_KIE_KEY_PREFIX = "3ca74c96";
+
+interface ObservatoryRecommendation {
+    model: string;
+    kieModelParam: string;
+    kieEndpoint: string;
+    cost: number;
+    fallback: { model: string; kieModelParam: string; kieEndpoint: string } | null;
+}
+
 export class KieClient {
     private apiKey: string;
     private baseUrl: string = "https://api.kie.ai/api/v1";
+    private observatoryCache: Map<string, { data: ObservatoryRecommendation; expiresAt: number }> = new Map();
 
     constructor() {
-        this.apiKey = process.env.KIE_API_KEY || "3ca74c96d52beaef45650eb629876245"; // Warning: Harcoded fallback from n8n
+        this.apiKey = process.env.KIE_API_KEY || "3ca74c96d52beaef45650eb629876245";
+        // CREDENTIAL ISOLATION: Reject any key that isn't TAX4US's own
+        if (!this.apiKey.startsWith(TAX4US_KIE_KEY_PREFIX)) {
+            throw new Error(`KieClient credential isolation violation: key does not match TAX4US prefix. Got: ${this.apiKey.substring(0, 8)}...`);
+        }
+    }
+
+    /**
+     * Query SuperSeller Observatory for optimal model selection.
+     * Returns ONLY model names/endpoints — never credentials.
+     * Falls back to hardcoded defaults if Observatory is unreachable.
+     */
+    private async getModelRecommendation(useCase: string, fallbackModel: string): Promise<{ model: string; endpoint: string }> {
+        // Check cache (5 min TTL)
+        const cached = this.observatoryCache.get(useCase);
+        if (cached && cached.expiresAt > Date.now()) {
+            return { model: cached.data.kieModelParam, endpoint: cached.data.kieEndpoint };
+        }
+
+        const cronSecret = process.env.SUPERSELLER_CRON_SECRET;
+        if (!cronSecret) {
+            pipelineLogger.warn(`Observatory: no SUPERSELLER_CRON_SECRET — using hardcoded ${fallbackModel}`);
+            return { model: fallbackModel, endpoint: "/api/v1/jobs/createTask" };
+        }
+
+        try {
+            const res = await fetch(
+                `https://api.superseller.agency/api/observatory/recommend?useCase=${encodeURIComponent(useCase)}`,
+                { headers: { Authorization: `Bearer ${cronSecret}` } }
+            );
+            if (!res.ok) {
+                pipelineLogger.warn(`Observatory returned ${res.status} for ${useCase} — using ${fallbackModel}`);
+                return { model: fallbackModel, endpoint: "/api/v1/jobs/createTask" };
+            }
+            const data: ObservatoryRecommendation = await res.json();
+            this.observatoryCache.set(useCase, { data, expiresAt: Date.now() + 5 * 60 * 1000 });
+            pipelineLogger.info(`Observatory recommends ${data.model} for ${useCase} ($${data.cost}/unit)`);
+            return { model: data.kieModelParam, endpoint: data.kieEndpoint };
+        } catch (err: any) {
+            pipelineLogger.warn(`Observatory unreachable: ${err.message} — using ${fallbackModel}`);
+            return { model: fallbackModel, endpoint: "/api/v1/jobs/createTask" };
+        }
     }
 
     private async fetchWithRetry(url: string, options: any, retries: number = 3): Promise<any> {
@@ -62,14 +115,18 @@ export class KieClient {
         }
 
         try {
-            let response = await this.fetchWithRetry(`${this.baseUrl}/jobs/createTask`, {
+            // Query Observatory for best video model (falls back to kling-3.0/video)
+            const videoRec = await this.getModelRecommendation("video_clip_generation", "kling-3.0/video");
+            pipelineLogger.info(`Video model: ${videoRec.model}`, "KIE_AI");
+
+            let response = await this.fetchWithRetry(`${this.baseUrl}${videoRec.endpoint.replace('/api/v1', '')}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${this.apiKey}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "kling-3.0/video",
+                    model: videoRec.model,
                     input: {
                         prompt: prompt,
                         mode: "std",
@@ -79,9 +136,9 @@ export class KieClient {
                 })
             });
 
-            // FALLBACK logic: If Sora fails, attempt high-quality Image generation
+            // FALLBACK logic: If primary model fails, attempt high-quality Image generation
             if (!response.ok) {
-                pipelineLogger.warn("Sora creation failed. Falling back to high-quality Image generation (Flux)...", "KIE_AI");
+                pipelineLogger.warn(`${videoRec.model} failed. Falling back to image generation...`, "KIE_AI");
                 return await this.generateImage(`Premium documentary aesthetic for: ${params.title}. ${params.excerpt}`);
             }
 
@@ -116,17 +173,21 @@ export class KieClient {
         pipelineLogger.agent(`Initiating Image generation for: "${prompt.substring(0, 50)}..."`, "KIE_AI");
 
         try {
-            const response = await fetch(`${this.baseUrl}/jobs/createTask`, {
+            // Query Observatory for best image model (falls back to flux-pro)
+            const imgRec = await this.getModelRecommendation("image_generation", "flux-pro");
+            pipelineLogger.info(`Image model: ${imgRec.model}`, "KIE_AI");
+
+            const response = await fetch(`${this.baseUrl}${imgRec.endpoint.replace('/api/v1', '')}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${this.apiKey}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "flux-pro", // Using working Flux Pro model for 2026
+                    model: imgRec.model,
                     input: {
                         prompt: prompt,
-                        aspect_ratio: "16:9", // Blog post featured image
+                        aspect_ratio: "16:9",
                         resolution: "2K",
                         format: "png"
                     }
