@@ -45,22 +45,42 @@ export class PipelineOrchestrator {
             const recentPosts = await this.wp.getPosts({ per_page: '20', status: 'publish' });
             const existingTitles = recentPosts.map((p: any) => p.title.rendered).join("\n");
 
-            // 2. Generate Topic Strategy (Claude)
-            const systemPrompt = "You are a Content Strategy Expert for Tax4Us.co.il. Suggest a high-impact, timely blog topic about US-Israel taxation.";
+            // 1b. Market Research via Tavily
+            pipelineLogger.info("Researching current tax trends via Tavily...");
+            let marketContext = "";
+            try {
+                const { TavilyClient } = await import('../clients/tavily-client');
+                const tavily = new TavilyClient();
+                const searchResults = await tavily.search(
+                    `US Israel tax news ${new Date().getFullYear()} latest updates IRS`,
+                    { search_depth: "advanced", max_results: 5 }
+                );
+                if (searchResults.results.length > 0) {
+                    marketContext = "\n\nCurrent Market Trends (from web research):\n" +
+                        searchResults.results.map((r: any) => `- ${r.title}: ${r.content?.substring(0, 150)}`).join("\n");
+                    pipelineLogger.info(`Tavily returned ${searchResults.results.length} results`);
+                }
+            } catch (tavilyErr: any) {
+                pipelineLogger.warn(`Tavily research failed (non-blocking): ${tavilyErr.message}`);
+            }
+
+            // 2. Generate Topic Strategy (Claude with market research)
+            const systemPrompt = "You are a Content Strategy Expert for Tax4Us.co.il. Suggest a high-impact, timely blog topic about US-Israel taxation. Use the market trends to identify what's currently relevant.";
             const userPrompt = `
-                Recent Articles:
+                Recent Articles (avoid duplicating these):
                 ${existingTitles}
+                ${marketContext}
 
                 Current Date: ${new Date().toISOString()}
 
                 Task:
-                Suggest ONE unique blog topic that hasn't been covered recently.
-                Target Audience: Israeli business owners or expats.
-                
-                Return JSON: { "topic": "...", "audience": "...", "reasoning": "..." }
+                Based on the market trends and what hasn't been covered recently, suggest ONE unique, timely blog topic.
+                Target Audience: Israeli business owners or expats in the US.
+
+                Return JSON: { "topic": "...", "audience": "...", "reasoning": "...", "keywords": ["...", "..."] }
             `;
 
-            const response = await this.claude.generate(userPrompt, "claude-3-haiku-20240307", systemPrompt);
+            const response = await this.claude.generate(userPrompt, "claude-sonnet-4-20250514", systemPrompt);
 
             // Clean response in case Claude includes preamble or control characters
             const jsonMatch = response.match(/\{[\s\S]*\}/);

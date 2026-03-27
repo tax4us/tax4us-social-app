@@ -96,22 +96,23 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
       
       PRIMARY FOCUS KEYWORD: "${topic.keywords?.[0] || topic.topic}"
       
-      1. CONTENT LENGTH: Target 1500-2000 words minimum. Write comprehensive, detailed content with examples.
+      1. CONTENT LENGTH: Minimum 2500 words. Write comprehensive, detailed content with real examples and case studies. Max paragraph length 120 words.
       2. FOCUS KEYWORD INTEGRATION (CRITICAL FOR SEO):
          - Use the PRIMARY FOCUS KEYWORD exactly "${topic.keywords?.[0] || topic.topic}" 15-20 times throughout
-         - MUST appear in title (beginning preferred)  
+         - MUST appear in title (beginning preferred)
          - MUST appear in first paragraph (first 100 words)
          - MUST appear in 2-3 H2/H3 headings
          - Target 1.2-1.5% keyword density for optimal SEO score
-      3. TITLE: Ben's professional style - descriptive, authoritative, NO numbers. MUST include "${topic.keywords?.[0] || topic.topic}"
+      3. TITLE: Descriptive, authoritative, NO clickbait numbers. MUST include "${topic.keywords?.[0] || topic.topic}"
       4. STRUCTURE: 8-12 H2 sections, comprehensive coverage
       5. LINKS: MANDATORY - 4+ internal tax4us.co.il links, 3+ external authoritative links (IRS.gov, FinCEN.gov)
       6. FORMAT: Rich markdown with tables, lists, proper formatting for 90-100 SEO score
+      7. WRITING STYLE: Match the professional authoritative tone of Rotem De-paz's existing Tax4US articles. Direct, expert voice. No fluff. Real tax scenarios and examples. Mix of Hebrew and English where natural for the Israeli-American audience.
       
       Start directly with the content. No preamble.
     `;
 
-    const generatedContent = await this.claude.generate(draftPrompt, "claude-3-haiku-20240307", systemPrompt, 4000); // Use Haiku with max tokens
+    const generatedContent = await this.claude.generate(draftPrompt, "claude-sonnet-4-20250514", systemPrompt, 10000); // Sonnet + 10K tokens per n8n spec
     pipelineLogger.info(`Draft complete. Length: ${generatedContent.split(/\s+/).length} words.`, topic.id);
 
     // 2. Convert to Gutenberg
@@ -147,7 +148,7 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
       
       Return ONLY the JSON object, no explanation.
     `;
-    const seoMetadataRaw = await this.claude.generate(seoPrompt, "claude-3-haiku-20240307");
+    const seoMetadataRaw = await this.claude.generate(seoPrompt, "claude-sonnet-4-20250514");
 
     let seoMetadata;
     try {
@@ -248,7 +249,7 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
       Return the IMPROVED content only.
     `;
 
-    const enhancedContent = await this.claude.generate(enhancementPrompt, "claude-3-haiku-20240307", systemPrompt);
+    const enhancedContent = await this.claude.generate(enhancementPrompt, "claude-sonnet-4-20250514", systemPrompt);
 
     // SEO Metadata Refinement
     const seoPrompt = `
@@ -268,7 +269,7 @@ ALL factual claims must be verifiable against IRS.gov publications.`;
       
       Return ONLY the JSON object.
     `;
-    const seoMetadataRaw = await this.claude.generate(seoPrompt, "claude-3-haiku-20240307");
+    const seoMetadataRaw = await this.claude.generate(seoPrompt, "claude-sonnet-4-20250514");
 
     let seoMetadata;
     try {
