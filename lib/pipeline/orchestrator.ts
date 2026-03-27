@@ -272,12 +272,21 @@ export class PipelineOrchestrator {
             const categoryIds = await this.wp.resolveCategories(article.metadata.categories || []);
             const tagIds = await this.wp.resolveTags(article.metadata.tags || []);
 
-            // 4c. Rebuild cover block with actual media URL and title overlay (matching Rotem's post 1235 structure)
+            // 4c. Prepend cover block with actual media URL and title overlay
             if (imageUrl) {
-                const { GutenbergBuilder } = await import('./gutenberg-builder');
-                const builder = new GutenbergBuilder();
-                const contentWithoutCover = article.content.replace(/<!-- wp:cover[\s\S]*?<!-- \/wp:cover -->\s*/, '');
-                article.content = builder.buildArticle(contentWithoutCover, imageUrl, false, article.metadata.title);
+                const articleTitle = article.metadata.title;
+                const coverBlock = `<!-- wp:cover {"url":"${imageUrl}","dimRatio":50,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"} -->
+<div class="wp-block-cover alignfull" style="min-height:60vh"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim"></span>
+<img class="wp-block-cover__image-background" alt="" src="${imageUrl}" data-object-fit="cover"/>
+<div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","level":1} -->
+<h1 class="has-text-align-center has-text-color" style="color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800">${articleTitle}</h1>
+<!-- /wp:heading --></div>
+</div>
+<!-- /wp:cover -->
+
+`;
+                // Prepend cover to existing content (don't re-wrap in columns)
+                article.content = coverBlock + article.content;
             }
 
             // 5. Update WordPress Draft (Hebrew version) - KEEP AS DRAFT UNTIL APPROVED
