@@ -286,19 +286,30 @@ export class PipelineOrchestrator {
             if (imageUrl) {
                 const articleTitle = article.metadata.title;
                 const imgId = mediaId || 0;
-                const coverBlock = `<!-- wp:cover {"url":"${imageUrl}","id":${imgId},"dimRatio":50,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"} -->
-<div class="wp-block-cover alignfull" style="min-height:60vh"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim"></span><img class="wp-block-cover__image-background wp-image-${imgId}" alt="" src="${imageUrl}" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","level":1} -->
-<h1 class="has-text-align-center has-text-color" style="color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800">${articleTitle}</h1>
+                const coverBlock = `<!-- wp:cover {"url":"${imageUrl}","id":${imgId},"dimRatio":30,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"} -->
+<div class="wp-block-cover alignfull" style="min-height:60vh"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim-30"></span><img class="wp-block-cover__image-background wp-image-${imgId}" alt="" src="${imageUrl}" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","level":1} -->
+<h1 class="has-text-align-center has-text-color" style="color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800;text-shadow:2px 2px 8px rgba(0,0,0,0.7)">${articleTitle}</h1>
 <!-- /wp:heading --></div></div>
 <!-- /wp:cover -->
+
+<!-- wp:spacer {"height":"40px"} -->
+<div style="height:40px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
 
 `;
                 article.content = coverBlock + article.content;
             }
 
             // 5. Update WordPress Draft (Hebrew version) - KEEP AS DRAFT UNTIL APPROVED
+            // Set clean slug early to prevent WP auto-slug from Gutenberg content
+            const draftSlug = article.metadata.title
+                .replace(/[^\w\s\u0590-\u05FF-]/g, '')
+                .replace(/\s+/g, '-')
+                .toLowerCase()
+                .substring(0, 80);
             await this.wp.updatePost(draftPostId, {
                 title: `[AWAITING APPROVAL] ${article.metadata.title}`,
+                slug: draftSlug,
                 content: article.content,
                 status: "draft", // Keep as draft until approved
                 featured_media: mediaId,
