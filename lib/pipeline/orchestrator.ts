@@ -257,8 +257,14 @@ export class PipelineOrchestrator {
             article.content = hebrewContent;
             // Also translate the title to Hebrew
             const hebrewTitle = await this.translator.translateEnToHe(article.metadata.title);
-            // Clean any quotes/preamble from translated title
-            article.metadata.title = hebrewTitle.replace(/^["']|["']$/g, '').replace(/^.*?:/,'').trim() || article.metadata.title;
+            // Clean: strip quotes, newlines, HTML, and any "Translation:" preamble
+            const cleanTitle = hebrewTitle
+                .replace(/<[^>]+>/g, '')
+                .replace(/[\n\r]/g, ' ')
+                .replace(/^["'"""]+|["'"""]+$/g, '')
+                .replace(/^(תרגום|Translation|Here is).*?:\s*/i, '')
+                .trim();
+            article.metadata.title = cleanTitle || article.metadata.title;
 
             // 3. Generate Media (Kie.ai)
             pipelineLogger.agent("Generating visual assets...", draftPostId.toString());
@@ -284,7 +290,8 @@ export class PipelineOrchestrator {
             // 4c. Prepend cover block with actual media URL and title overlay
             // Matches Rotem's working post 1235 structure exactly: id in attrs, wp-image-{id} class, same-line closing
             if (imageUrl) {
-                const articleTitle = article.metadata.title;
+                // Sanitize title: strip HTML, newlines, and trim to prevent breaking the cover block H1 tag
+                const articleTitle = article.metadata.title.replace(/<[^>]+>/g, '').replace(/[\n\r]/g, ' ').trim();
                 const imgId = mediaId || 0;
                 const coverBlock = `<!-- wp:cover {"url":"${imageUrl}","id":${imgId},"dimRatio":30,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"} -->
 <div class="wp-block-cover alignfull" style="min-height:60vh"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim-30"></span><img class="wp-block-cover__image-background wp-image-${imgId}" alt="" src="${imageUrl}" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","level":1} -->
