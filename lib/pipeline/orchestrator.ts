@@ -577,9 +577,15 @@ export class PipelineOrchestrator {
             const content = draft.content.rendered;
             const title = draft.title.rendered.replace(/\[AWAITING APPROVAL\]/, "").trim();
 
-            // Update title and publish
+            // Update title, clean slug, and publish
+            const cleanSlug = title
+                .replace(/[^\w\s\u0590-\u05FF-]/g, '')
+                .replace(/\s+/g, '-')
+                .toLowerCase()
+                .substring(0, 80);
             await this.wp.updatePost(draftId, {
                 title: title,
+                slug: cleanSlug,
                 status: "publish"
             });
 
