@@ -201,12 +201,13 @@ export async function POST(req: NextRequest) {
             console.log("📘 Facebook Post Approved: Publishing...", value);
 
             // Publish to Facebook via native Graph API
-            const { SocialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
-            const publisher = new SocialMediaPublisher();
-            
-            publisher.publishToFacebook({
+            const { socialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
+
+            socialMediaPublisher.publishToFacebook({
+                platform: 'facebook',
                 content: value.content,
-                mediaUrl: value.mediaUrl
+                mediaUrl: value.mediaUrl,
+                hashtags: []
             }).catch((e: any) => console.error("Facebook publish failed:", e));
 
             return NextResponse.json({
@@ -234,12 +235,13 @@ export async function POST(req: NextRequest) {
             console.log("💼 LinkedIn Post Approved: Publishing...", value);
 
             // Publish to LinkedIn via native API
-            const { SocialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
-            const publisher = new SocialMediaPublisher();
-            
-            publisher.publishToLinkedIn({
+            const { socialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
+
+            socialMediaPublisher.publishToLinkedIn({
+                platform: 'linkedin',
                 content: value.content,
-                mediaUrl: value.mediaUrl
+                mediaUrl: value.mediaUrl,
+                hashtags: []
             }).catch((e: any) => console.error("LinkedIn publish failed:", e));
 
             return NextResponse.json({

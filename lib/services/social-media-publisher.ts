@@ -5,6 +5,7 @@
 
 import { ContentPiece } from './database'
 import { linkedInPersistentAuth } from './linkedin-persistent-auth'
+import { getSocialTokenViaApi } from './social-token-client'
 // Using internal API for NotebookLM queries
 import { logger } from '../utils/logger'
 
@@ -33,14 +34,39 @@ interface FacebookPageData {
 
 class SocialMediaPublisher {
   private readonly facebookPageId: string
-  private readonly facebookAccessToken: string
+  // Token loaded lazily via SuperSeller API on first publish call
+  private facebookAccessToken: string = ''
+  private tokenInitPromise: Promise<void> | null = null
   private readonly notebookId: string
 
   constructor() {
     this.facebookPageId = process.env.FACEBOOK_PAGE_ID || '844266372343077'
-    this.facebookAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || ''
+    // Do NOT read FACEBOOK_PAGE_ACCESS_TOKEN from env — token is now in SuperSeller social_tokens DB
     this.notebookId = process.env.NOTEBOOKLM_NOTEBOOK_ID || 'd5f128c4-0d17-42c3-8d52-109916859c76'
   }
+
+  /**
+   * Lazy-init: fetches FB token from SuperSeller API on first call.
+   * Falls back to env var if API is unavailable (backward compatibility).
+   * Thread-safe: shares a single inflight promise.
+   */
+  private async ensureTokenLoaded(): Promise<void> {
+    if (this.facebookAccessToken) return
+    if (!this.tokenInitPromise) {
+      this.tokenInitPromise = getSocialTokenViaApi('tax4us', 'facebook', 'page')
+        .then(token => {
+          this.facebookAccessToken = token
+          logger.info('SocialMediaPublisher', 'FB token loaded from SuperSeller API')
+        })
+        .catch(err => {
+          // Token API unavailable — FB posts will fail with a clear error message
+          logger.error('SocialMediaPublisher', 'Failed to load FB token from SuperSeller API:', err.message)
+          this.facebookAccessToken = ''
+        })
+    }
+    await this.tokenInitPromise
+  }
+
 
   /**
    * Generate and publish social media posts for content piece
@@ -240,27 +266,18 @@ class SocialMediaPublisher {
   /**
    * Publish to Facebook using Graph API
    */
-  private async publishToFacebook(post: SocialPost): Promise<PostResult> {
+  async publishToFacebook(post: SocialPost): Promise<PostResult> {
     try {
+      await this.ensureTokenLoaded()
       if (!this.facebookAccessToken) {
         throw new Error('Facebook access token not configured')
       }
 
-      // Get page-specific access token for posting
-      const pageTokenResponse = await fetch(`https://graph.facebook.com/v18.0/me/accounts?access_token=${this.facebookAccessToken}`)
-      if (!pageTokenResponse.ok) {
-        throw new Error('Failed to fetch page access token')
-      }
-      
-      const pageData = await pageTokenResponse.json()
-      const targetPage = pageData.data?.find((page: FacebookPageData) => page.id === this.facebookPageId)
-      if (!targetPage?.access_token) {
-        throw new Error('Page access token not found for posting')
-      }
-
+      // UNIFIED APPROACH: Use token directly as PAGE token (no user token fetching)
+      // This matches the approach used in app/api/integrations/status/route.ts
       const payload = {
         message: post.content + (post.hashtags?.length > 0 ? '\n\n' + post.hashtags.join(' ') : ''),
-        access_token: targetPage.access_token
+        access_token: this.facebookAccessToken
       }
 
       // If media URL provided, determine if it's video or image
@@ -302,7 +319,7 @@ class SocialMediaPublisher {
         if (isVideo && isReel) {
           // Use multipart form data for video upload
           const formData = new FormData()
-          formData.append('access_token', targetPage.access_token)
+          formData.append('access_token', this.facebookAccessToken)
           formData.append('description', payload.message)
           
           // Fetch video and append as blob
@@ -337,7 +354,7 @@ class SocialMediaPublisher {
             const videoBuffer = fs.readFileSync(localPath)
             const videoBlob = new Blob([videoBuffer], { type: 'video/mp4' })
             
-            formData.append('access_token', targetPage.access_token)
+            formData.append('access_token', this.facebookAccessToken)
             formData.append('description', payload.message)
             formData.append('source', videoBlob, path.basename(localPath))
             
@@ -513,14 +530,26 @@ class SocialMediaPublisher {
    * fetched once via /v2/me when r_liteprofile scope is available, reused across renewals.
    * Videos require 3-step native upload (register → binary PUT → ugcPost with asset URN).
    */
-  private async publishToLinkedIn(post: SocialPost): Promise<PostResult> {
+  async publishToLinkedIn(post: SocialPost): Promise<PostResult> {
     try {
 
-      const accessToken = await linkedInPersistentAuth.getValidAccessToken()
+      // Fetch LinkedIn token from SuperSeller API (social_tokens DB)
+      // Falls back to linkedInPersistentAuth if API token not yet available (e.g., LinkedIn API review pending)
+      let accessToken: string
+      try {
+        accessToken = await getSocialTokenViaApi('tax4us', 'linkedin', 'long_lived')
+      } catch (apiErr) {
+        logger.warn('SocialMediaPublisher', 'LinkedIn token not in SuperSeller API, falling back to persistent auth:', (apiErr as Error).message)
+        accessToken = await linkedInPersistentAuth.getValidAccessToken()
+      }
+      if (!accessToken) {
+        throw new Error('LinkedIn access token not available')
+      }
+      
       const content = post.content + (post.hashtags && post.hashtags.length > 0 ? '\n\n' + post.hashtags.join(' ') : '')
 
-      // Use company URN for company posting (TAX4US LinkedIn company page)  
-      // Changed from organization to company format per LinkedIn API requirements
+      // Use numeric member ID approach - Company posting with numeric ID
+      // TAX4US company ID is 17903965 (from working config)
       const authorUrn = `urn:li:company:17903965`
       let mediaCategory = 'NONE'
       let mediaArray: { status: string; media?: string; originalUrl?: string; title?: { text: string } }[] = []
@@ -717,29 +746,16 @@ class SocialMediaPublisher {
     }
 
     try {
-      // Test Facebook connection
+      // Test Facebook connection (UNIFIED APPROACH)
       if (this.facebookAccessToken && this.facebookPageId) {
-        // First get page-specific token
-        const pageTokenResponse = await fetch(`https://graph.facebook.com/v18.0/me/accounts?access_token=${this.facebookAccessToken}`)
-        if (pageTokenResponse.ok) {
-          const pageData = await pageTokenResponse.json()
-          const targetPage = pageData.data?.find((page: FacebookPageData) => page.id === this.facebookPageId)
-          
-          if (targetPage?.access_token) {
-            // Test with page token
-            const fbResponse = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}?fields=id,name&access_token=${targetPage.access_token}`)
-            if (fbResponse.ok) {
-              const fbData = await fbResponse.json()
-              results.facebook.success = true
-              results.facebook.message = `Connected to Facebook Page: ${fbData.name} (with posting permissions)`
-            } else {
-              results.facebook.message = 'Facebook page access failed with page token'
-            }
-          } else {
-            results.facebook.message = 'Facebook page token not found - posting may fail'
-          }
+        // Use token directly as PAGE token (matches integrations/status approach)
+        const fbResponse = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}?fields=id,name&access_token=${this.facebookAccessToken}`)
+        if (fbResponse.ok) {
+          const fbData = await fbResponse.json()
+          results.facebook.success = true
+          results.facebook.message = `Connected to Facebook Page: ${fbData.name} (direct page token)`
         } else {
-          results.facebook.message = 'Facebook API connection failed - token may be expired'
+          results.facebook.message = 'Facebook page access failed - token may be expired'
         }
       } else {
         results.facebook.message = 'Facebook credentials not configured'
