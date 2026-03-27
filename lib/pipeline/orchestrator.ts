@@ -653,25 +653,50 @@ export class PipelineOrchestrator {
             const englishLink = draft.link;
             pipelineLogger.success(`Bilingual content published: ${englishLink}`);
 
-            // Get featured image URL for social media posts
-            let featuredImageUrl: string | undefined;
-            if (draft.featured_media) {
+            // Generate background video via VideoStudio (Kie.ai Kling 3.0)
+            // VideoStudio handles: video gen, polling, WP post update with video cover block
+            let videoUrl: string | undefined;
+            try {
+                const { VideoStudio } = await import('./video-studio');
+                const studio = new VideoStudio({ auto_publish_social: false });
+                const videoResult = await studio.produceVideo({
+                    post_id: draftId,
+                    title: title,
+                    content: content,
+                    focus_keyword: title.split(':')[0] || title,
+                    language: 'he',
+                    style: 'documentary',
+                    duration: 'short'
+                });
+                if (videoResult.success && videoResult.video_url) {
+                    videoUrl = videoResult.video_url;
+                    pipelineLogger.success(`Video produced: ${videoUrl}`);
+                } else {
+                    pipelineLogger.warn(`Video production failed (non-blocking): ${videoResult.errors.join(', ')}`);
+                }
+            } catch (videoErr: any) {
+                pipelineLogger.warn(`VideoStudio failed (non-blocking): ${videoErr.message}`);
+            }
+
+            // Get featured image URL as fallback for social if no video
+            let mediaUrlForSocial = videoUrl;
+            if (!mediaUrlForSocial && draft.featured_media) {
                 try {
                     const mediaResponse = await fetch(
                         `https://tax4us.co.il/wp-json/wp/v2/media/${draft.featured_media}`,
-                        { headers: { 'Authorization': `Basic ${Buffer.from(`${process.env.WP_USERNAME || 'Shai ai'}:${process.env.WP_APP_PASSWORD || ''}`).toString('base64')}` } }
+                        { headers: { 'Authorization': `Basic ${Buffer.from(`${process.env.WP_USERNAME || 'Shai ai'}:${process.env.WP_APPLICATION_PASSWORD || '0nm7^1l&PEN5HAWE7LSamBRu'}`).toString('base64')}` } }
                     );
                     if (mediaResponse.ok) {
                         const mediaData = await mediaResponse.json();
-                        featuredImageUrl = mediaData.source_url;
-                        pipelineLogger.info(`Featured image for social: ${featuredImageUrl}`);
+                        mediaUrlForSocial = mediaData.source_url;
+                        pipelineLogger.info(`Using featured image for social: ${mediaUrlForSocial}`);
                     }
                 } catch (imgErr: any) {
                     pipelineLogger.warn(`Could not fetch featured image: ${imgErr.message}`);
                 }
             }
 
-            // Continue to social media prep (pass featured image as video/media URL)
+            // Continue to social media prep (video or featured image)
             await this.socialPublisher.prepareSocialPosts(
                 content,
                 title,
@@ -679,7 +704,7 @@ export class PipelineOrchestrator {
                 englishLink,
                 draftId.toString(),
                 draftId,
-                featuredImageUrl
+                mediaUrlForSocial
             );
 
             pipelineLogger.info("Article pipeline resumed successfully");
