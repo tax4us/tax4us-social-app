@@ -272,13 +272,12 @@ export class PipelineOrchestrator {
             const categoryIds = await this.wp.resolveCategories(article.metadata.categories || []);
             const tagIds = await this.wp.resolveTags(article.metadata.tags || []);
 
-            // 4c. Rebuild cover block with actual media URL (content generator used topic title as placeholder)
+            // 4c. Rebuild cover block with actual media URL and title overlay (matching Rotem's post 1235 structure)
             if (imageUrl) {
                 const { GutenbergBuilder } = await import('./gutenberg-builder');
                 const builder = new GutenbergBuilder();
-                // Strip the placeholder cover block and rebuild with real image
                 const contentWithoutCover = article.content.replace(/<!-- wp:cover[\s\S]*?<!-- \/wp:cover -->\s*/, '');
-                article.content = builder.buildArticle(contentWithoutCover, imageUrl, false);
+                article.content = builder.buildArticle(contentWithoutCover, imageUrl, false, article.metadata.title);
             }
 
             // 5. Update WordPress Draft (Hebrew version) - KEEP AS DRAFT UNTIL APPROVED

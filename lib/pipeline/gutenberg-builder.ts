@@ -8,7 +8,7 @@ export class GutenbergBuilder {
      * Converts a whole article into a Gutenberg template.
      * Includes a cover block with video/image and a column layout.
      */
-    buildArticle(contentMarkdown: string, mediaUrl: string, isVideo: boolean = true) {
+    buildArticle(contentMarkdown: string, mediaUrl: string, isVideo: boolean = true, title?: string) {
         const contentBlocks = this.markdownToBlocks(contentMarkdown);
 
         // If no media URL, skip cover block entirely — content only
@@ -26,20 +26,26 @@ export class GutenbergBuilder {
 
         const isVideoUrl = isVideo || mediaUrl.includes('.mp4') || mediaUrl.includes('video');
 
-        // Cover block: video goes directly as wp-block-cover__video-background (NOT as a nested wp:video block)
+        // Cover block matching Rotem's working structure (post 1235)
         const coverBlockAttrs = isVideoUrl
-            ? `{"url":"${mediaUrl}","backgroundType":"video","dimRatio":50,"overlayColor":"black","minHeight":400,"minHeightUnit":"px","align":"full"}`
-            : `{"url":"${mediaUrl}","dimRatio":50,"overlayColor":"black","minHeight":400,"minHeightUnit":"px","align":"full"}`;
+            ? `{"url":"${mediaUrl}","backgroundType":"video","dimRatio":50,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"}`
+            : `{"url":"${mediaUrl}","dimRatio":50,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"}`;
 
         const coverInnerMedia = isVideoUrl
             ? `<video class="wp-block-cover__video-background intrinsic-ignore" autoplay="" muted="" loop="" playsinline="" src="${mediaUrl}"></video>`
             : `<img class="wp-block-cover__image-background" alt="" src="${mediaUrl}" data-object-fit="cover"/>`;
 
-        // Wrap in a column layout (25/75 as per audit)
+        // Title overlay inside cover block (matches Rotem's post 1235 structure)
+        const titleBlock = title ? `<div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","level":1} -->
+<h1 class="has-text-align-center has-text-color" style="color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800">${title}</h1>
+<!-- /wp:heading --></div>` : '';
+
+        // Wrap in a column layout (75/25 as per audit)
         return `
 <!-- wp:cover ${coverBlockAttrs} -->
-<div class="wp-block-cover alignfull"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim-50 has-background-dim"></span>
+<div class="wp-block-cover alignfull" style="min-height:60vh"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim"></span>
 ${coverInnerMedia}
+${titleBlock}
 </div>
 <!-- /wp:cover -->
 
