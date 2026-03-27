@@ -238,7 +238,8 @@ export class SlackClient {
                         topicId: params.topicId,
                         platforms: ["facebook", "linkedin"],
                         videoUrl: params.videoUrl,
-                        videoTaskId: params.videoTaskId
+                        videoTaskId: params.videoTaskId,
+                        facebookPost: this.truncate(params.facebookPost || '', 800)
                     }),
                     action_id: "approve_social",
                     style: "primary",
@@ -553,7 +554,8 @@ export class SlackClient {
                     value: JSON.stringify({
                         action: "approve_facebook",
                         postId: params.postId,
-                        mediaUrl: params.mediaUrl
+                        mediaUrl: params.mediaUrl,
+                        content: this.truncate(params.content || '', 800)
                     }),
                     action_id: "approve_facebook",
                     style: "primary",

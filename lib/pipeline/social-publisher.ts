@@ -165,8 +165,9 @@ export class SocialPublisher {
             }
         }
 
-        // Reconstruct content from WP post if not in button value (truncated for Slack limits)
-        const socialContent = data.content || post.content.rendered.replace(/<[^>]+>/g, ' ').substring(0, 2000).trim();
+        // Use the crafted social post from the approval flow (80-150 words, SOP-compliant)
+        // Falls back to generating from WP content only if crafted post is missing
+        const socialContent = data.facebookPost || data.content || post.content.rendered.replace(/<[^>]+>/g, ' ').substring(0, 2000).trim();
 
         // Extract hashtags from content (look for #tags)
         const hashtagMatches = socialContent.match(/#\w+/g) || [];
@@ -221,7 +222,7 @@ export class SocialPublisher {
             }
         `;
 
-        const response = await this.claude.generate(prompt, "claude-3-haiku-20240307"); // Using Haiku as per n8n
+        const response = await this.claude.generate(prompt, "claude-sonnet-4-20250514", undefined, 2000);
         try {
             return JSON.parse(response);
         } catch (e) {

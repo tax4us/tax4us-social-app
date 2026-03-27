@@ -200,11 +200,15 @@ export async function POST(req: NextRequest) {
         if (action.action_id === "approve_facebook") {
             console.log("📘 Facebook Post Approved: Publishing...", value);
 
-            // Fetch content from WP post (content removed from button value for Slack size limits)
-            const { WordPressClient } = require("../../../../lib/clients/wordpress-client");
-            const wpClient = new WordPressClient();
-            const wpPost = await wpClient.getPost(value.postId);
-            const fbContent = wpPost.content.rendered.replace(/<[^>]+>/g, ' ').substring(0, 2000).trim();
+            // Use crafted social post from button value (80-150 words, SOP-compliant)
+            // Falls back to WP content only if crafted post missing
+            let fbContent = value.content;
+            if (!fbContent) {
+                const { WordPressClient } = require("../../../../lib/clients/wordpress-client");
+                const wpClient = new WordPressClient();
+                const wpPost = await wpClient.getPost(value.postId);
+                fbContent = wpPost.content.rendered.replace(/<[^>]+>/g, ' ').substring(0, 500).trim();
+            }
 
             // Publish to Facebook via native Graph API
             const { socialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
