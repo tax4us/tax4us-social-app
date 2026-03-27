@@ -62,9 +62,10 @@ export class PipelineOrchestrator {
 
             const response = await this.claude.generate(userPrompt, "claude-3-haiku-20240307", systemPrompt);
 
-            // Clean response in case Claude includes preamble
+            // Clean response in case Claude includes preamble or control characters
             const jsonMatch = response.match(/\{[\s\S]*\}/);
-            const proposal = JSON.parse(jsonMatch ? jsonMatch[0] : response);
+            const cleanJson = (jsonMatch ? jsonMatch[0] : response).replace(/[\x00-\x1f\x7f]/g, ' ');
+            const proposal = JSON.parse(cleanJson);
 
             // 3. Create "Proposal" Draft in WordPress
             // We use a specific draft structure to store the proposal data
@@ -136,7 +137,8 @@ export class PipelineOrchestrator {
 
             // Clean response
             const jsonMatch = response.match(/\{[\s\S]*\}/);
-            const proposal = JSON.parse(jsonMatch ? jsonMatch[0] : response);
+            const cleanJson2 = (jsonMatch ? jsonMatch[0] : response).replace(/[\x00-\x1f\x7f]/g, ' ');
+            const proposal = JSON.parse(cleanJson2);
 
             // 3. Create new proposal draft
             const proposalCategoryIds = await this.wp.resolveCategories(["Pipeline"]);
@@ -242,6 +244,15 @@ export class PipelineOrchestrator {
             pipelineLogger.agent("Resolving categories and tags...", draftPostId.toString());
             const categoryIds = await this.wp.resolveCategories(article.metadata.categories || []);
             const tagIds = await this.wp.resolveTags(article.metadata.tags || []);
+
+            // 4c. Rebuild cover block with actual media URL (content generator used topic title as placeholder)
+            if (imageUrl) {
+                const { GutenbergBuilder } = await import('./gutenberg-builder');
+                const builder = new GutenbergBuilder();
+                // Strip the placeholder cover block and rebuild with real image
+                const contentWithoutCover = article.content.replace(/<!-- wp:cover[\s\S]*?<!-- \/wp:cover -->\s*/, '');
+                article.content = builder.buildArticle(contentWithoutCover, imageUrl, false);
+            }
 
             // 5. Update WordPress Draft (Hebrew version) - KEEP AS DRAFT UNTIL APPROVED
             await this.wp.updatePost(draftPostId, {
