@@ -616,10 +616,20 @@ export class PipelineOrchestrator {
             // Create separate English post as requested
             logger.info('PipelineOrchestrator', 'Creating separate English post as requested')
             
-            // Update the Hebrew draft to include bilingual content
+            // Merge bilingual content with cover block at top
+            const coverBlockRegex = /<!-- wp:cover[\s\S]*?<!-- \/wp:cover -->\s*/g;
+            // Extract first cover block found (from Hebrew content which has the image)
+            const coverMatch = content.match(coverBlockRegex);
+            const coverBlock = coverMatch ? coverMatch[0] : '';
+            // Strip ALL cover blocks from both contents
+            const hebrewClean = content.replace(coverBlockRegex, '');
+            const englishClean = englishContent.replace(coverBlockRegex, '');
+            // Reassemble: cover at top, then Hebrew, then English
+            const mergedContent = coverBlock + hebrewClean + '\n\n<hr>\n<h2>English Version</h2>\n' + englishClean;
+
             await this.wp.updatePost(draft.id, {
                 title: title + ' | ' + englishSeoMeta.metadata.title,
-                content: content + '\n\n<hr>\n<h2>English Version</h2>\n' + englishContent,
+                content: mergedContent,
                 status: "publish",
                 excerpt: englishSeoMeta.metadata.excerpt,
                 featured_media: draft.featured_media || 0,
