@@ -240,16 +240,23 @@ export class PipelineOrchestrator {
 
     private async runFullGeneration(draftPostId: number, topicName: string, airtableId?: string) {
         try {
-            // 2. Generate Content
+            // 2. Generate Content — English first (per SOP), then translate to Hebrew
             const article = await this.contentGenerator.generateArticle({
                 id: draftPostId.toString(),
                 topic: topicName,
                 title: topicName,
-                audience: "Israeli-American US taxpayers", // Could extract from content JSON if needed
-                language: "he",
+                audience: "Israeli-American US taxpayers",
+                language: "en",
                 type: "blog_post",
                 status: "processing"
             });
+
+            // 2b. Translate English article to Hebrew for the Hebrew post
+            pipelineLogger.agent("Translating to Hebrew...", draftPostId.toString());
+            const hebrewContent = await this.translator.translateEnToHe
+                ? await this.translator.translateEnToHe(article.content)
+                : await this.translator.translateHeToEn(article.content); // fallback — method name is confusing per SOP note
+            article.content = hebrewContent;
 
             // 3. Generate Media (Kie.ai)
             pipelineLogger.agent("Generating visual assets...", draftPostId.toString());
@@ -273,19 +280,17 @@ export class PipelineOrchestrator {
             const tagIds = await this.wp.resolveTags(article.metadata.tags || []);
 
             // 4c. Prepend cover block with actual media URL and title overlay
+            // Matches Rotem's working post 1235 structure exactly: id in attrs, wp-image-{id} class, same-line closing
             if (imageUrl) {
                 const articleTitle = article.metadata.title;
-                const coverBlock = `<!-- wp:cover {"url":"${imageUrl}","dimRatio":50,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"} -->
-<div class="wp-block-cover alignfull" style="min-height:60vh"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim"></span>
-<img class="wp-block-cover__image-background" alt="" src="${imageUrl}" data-object-fit="cover"/>
-<div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","level":1} -->
+                const imgId = mediaId || 0;
+                const coverBlock = `<!-- wp:cover {"url":"${imageUrl}","id":${imgId},"dimRatio":50,"overlayColor":"black","minHeight":60,"minHeightUnit":"vh","align":"full"} -->
+<div class="wp-block-cover alignfull" style="min-height:60vh"><span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim"></span><img class="wp-block-cover__image-background wp-image-${imgId}" alt="" src="${imageUrl}" data-object-fit="cover"/><div class="wp-block-cover__inner-container"><!-- wp:heading {"textAlign":"center","level":1} -->
 <h1 class="has-text-align-center has-text-color" style="color:#ffffff;font-size:clamp(32px, 5vw, 64px);font-weight:800">${articleTitle}</h1>
-<!-- /wp:heading --></div>
-</div>
+<!-- /wp:heading --></div></div>
 <!-- /wp:cover -->
 
 `;
-                // Prepend cover to existing content (don't re-wrap in columns)
                 article.content = coverBlock + article.content;
             }
 
