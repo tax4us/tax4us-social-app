@@ -253,10 +253,12 @@ export class PipelineOrchestrator {
 
             // 2b. Translate English article to Hebrew for the Hebrew post
             pipelineLogger.agent("Translating to Hebrew...", draftPostId.toString());
-            const hebrewContent = await this.translator.translateEnToHe
-                ? await this.translator.translateEnToHe(article.content)
-                : await this.translator.translateHeToEn(article.content); // fallback — method name is confusing per SOP note
+            const hebrewContent = await this.translator.translateEnToHe(article.content);
             article.content = hebrewContent;
+            // Also translate the title to Hebrew
+            const hebrewTitle = await this.translator.translateEnToHe(article.metadata.title);
+            // Clean any quotes/preamble from translated title
+            article.metadata.title = hebrewTitle.replace(/^["']|["']$/g, '').replace(/^.*?:/,'').trim() || article.metadata.title;
 
             // 3. Generate Media (Kie.ai)
             pipelineLogger.agent("Generating visual assets...", draftPostId.toString());
