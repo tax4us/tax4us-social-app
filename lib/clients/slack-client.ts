@@ -1,8 +1,12 @@
 export class SlackClient {
     private token: string;
     private channelId: string = "U09NNMEDNEQ"; // Ben's User ID direct destination (Slack resolves to DM)
-    private static BEN_USER_ID: string = "U09NNMEDNEQ"; // Ben's Slack User ID from n8n 
+    private static BEN_USER_ID: string = "U09NNMEDNEQ"; // Ben's Slack User ID from n8n
 
+    private truncate(text: string, maxLen: number): string {
+        if (text.length <= maxLen) return text;
+        return text.substring(0, maxLen - 3) + "...";
+    }
 
     constructor() {
         this.token = process.env.SLACK_BOT_TOKEN || "";
@@ -196,7 +200,7 @@ export class SlackClient {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: `*Full Post Preview:*\n\`\`\`${params.facebookPost}\`\`\``,
+                    text: `*Full Post Preview:*\n\`\`\`${this.truncate(params.facebookPost, 2900)}\`\`\``,
                 },
             }
         ];
@@ -233,7 +237,6 @@ export class SlackClient {
                         action: "publish_social",
                         topicId: params.topicId,
                         platforms: ["facebook", "linkedin"],
-                        content: params.facebookPost,
                         videoUrl: params.videoUrl,
                         videoTaskId: params.videoTaskId
                     }),
@@ -276,7 +279,7 @@ export class SlackClient {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: `*Proposed Topic:* ${params.topic}\n*Target Audience:* ${params.audience}\n\n*Reasoning:* ${params.reasoning}`,
+                    text: `*Proposed Topic:* ${params.topic}\n*Target Audience:* ${params.audience}\n\n*Reasoning:* ${this.truncate(params.reasoning, 500)}`,
                 },
             },
             {
@@ -522,7 +525,7 @@ export class SlackClient {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: `*Post Preview:*\n\`\`\`${params.content}\`\`\``,
+                    text: `*Post Preview:*\n\`\`\`${this.truncate(params.content, 2900)}\`\`\``,
                 },
             },
         ];
@@ -550,7 +553,6 @@ export class SlackClient {
                     value: JSON.stringify({
                         action: "approve_facebook",
                         postId: params.postId,
-                        content: params.content,
                         mediaUrl: params.mediaUrl
                     }),
                     action_id: "approve_facebook",
@@ -610,7 +612,7 @@ export class SlackClient {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: `*Post Preview:*\n\`\`\`${params.content}\`\`\``,
+                    text: `*Post Preview:*\n\`\`\`${this.truncate(params.content, 2900)}\`\`\``,
                 },
             },
         ];
@@ -638,7 +640,6 @@ export class SlackClient {
                     value: JSON.stringify({
                         action: "approve_linkedin",
                         postId: params.postId,
-                        content: params.content,
                         mediaUrl: params.mediaUrl
                     }),
                     action_id: "approve_linkedin",
