@@ -39,12 +39,27 @@ export class SocialPublisher {
             taskId = generatedTaskId;
 
             if (taskId) {
-                try {
-                    const status = await this.kie.getTask(taskId);
-                    if (status.status === 'success') videoUrl = status.videoUrl;
-                } catch (e) {
-                    pipelineLogger.warn("Could not retrieve video status immediately.");
+                // Poll for video completion (Kling 3.0 takes 2-5 minutes)
+                pipelineLogger.info(`Polling video task ${taskId} (max 3 min)...`);
+                for (let attempt = 1; attempt <= 18; attempt++) {
+                    await new Promise(r => setTimeout(r, 10000)); // 10s intervals
+                    try {
+                        const status = await this.kie.getTask(taskId);
+                        pipelineLogger.info(`Video poll ${attempt}/18: ${status.status}`);
+                        if (status.status === 'success' && status.videoUrl) {
+                            videoUrl = status.videoUrl;
+                            pipelineLogger.success(`Video ready: ${videoUrl}`);
+                            break;
+                        }
+                        if (status.status === 'failed') {
+                            pipelineLogger.warn(`Video generation failed: ${status.error}`);
+                            break;
+                        }
+                    } catch (e) {
+                        pipelineLogger.warn(`Video poll error: ${e}`);
+                    }
                 }
+                if (!videoUrl) pipelineLogger.warn("Video not ready after 3 min — continuing with image fallback");
             }
 
             if (videoUrl) {
