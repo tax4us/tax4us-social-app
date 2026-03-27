@@ -213,10 +213,10 @@ export async function POST(req: NextRequest) {
             // Publish to Facebook via native Graph API
             const { socialMediaPublisher } = require("../../../../lib/services/social-media-publisher");
 
+            // Ben's format: text post with headline + teaser + two links (not an image/photo post)
             socialMediaPublisher.publishToFacebook({
                 platform: 'facebook',
                 content: fbContent,
-                mediaUrl: value.mediaUrl,
                 hashtags: []
             }).catch((e: any) => console.error("Facebook publish failed:", e));
 

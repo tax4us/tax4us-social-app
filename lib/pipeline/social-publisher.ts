@@ -199,39 +199,51 @@ export class SocialPublisher {
     }
 
     private async generateBilingualContent(articleHtml: string, title: string, hebrewUrl: string, englishUrl: string) {
-        const prompt = `
-            You are a social media expert for Tax4Us.
-            Create a bilingual Facebook post based on this article content:
-            "${articleHtml.substring(0, 3000).replace(/<[^>]+>/g, " ")}"
+        const plainText = articleHtml.substring(0, 3000).replace(/<[^>]+>/g, " ").trim();
+        const prompt = `You write Facebook posts for Tax4Us, a US tax firm for Israeli-Americans.
 
-            **Requirements:**
-            1. Hebrew Headline: Strategic, emotional hook ("Listen to this...", "Look what they did"), creating subtle urgency.
-            2. English Headline: Cross-cultural bridge style, mirroring the Hebrew.
-            3. Hebrew Teaser: Authentic, signaling reliability.
-            4. Formatting: Use emojis (💰 🇮🇱 🇺🇸).
-            5. Final Polish: Include a clear CTA ("Wake up!", "Share this!").
-            
-            **Tone:** Mixed-language delivery vibes (English/Hebrew) to signal authenticity.
-            
-            **Output JSON only:**
-            {
-                "hebrew_headline": "...",
-                "english_headline": "...",
-                "hebrew_teaser": "...",
-                "facebook_post": "Full post text..."
-            }
-        `;
+Article title: "${title}"
+Article content summary: "${plainText.substring(0, 1500)}"
+
+Write a Facebook post in this EXACT format (Ben's approved format):
+
+Line 1: Hebrew headline (the article title or a professional variation — NO numbers like "7 tips", NO clickbait, NO "מדריך ל...", NO "כל מה שצריך לדעת")
+Line 2: (empty line)
+Line 3-5: Hebrew teaser — 2-3 sentences summarizing what the article covers. Professional, warm, helpful. Based on IRS facts, not slogans.
+Line 6: (empty line)
+Line 7: קראו בעברית: ${hebrewUrl}
+Line 8: Read in English: ${englishUrl}
+
+RULES:
+- NO emotional hooks ("Listen to this", "Wake up!")
+- NO emojis in the headline
+- Professional tone matching a US tax accounting firm
+- Teaser should explain the VALUE of reading the article
+- Keep it under 100 words total
+
+Output JSON only:
+{
+    "hebrew_headline": "the headline",
+    "english_headline": "English version of headline for LinkedIn",
+    "hebrew_teaser": "2-3 sentence teaser in Hebrew",
+    "facebook_post": "The COMPLETE Facebook post text exactly as it should appear"
+}`;
 
         const response = await this.claude.generate(prompt, "claude-sonnet-4-20250514", undefined, 2000);
         try {
-            return JSON.parse(response);
+            const parsed = JSON.parse(response);
+            // Ensure facebook_post has the correct structure with links
+            if (!parsed.facebook_post.includes(hebrewUrl)) {
+                parsed.facebook_post = `${parsed.hebrew_headline}\n\n${parsed.hebrew_teaser}\n\nקראו בעברית: ${hebrewUrl}\nRead in English: ${englishUrl}`;
+            }
+            return parsed;
         } catch (e) {
-            // Fallback if JSON parsing fails
+            // Fallback with Ben's exact format
             return {
                 hebrew_headline: title,
-                english_headline: "New Article",
-                hebrew_teaser: "Read our latest update.",
-                facebook_post: `${title}\n\nRead here: ${englishUrl}`
+                english_headline: title,
+                hebrew_teaser: plainText.substring(0, 200).trim(),
+                facebook_post: `${title}\n\n${plainText.substring(0, 200).trim()}\n\nקראו בעברית: ${hebrewUrl}\nRead in English: ${englishUrl}`
             };
         }
     }
