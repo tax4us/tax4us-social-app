@@ -245,7 +245,7 @@ export class PipelineOrchestrator {
                 id: draftPostId.toString(),
                 topic: topicName,
                 title: topicName,
-                audience: "Israeli Taxpayers", // Could extract from content JSON if needed
+                audience: "Israeli-American US taxpayers", // Could extract from content JSON if needed
                 language: "he",
                 type: "blog_post",
                 status: "processing"

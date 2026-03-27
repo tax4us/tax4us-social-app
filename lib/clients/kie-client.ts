@@ -173,23 +173,22 @@ export class KieClient {
         pipelineLogger.agent(`Initiating Image generation for: "${prompt.substring(0, 50)}..."`, "KIE_AI");
 
         try {
-            // Query Observatory for best image model (falls back to nano-banana-pro — verified working on TAX4US Kie.ai account)
-            const imgRec = await this.getModelRecommendation("image_generation", "nano-banana-pro");
-            pipelineLogger.info(`Image model: ${imgRec.model}`, "KIE_AI");
+            // Use nano-banana-pro directly (verified working on TAX4US Kie.ai account)
+            // Observatory recommends seedream/4.5 which is NOT available on TAX4US tier
+            const imageModel = "nano-banana-pro";
+            pipelineLogger.info(`Image model: ${imageModel}`, "KIE_AI");
 
-            const response = await fetch(`${this.baseUrl}${imgRec.endpoint.replace('/api/v1', '')}`, {
+            const response = await fetch(`${this.baseUrl}/jobs/createTask`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${this.apiKey}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: imgRec.model,
+                    model: imageModel,
                     input: {
                         prompt: prompt,
-                        aspect_ratio: "16:9",
-                        resolution: "2K",
-                        format: "png"
+                        aspect_ratio: "16:9"
                     }
                 })
             });
