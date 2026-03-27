@@ -238,7 +238,7 @@ export class PipelineOrchestrator {
         }
     }
 
-    private async runFullGeneration(draftPostId: number, topicName: string, airtableId?: string) {
+    private async runFullGeneration(draftPostId: number, topicName: string, airtableId?: string, options?: { skipApproval?: boolean }) {
         try {
             // 2. Generate Content — English first (per SOP), then translate to Hebrew
             const article = await this.contentGenerator.generateArticle({
@@ -337,7 +337,12 @@ export class PipelineOrchestrator {
                 }
             } as any);
 
-            // 6. Send Article for Approval
+            // 6. Send Article for Approval (skip if called from publishApprovedArticle)
+            if (options?.skipApproval) {
+                pipelineLogger.info("Content generated (approval skipped — called from publish flow)", draftPostId.toString());
+                return { status: "content_generated", postId: draftPostId };
+            }
+
             pipelineLogger.info("Sending article for approval...", draftPostId.toString());
             await this.slack.sendArticleApprovalRequest({
                 title: article.metadata.title,
@@ -618,7 +623,8 @@ export class PipelineOrchestrator {
 
             // 2. Generate full article content (English-first → translate to Hebrew → media → cover block)
             // This updates the draft in WordPress with the final Hebrew content + cover block
-            await this.runFullGeneration(draftId, topicName);
+            // skipApproval=true: content generation without sending another approval request
+            await this.runFullGeneration(draftId, topicName, undefined, { skipApproval: true });
 
             // 3. Re-fetch the draft (now has full Hebrew content with cover block)
             const updatedDraft = await this.wp.getPost(draftId);
@@ -688,8 +694,8 @@ export class PipelineOrchestrator {
                 categories: enCategoryIds,
                 tags: enTagIds,
                 meta: {
-                    rank_math_focus_keyword: englishSeoMeta.metadata.focus_keyword || title,
-                    rank_math_title: englishSeoMeta.metadata.seo_title || title,
+                    rank_math_focus_keyword: englishSeoMeta.metadata.focus_keyword || topicName,
+                    rank_math_title: englishSeoMeta.metadata.seo_title || topicName,
                     rank_math_description: englishSeoMeta.metadata.seo_description || '',
                     rank_math_seo_score: Math.round(englishSeoMeta.seo_score || 80)
                 }
