@@ -691,7 +691,6 @@ class SocialMediaPublisher {
     return results
   }
 
-  /**
   // uploadFacebookReel() REMOVED 2026-03-29 — dead code, reel upload is now inline in publishToFacebook()
 }
 
