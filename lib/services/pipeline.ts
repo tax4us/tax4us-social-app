@@ -212,40 +212,75 @@ class PipelineManager {
     try {
       this.log(runId, 'info', 'media_generation', `Starting media generation for: ${state.selectedTopic?.title_english}`)
 
-      // Generate multiple video formats using Remotion (replacing Kie.ai)
-      const mediaPromises = [
-        // WordPress header video (3-minute explainer) 
-        this.generateRemotionVideo(state.contentPiece, 'wordpress'),
-        // Social media videos (Facebook Reel + LinkedIn)
-        this.generateRemotionVideo(state.contentPiece, 'facebook_reel'),
-        this.generateRemotionVideo(state.contentPiece, 'linkedin')
-      ]
+      // Use Kie.ai for ALL media — Remotion is dead (produced broken green cards with
+      // tofu Hebrew characters, see FB reel/1133143058896566). Disabled 2026-03-29.
+      const { MediaProcessor } = await import('../pipeline/media-processor')
+      const mediaProcessor = new MediaProcessor()
 
-      const [wordpressVideo, facebookVideo, linkedinVideo] = await Promise.allSettled(mediaPromises)
+      // Generate VIDEO via Kie.ai (Sora 2 Pro primary, Kling 3.0 fallback)
+      const mediaResult = await mediaProcessor.generatePostMedia({
+        hebrew_title: state.contentPiece.title_hebrew || state.selectedTopic?.title_hebrew || '',
+        english_title: state.selectedTopic?.title_english || state.contentPiece.title_hebrew || '',
+        hebrew_content: state.contentPiece.content_hebrew || '',
+        english_content: state.contentPiece.content_english || '',
+        focus_keyword: state.contentPiece.target_keywords?.[0] || 'tax',
+        style: 'corporate',
+        generate_video: true,   // Kie.ai video: Sora 2 Pro → Kling 3.0 fallback
+        generate_images: true,  // Featured image for WordPress
+      })
 
-      // Handle WordPress video result
-      if (wordpressVideo.status === 'fulfilled' && wordpressVideo.value.success) {
-        state.contentPiece.media_urls.blog_video = wordpressVideo.value.videoUrl
-        state.contentPiece.media_urls.blog_thumbnail = wordpressVideo.value.thumbnailUrl
-        this.log(runId, 'info', 'media_generation', `WordPress video generated: ${wordpressVideo.value.videoId}`)
-      } else {
-        this.log(runId, 'warn', 'media_generation', `WordPress video generation failed: ${wordpressVideo.status === 'rejected' ? wordpressVideo.reason : 'Unknown error'}`)
+      if (mediaResult.success) {
+        // Featured image for WordPress blog post
+        if (mediaResult.english_image_url) {
+          state.contentPiece.media_urls.featured_image = mediaResult.english_image_url
+          this.log(runId, 'info', 'media_generation', `Featured image generated: ${mediaResult.english_image_url}`)
+        }
+        if (mediaResult.hebrew_image_url) {
+          state.contentPiece.media_urls.blog_thumbnail = mediaResult.hebrew_image_url
+        }
       }
 
-      // Handle Facebook Reel result
-      if (facebookVideo.status === 'fulfilled' && facebookVideo.value.success) {
-        state.contentPiece.media_urls.facebook_reel = facebookVideo.value.videoUrl
-        this.log(runId, 'info', 'media_generation', `Facebook Reel generated: ${facebookVideo.value.videoId}`)
-      } else {
-        this.log(runId, 'warn', 'media_generation', `Facebook Reel generation failed: ${facebookVideo.status === 'rejected' ? facebookVideo.reason : 'Unknown error'}`)
-      }
+      // Poll for video completion if task IDs were returned
+      if (mediaResult.task_ids.length > 0) {
+        const { KieClient } = await import('../clients/kie-client')
+        const kie = new KieClient()
 
-      // Handle LinkedIn video result
-      if (linkedinVideo.status === 'fulfilled' && linkedinVideo.value.success) {
-        state.contentPiece.media_urls.linkedin_video = linkedinVideo.value.videoUrl
-        this.log(runId, 'info', 'media_generation', `LinkedIn video generated: ${linkedinVideo.value.videoId}`)
-      } else {
-        this.log(runId, 'warn', 'media_generation', `LinkedIn video generation failed: ${linkedinVideo.status === 'rejected' ? linkedinVideo.reason : 'Unknown error'}`)
+        for (const taskId of mediaResult.task_ids) {
+          this.log(runId, 'info', 'media_generation', `Polling Kie.ai video task: ${taskId}`)
+          let videoUrl = ''
+          const maxAttempts = 30  // 5 min max (10s * 30)
+          for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            await new Promise(r => setTimeout(r, 10000))
+            try {
+              const taskResult = await kie.getTask(taskId)
+              if (taskResult.status === 'success' && taskResult.url) {
+                videoUrl = taskResult.url
+                this.log(runId, 'info', 'media_generation', `Video ready (attempt ${attempt}): ${videoUrl}`)
+                break
+              }
+              if (taskResult.status === 'failed') {
+                this.log(runId, 'warn', 'media_generation', `Video task ${taskId} failed: ${taskResult.error}`)
+                break
+              }
+              this.log(runId, 'info', 'media_generation', `Video polling ${attempt}/${maxAttempts}: ${taskResult.status}`)
+            } catch (pollErr: any) {
+              this.log(runId, 'warn', 'media_generation', `Poll error: ${pollErr.message}`)
+            }
+          }
+
+          if (videoUrl) {
+            // First video → FB reel + social_video
+            if (!state.contentPiece.media_urls.facebook_reel) {
+              state.contentPiece.media_urls.facebook_reel = videoUrl
+              state.contentPiece.media_urls.social_video = videoUrl
+              this.log(runId, 'info', 'media_generation', `FB reel video set: ${videoUrl}`)
+            }
+            // Second video → LinkedIn
+            if (!state.contentPiece.media_urls.linkedin_video && state.contentPiece.media_urls.facebook_reel !== videoUrl) {
+              state.contentPiece.media_urls.linkedin_video = videoUrl
+            }
+          }
+        }
       }
 
       // Update content piece with new media URLs
@@ -254,17 +289,12 @@ class PipelineManager {
       })
 
       state.checkpoints.media_generation = {
-        wordpressVideoStatus: wordpressVideo.status === 'fulfilled' && wordpressVideo.value.success,
-        facebookVideoStatus: facebookVideo.status === 'fulfilled' && facebookVideo.value.success,
-        linkedinVideoStatus: linkedinVideo.status === 'fulfilled' && linkedinVideo.value.success,
+        videoGenerated: !!state.contentPiece.media_urls.facebook_reel,
+        featuredImageGenerated: !!state.contentPiece.media_urls.featured_image,
         mediaUrls: state.contentPiece.media_urls
       }
 
-      const successCount = [wordpressVideo, facebookVideo, linkedinVideo].filter(
-        result => result.status === 'fulfilled' && (result.value as any).success
-      ).length
-
-      this.log(runId, 'info', 'media_generation', `Remotion video generation completed: ${successCount}/3 videos generated successfully`)
+      this.log(runId, 'info', 'media_generation', `Kie.ai media generation completed: video=${!!state.contentPiece.media_urls.facebook_reel}, image=${!!state.contentPiece.media_urls.featured_image}`)
 
     } catch (error) {
       this.log(runId, 'error', 'media_generation', `Media generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
@@ -272,110 +302,9 @@ class PipelineManager {
     }
   }
 
-  /**
-   * Generate video using Remotion (replaced Kie.ai)
-   */
-  private async generateRemotionVideo(contentPiece: ContentPiece, videoType: 'wordpress' | 'facebook_reel' | 'linkedin'): Promise<{
-    success: boolean
-    videoId?: string
-    videoUrl?: string
-    thumbnailUrl?: string
-    error?: string
-  }> {
-    try {
-      // Use new Remotion video generation API
-      const response = await fetch('http://localhost:3000/api/video', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contentId: contentPiece.id,
-          videoType
-        })
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Remotion video API error: ${response.status} - ${errorText}`)
-      }
-
-      const result = await response.json()
-      
-      if (result.success && result.video) {
-        return {
-          success: true,
-          videoId: result.video.id,
-          videoUrl: result.video.url,
-          thumbnailUrl: result.video.thumbnail
-        }
-      } else {
-        throw new Error(result.error || 'Video generation failed')
-      }
-
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }
-    }
-  }
-
-  /**
-   * Poll video generation status until completion
-   */
-  private async pollVideoCompletion(taskId: string, maxWaitMs: number = 300000): Promise<{
-    success: boolean
-    taskId: string
-    videoUrl?: string
-    error?: string
-  }> {
-    const startTime = Date.now()
-    const pollInterval = 15000 // 15 seconds
-
-    while (Date.now() - startTime < maxWaitMs) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/video/status/${taskId}`)
-        
-        if (response.ok) {
-          const status = await response.json()
-          
-          if (status.status === 'success' && status.videoUrl) {
-            return {
-              success: true,
-              taskId,
-              videoUrl: status.videoUrl
-            }
-          }
-          
-          if (status.status === 'failed') {
-            return {
-              success: false,
-              taskId,
-              error: status.error || 'Video generation failed'
-            }
-          }
-          
-          // Still processing, wait and try again
-          await new Promise(resolve => setTimeout(resolve, pollInterval))
-        } else {
-          throw new Error(`Status check failed: ${response.status}`)
-        }
-      } catch (error) {
-        return {
-          success: false,
-          taskId,
-          error: error instanceof Error ? error.message : 'Unknown error'
-        }
-      }
-    }
-
-    return {
-      success: false,
-      taskId,
-      error: 'Video generation timed out'
-    }
-  }
+  // generateRemotionVideo() and pollVideoCompletion() REMOVED 2026-03-29.
+  // Remotion produced broken green cards with tofu Hebrew (see FB reel/1133143058896566).
+  // Video generation now uses Kie.ai (Sora 2 Pro / Kling 3.0) via MediaProcessor in generateMedia().
 
   private async translateContent(runId: string, state: PipelineState): Promise<void> {
     if (!state.contentPiece) {
@@ -661,6 +590,11 @@ class PipelineManager {
         runId
       )
 
+      // Send WhatsApp notification to Ben's group
+      await this.notifyWhatsAppGroup(
+        `📝 *WordPress Published*\n\n"${state.contentPiece.title_hebrew}"\n\n🔗 ${result.url}\n\nArticle is live on tax4us.co.il`
+      )
+
     } catch (error) {
       this.log(runId, 'error', 'wordpress_publishing', `WordPress publishing failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
       throw error
@@ -737,9 +671,18 @@ class PipelineManager {
         runId
       )
 
+      // Send WhatsApp notification to Ben's group with published URLs
+      if (successfulPosts.length > 0) {
+        const platformLinks = successfulPosts.map(p => `• ${p.platform === 'facebook' ? '📘 Facebook' : '💼 LinkedIn'}: ${p.postUrl}`).join('\n')
+        await this.notifyWhatsAppGroup(
+          `🎉 *Content Published*\n\n"${state.contentPiece.title_hebrew}"\n\n${platformLinks}\n\n${failedPosts.length > 0 ? `⚠️ ${failedPosts.map(p => p.platform).join(', ')} failed — will retry` : '✅ All platforms successful'}`
+        )
+      }
+
       // Don't throw error if some posts failed - continue pipeline
       if (successfulPosts.length === 0) {
         this.log(runId, 'error', 'social_distribution', 'All social media posts failed, but continuing pipeline')
+        await this.notifyWhatsAppGroup(`❌ Social media publishing failed for "${state.contentPiece.title_hebrew}". I'm investigating and will retry.`)
       }
 
     } catch (error) {
@@ -870,6 +813,43 @@ class PipelineManager {
 
   private async logError(runId: string, stage: string, message: string): Promise<void> {
     await this.log(runId, 'error', stage, message)
+  }
+
+  /**
+   * Send a WhatsApp notification to Ben's TAX4US group via WAHA.
+   * Group ID from env var TAX4US_WHATSAPP_GROUP_ID (set after group creation in Phase 80).
+   * Silently skips if not configured — non-fatal, pipeline continues.
+   */
+  private async notifyWhatsAppGroup(message: string): Promise<void> {
+    try {
+      const groupId = process.env.TAX4US_WHATSAPP_GROUP_ID
+      if (!groupId) {
+        logger.warn('Pipeline', 'WhatsApp notification skipped — TAX4US_WHATSAPP_GROUP_ID not set')
+        return
+      }
+
+      const WAHA_URL = process.env.WAHA_URL || 'http://172.245.56.50:3000'
+      const WAHA_API_KEY = process.env.WAHA_API_KEY || '4fc7e008d7d24fc995475029effc8fa8'
+
+      const res = await fetch(`${WAHA_URL}/api/sendText`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Api-Key': WAHA_API_KEY,
+        },
+        body: JSON.stringify({
+          chatId: groupId,
+          session: 'superseller-whatsapp',
+          text: message,
+        }),
+      })
+
+      if (!res.ok) {
+        logger.warn('Pipeline', `WhatsApp notification failed: ${res.status} ${res.statusText}`)
+      }
+    } catch (err: any) {
+      logger.warn('Pipeline', `WhatsApp notification failed (non-fatal): ${err.message}`)
+    }
   }
 
   // Public methods for external control

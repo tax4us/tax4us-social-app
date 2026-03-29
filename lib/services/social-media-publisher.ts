@@ -273,162 +273,70 @@ class SocialMediaPublisher {
         throw new Error('Facebook access token not configured')
       }
 
-      // UNIFIED APPROACH: Use token directly as PAGE token (no user token fetching)
-      // This matches the approach used in app/api/integrations/status/route.ts
-      const payload = {
-        message: post.content + (post.hashtags?.length > 0 ? '\n\n' + post.hashtags.join(' ') : ''),
-        access_token: this.facebookAccessToken
-      }
+      const message = post.content + (post.hashtags?.length > 0 ? '\n\n' + post.hashtags.join(' ') : '')
 
-      // If media URL provided, determine if it's video or image
+      // Video post — Kie.ai generates public URLs (R2/S3), no local filesystem needed
       if (post.mediaUrl) {
-        const isVideo = post.mediaUrl.includes('.mp4') || post.mediaUrl.includes('video')
-        const isReel = isVideo && (post.mediaUrl.includes('reel') || post.mediaUrl.includes('facebook_reel'))
-        
-        logger.info('SocialMediaPublisher', `📹 Media URL: ${post.mediaUrl}`)
-        logger.info('SocialMediaPublisher', `📹 Is Video: ${isVideo}`)
-        logger.info('SocialMediaPublisher', `📹 Is Reel: ${isReel}`)
-        
-        // Ensure video URL is publicly accessible for Facebook
-        let publicMediaUrl = post.mediaUrl
-        if (isVideo && (post.mediaUrl.includes('localhost') || post.mediaUrl.includes('vercel.app'))) {
-          try {
-            // Upload video to WordPress for public access
-            const localVideoPath = post.mediaUrl.replace(/https?:\/\/[^\/]+/, './public')
-            if (require('fs').existsSync(localVideoPath)) {
-              const { wordPressPublisher } = await import('./wordpress-publisher')
-              publicMediaUrl = await wordPressPublisher.uploadVideo(localVideoPath, 'facebook-reel')
-              logger.info('SocialMediaPublisher', `✅ Uploaded video to WordPress: ${publicMediaUrl}`)
-            }
-          } catch (uploadError) {
-            logger.warn('SocialMediaPublisher', '⚠️ Video upload failed, using original URL', uploadError)
+        const isVideo = post.mediaUrl.includes('.mp4') || post.mediaUrl.includes('video') || post.mediaUrl.includes('kie.ai')
+
+        logger.info('SocialMediaPublisher', `FB publish: mediaUrl=${post.mediaUrl}, isVideo=${isVideo}`)
+
+        if (isVideo) {
+          // Upload as reel via video_reels endpoint — video URL must be publicly accessible
+          // Kie.ai videos are hosted on their CDN, so URL is already public
+          const videoResponse = await fetch(post.mediaUrl)
+          if (!videoResponse.ok) {
+            throw new Error(`Failed to fetch video from ${post.mediaUrl}: ${videoResponse.status}`)
           }
-        }
-        
-        // Determine API endpoint based on media type
-        const apiEndpoint = isVideo 
-          ? (isReel 
-              ? `https://graph.facebook.com/v18.0/${this.facebookPageId}/video_reels`
-              : `https://graph.facebook.com/v18.0/${this.facebookPageId}/videos`)
-          : `https://graph.facebook.com/v18.0/${this.facebookPageId}/photos`
-          
-        logger.info('SocialMediaPublisher', `FB-DEBUG: URL=${post.mediaUrl}, isReel=${isReel}, endpoint=${apiEndpoint}`)
-        
-        let requestBody
-        let headers
-        if (isVideo && isReel) {
-          // Use multipart form data for video upload
+          const videoBlob = await videoResponse.blob()
+
           const formData = new FormData()
           formData.append('access_token', this.facebookAccessToken)
-          formData.append('description', payload.message)
-          
-          // Fetch video and append as blob
-          const videoResponse = await fetch(publicMediaUrl)
-          const videoBlob = await videoResponse.blob()
+          formData.append('description', message)
           formData.append('source', videoBlob, 'video.mp4')
-          
-          const reelResponse = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}/video_reels`, {
+
+          const response = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}/video_reels`, {
             method: 'POST',
             body: formData
           })
-          
-          if (reelResponse.ok) {
-            const reelResult = await reelResponse.json()
-            return {
-              platform: 'facebook',
-              success: true,
-              postId: reelResult.id,
-              postUrl: `https://www.facebook.com/reel/${reelResult.id}`
-            }
+
+          if (!response.ok) {
+            const error = await response.json()
+            throw new Error(`Facebook reel upload error: ${error.error?.message || response.statusText}`)
           }
-        }
-        
-        if (isVideo) {
-          // Read video file from local filesystem and upload directly
-          const fs = require('fs')
-          const path = require('path')
-          const localPath = publicMediaUrl.replace(/https?:\/\/[^\/]+/, './public')
-          
-          if (fs.existsSync(localPath)) {
-            const formData = new FormData()
-            const videoBuffer = fs.readFileSync(localPath)
-            const videoBlob = new Blob([videoBuffer], { type: 'video/mp4' })
-            
-            formData.append('access_token', this.facebookAccessToken)
-            formData.append('description', payload.message)
-            formData.append('source', videoBlob, path.basename(localPath))
-            
-            logger.info('SocialMediaPublisher', 'FB-UPLOAD', {
-              endpoint: apiEndpoint,
-              formDataKeys: Array.from(formData.keys()),
-              fileSize: videoBuffer.length
-            })
-            
-            const response = await fetch(apiEndpoint, {
-              method: 'POST',
-              body: formData
-            })
 
-            logger.info('SocialMediaPublisher', 'FB-RESPONSE', {
-              status: response.status,
-              statusText: response.statusText,
-              headers: Object.fromEntries(response.headers.entries())
-            })
-
-            if (!response.ok) {
-              const error = await response.json()
-              logger.error('SocialMediaPublisher', 'FB-ERROR', error)
-              throw new Error(`Facebook API error: ${error.error?.message || response.statusText}`)
-            }
-
-            const result = await response.json()
-            logger.info('SocialMediaPublisher', 'FB-SUCCESS', result)
-            return {
-              platform: 'facebook',
-              success: true,
-              postId: result.id,
-              postUrl: `https://www.facebook.com/${this.facebookPageId}/videos/${result.id}`
-            }
-          } else {
-            throw new Error(`Video file not found: ${localPath}`)
+          const result = await response.json()
+          logger.info('SocialMediaPublisher', `FB reel published: ${result.id}`)
+          return {
+            platform: 'facebook',
+            success: true,
+            postId: result.id,
+            postUrl: `https://www.facebook.com/reel/${result.id}`
           }
         } else {
-          // Images
-          requestBody = JSON.stringify({
-            ...payload,
-            url: publicMediaUrl
+          // Image post via photos endpoint
+          const response = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}/photos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message,
+              url: post.mediaUrl,
+              access_token: this.facebookAccessToken
+            })
           })
-          headers = { 'Content-Type': 'application/json' }
-        }
-        
-        // FORCE DEBUG: Log exact API call  
-        logger.info('SocialMediaPublisher', 'FB-API-CALL', {
-          endpoint: apiEndpoint,
-          isReel,
-          isVideo,
-          contentType: headers['Content-Type'],
-          bodyPreview: isVideo ? 'FormData: ' + requestBody : 'JSON request'
-        })
-        
-        const response = await fetch(apiEndpoint, {
-          method: 'POST',
-          headers,
-          body: requestBody
-        })
 
-        if (!response.ok) {
-          const error = await response.json()
-          throw new Error(`Facebook API error: ${error.error?.message || response.statusText}`)
-        }
+          if (!response.ok) {
+            const error = await response.json()
+            throw new Error(`Facebook photo upload error: ${error.error?.message || response.statusText}`)
+          }
 
-        const result = await response.json()
-        return {
-          platform: 'facebook',
-          success: true,
-          postId: result.id,
-          postUrl: isVideo
-            ? `https://www.facebook.com/${this.facebookPageId}/videos/${result.id}`
-            : `https://www.facebook.com/${result.id}`
+          const result = await response.json()
+          return {
+            platform: 'facebook',
+            success: true,
+            postId: result.id,
+            postUrl: `https://www.facebook.com/${result.id}`
+          }
         }
       }
 
@@ -784,27 +692,7 @@ class SocialMediaPublisher {
   }
 
   /**
-   * Upload Facebook Reel using 3-step process
-   */
-  private async uploadFacebookReel(videoUrl: string, description: string, accessToken: string): Promise<{ id: string }> {
-    // Use direct video_reels endpoint with URL - simpler approach
-    const response = await fetch(`https://graph.facebook.com/v18.0/${this.facebookPageId}/video_reels`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        video_url: videoUrl,
-        description: description,
-        access_token: accessToken
-      }).toString()
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(`Reel upload failed: ${error.error?.message || response.statusText}`)
-    }
-
-    return await response.json()
-  }
+  // uploadFacebookReel() REMOVED 2026-03-29 — dead code, reel upload is now inline in publishToFacebook()
 }
 
 export const socialMediaPublisher = new SocialMediaPublisher()
