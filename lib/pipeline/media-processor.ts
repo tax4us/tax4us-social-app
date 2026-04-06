@@ -204,7 +204,7 @@ export class MediaProcessor {
             basePrompt += `English context. Theme: US-Israel tax compliance and planning. `;
         }
 
-        basePrompt += `Visual elements: Clean modern design, professional color palette (green #8fb634, white, gray accents). `;
+        basePrompt += `Visual elements: Clean modern design, professional color palette (dark navy #06162F, lime green #A1CD3A, gold #FFCD57, white). `;
         basePrompt += `Include subtle US and Israeli flag elements. `;
         basePrompt += `Focus concept: ${focusKeyword}. `;
         basePrompt += `Style: Professional, trustworthy, modern business aesthetic. `;

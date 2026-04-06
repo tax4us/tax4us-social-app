@@ -164,7 +164,7 @@ export class VideoStudio {
       prompt = `Professional tax advisory video for Tax4US: "${title}". `;
       prompt += `Clean, professional aesthetic. Modern office setting. `;
       prompt += `Visual theme: US-Israel cross-border taxation expertise. `;
-      prompt += `Character: @shai-lfc.tax4us — professional, trustworthy tax advisor. `;
+      prompt += `Character: Tax4US animated gold coin mascot with dark navy top hat and lime green glasses — illustrated, NOT a real person. `;
       prompt += `Tone: Confident, knowledgeable, warm and approachable. `;
       
       if (isHebrew) {
@@ -186,20 +186,20 @@ export class VideoStudio {
       prompt = `Premium abstract motion graphics for financial services: "${title}". `;
       prompt += `Theme: US-Israel tax advisory and compliance visualization. `;
       prompt += `Visual elements: Flowing geometric shapes, data visualization aesthetics. `;
-      prompt += `Color palette: Professional green (#8fb634), white, sophisticated accent tones. `;
+      prompt += `Color palette: Dark navy (#06162F), lime green (#A1CD3A), gold (#FFCD57), white. `;
       prompt += `Motion: Smooth, professional transitions with subtle financial data overlays. `;
       prompt += `Symbolism: Connected networks representing cross-border expertise. `;
       prompt += `Flags: Stylized US and Israeli flag elements woven into abstract design. `;
       prompt += `Focus: Abstract representation of "${focus_keyword}" concept. `;
       prompt += `Format: Clean, premium 9:16 vertical format. `;
-      prompt += `Branding: @shai-lfc.tax4us handle subtly integrated into design. `;
+      prompt += `Branding: Tax4US identity in brand colors, NO personal handles. `;
       prompt += `Style: High-end corporate motion graphics, looping background suitable for overlays.`;
 
     } else {
       // Corporate style
       prompt = `Professional corporate presentation video: "${title}". `;
       prompt += `Setting: Modern tax advisory office environment. `;
-      prompt += `Presenter: Confident tax professional explaining complex concepts clearly. `;
+      prompt += `Character: Animated gold coin mascot with navy top hat and lime green glasses — illustrated, NOT a real person. `;
       prompt += `Visual aids: Charts, graphs, and visual representations of tax concepts. `;
       prompt += `Branding: Tax4US corporate identity prominently featured. `;
       prompt += `Focus: Clear explanation of "${focus_keyword}" with visual support. `;

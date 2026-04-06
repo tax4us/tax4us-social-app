@@ -75,7 +75,7 @@ PLATFORM SPECIFICATIONS:
 BRAND GUIDELINES:
 - Professional yet approachable tone
 - Tax4US logo integration required
-- Blue/white color scheme (#1e40af, #ffffff)
+- Brand colors: dark navy (#06162F), lime green (#A1CD3A), gold (#FFCD57), white
 - Hebrew and English bilingual elements
 - Clear value proposition within first 5 seconds
 

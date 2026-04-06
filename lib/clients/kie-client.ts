@@ -90,10 +90,11 @@ export class KieClient {
             return "kie-disabled-placeholder";
         }
 
-        // PRIMARY: Sora 2 Pro Storyboard with @shai-lfc.tax4us cameo
-        // 25 seconds, portrait (9:16), professional tax advisor scenes
+        // PRIMARY: Kling 3.0 with illustrated coin mascot (NOT @shai-lfc cameo — no human character)
+        // Tax4US mascot: animated gold coin with navy top hat + lime green glasses
+        // Brand colors: #06162F (dark navy), #A1CD3A (lime green), #FFCD57 (gold)
         try {
-            pipelineLogger.info("Video model: sora-2-pro-storyboard (primary)", "KIE_AI");
+            pipelineLogger.info("Video model: kling-3.0 with coin mascot (primary)", "KIE_AI");
 
             const shots = this.buildSoraStoryboard(params.title, params.excerpt);
 
@@ -133,7 +134,7 @@ export class KieClient {
             const videoRec = await this.getModelRecommendation("video_clip_generation", "kling-3.0/video");
             pipelineLogger.info(`Fallback video model: ${videoRec.model}`, "KIE_AI");
 
-            const prompt = `Professional tax advisor @shai-lfc.tax4us in modern office with US and Israeli flags. Speaking confidently about "${params.title}". Warm lighting, professional attire. Vertical 9:16.`;
+            const prompt = `STYLIZED ILLUSTRATED animated gold coin mascot character with dark navy top hat and lime green glasses, in a surreal creative setting. The coin character confidently presents about "${params.title}". Motion graphics illustration style, bold clean lines, flat colors. Brand colors: dark navy #06162F, lime green #A1CD3A, gold #FFCD57. NOT photorealistic. Vertical 9:16.`;
 
             const response = await this.fetchWithRetry(`${this.baseUrl}${videoRec.endpoint.replace('/api/v1', '')}`, {
                 method: "POST",
@@ -167,29 +168,30 @@ export class KieClient {
 
     /**
      * Build Sora storyboard shots for Tax4US reel
-     * 25 seconds total, 5 shots, @shai-lfc.tax4us cameo throughout
+     * 25 seconds total, 5 shots, coin mascot throughout (NO human character)
+     * Brand colors: #06162F (dark navy), #A1CD3A (lime green), #FFCD57 (gold)
      */
     private buildSoraStoryboard(title: string, excerpt: string): Array<{ Scene: string; duration: number }> {
         const shortExcerpt = excerpt.substring(0, 200).trim();
         return [
             {
-                Scene: `Professional tax advisor @shai-lfc.tax4us in a modern office with US and Israeli flags on the wall. He faces the camera with a warm, confident expression. Soft professional lighting. He begins speaking about: "${title}".`,
+                Scene: `Stylized illustrated animated gold coin mascot character with a dark navy top hat and lime green glasses stands confidently in a surreal setting. Bold clean lines, flat color blocks, motion graphics style. The coin character faces the viewer with a warm expression, ready to explain: "${title}". Dark navy (#06162F) and lime green (#A1CD3A) color accents. NOT photorealistic.`,
                 duration: 6
             },
             {
-                Scene: `@shai-lfc.tax4us gestures while explaining a key tax concept. Medium shot showing his professional attire and the office environment. Tax law books and documents visible on shelves behind him.`,
+                Scene: `The illustrated gold coin mascot gestures with one hand while explaining a key concept. Surreal background with floating financial symbols in dark navy and lime green. Motion graphics animation style, clean bold lines. Professional but creative atmosphere.`,
                 duration: 5
             },
             {
-                Scene: `Close-up of @shai-lfc.tax4us speaking with conviction. His expression shows deep expertise and genuine care for his audience. The US and Israeli flags are slightly blurred in the background.`,
+                Scene: `Medium close-up of the gold coin mascot character pointing upward, making an important point. Lime green accent lighting. Bold illustrated style with geometric background elements in brand colors. Confident, trustworthy energy.`,
                 duration: 5
             },
             {
-                Scene: `@shai-lfc.tax4us at his desk, reviewing a document. He looks up at the camera and nods, as if confirming an important point. Professional, trustworthy atmosphere.`,
+                Scene: `The coin mascot character in a surreal setting — giant calculator keys or floating tax forms in the background. The character nods approvingly. Dark navy and gold color palette, illustrated motion graphics style.`,
                 duration: 5
             },
             {
-                Scene: `@shai-lfc.tax4us smiles warmly at the camera, making a welcoming gesture. The Tax4US office setting is clean and professional. He appears approachable and ready to help.`,
+                Scene: `The gold coin mascot waves warmly at the viewer with a welcoming gesture. Clean white and lime green background. Professional, approachable, ready to help. Bold illustrated style, NOT photorealistic.`,
                 duration: 4
             }
         ];
