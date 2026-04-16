@@ -1,4 +1,5 @@
 import { db, PipelineRun, PipelineLog, Topic, ContentPiece } from './database'
+import { logger } from '../utils/logger'
 import { contentGenerationService } from './content-generation'
 import { slackIntegration } from './slack-integration'
 import { wordPressPublisher } from './wordpress-publisher'
