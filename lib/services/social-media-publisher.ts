@@ -346,7 +346,10 @@ class SocialMediaPublisher {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          message,
+          access_token: this.facebookAccessToken
+        })
       })
 
       if (!response.ok) {
